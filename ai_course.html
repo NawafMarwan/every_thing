@@ -5,20 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>الحصن الرقمي - ورشة الأمن السيبراني التفاعلية</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
-    <!-- مكتبة Three.js للرسومات ثلاثية الأبعاد -->
+    <!-- مكتبة Three.js للرسومات ثلاثية الأبعاد داخل الشرائح -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         :root {
-            --bg-primary: #02040a;
-            --bg-card: rgba(10, 15, 29, 0.75);
+            --bg-primary: #0a0f1d;
+            --bg-card: rgba(15, 23, 42, 0.85);
             --accent-cyan: #00f0ff;
-            --accent-purple: #b100ff;
+            --accent-purple: #7000ff;
             --accent-green: #00ff88;
-            --text-main: #e0e7ff;
+            --text-main: #f0f4f8;
             --text-muted: #94a3b8;
-            --border-color: rgba(0, 240, 255, 0.3);
-            --neon-shadow: 0 0 15px rgba(0, 240, 255, 0.5);
-            --card-shadow-hover: 0 20px 40px rgba(0,0,0,0.8);
+            --border-color: rgba(0, 240, 255, 0.25);
+            --card-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
         }
 
         *, *::before, *::after {
@@ -38,15 +37,19 @@
             justify-content: space-between;
         }
 
-        /* Three.js Canvas Container */
-        #bg-canvas {
+        /* خلفية هادئة وثابتة */
+        body::before {
+            content: '';
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 240, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 240, 255, 0.02) 1px, transparent 1px);
+            background-size: 50px 50px;
             z-index: -1;
-            pointer-events: auto;
         }
 
         header {
@@ -55,11 +58,11 @@
             align-items: center;
             padding: 20px 40px;
             border-bottom: 1px solid var(--border-color);
-            background: rgba(2, 4, 10, 0.85);
+            background: rgba(10, 15, 29, 0.95);
             backdrop-filter: blur(10px);
             position: sticky;
             top: 0;
-            z-index: 10;
+            z-index: 100;
         }
 
         .logo {
@@ -69,8 +72,7 @@
             letter-spacing: 1px;
             display: flex;
             align-items: center;
-            gap: 12px;
-            text-shadow: var(--neon-shadow);
+            gap: 10px;
         }
 
         .logo span {
@@ -80,11 +82,10 @@
         .nav-progress {
             font-size: 0.9rem;
             color: var(--text-muted);
-            background: rgba(0, 240, 255, 0.1);
-            padding: 8px 20px;
-            border-radius: 25px;
+            background: var(--bg-card);
+            padding: 6px 16px;
+            border-radius: 20px;
             border: 1px solid var(--border-color);
-            box-shadow: 0 0 10px rgba(0,240,255,0.2);
         }
 
         main {
@@ -93,11 +94,9 @@
             justify-content: center;
             align-items: center;
             padding: 40px 20px;
-            max-width: 1000px;
+            max-width: 1050px;
             margin: 0 auto;
             width: 100%;
-            position: relative;
-            z-index: 2;
         }
 
         .slide {
@@ -105,43 +104,42 @@
             width: 100%;
             background: var(--bg-card);
             border: 1px solid var(--border-color);
-            border-radius: 24px;
-            padding: 50px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(20px);
-            animation: slideInRight 0.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
-        }
-
-        @keyframes slideInRight {
-            from { opacity: 0; transform: translateY(20px) scale(0.98); filter: blur(5px); }
-            to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: var(--card-shadow);
+            backdrop-filter: blur(15px);
+            animation: fadeIn 0.4s ease forwards;
         }
 
         .slide.active {
             display: block;
         }
 
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         h1 {
-            font-size: 2.3rem;
+            font-size: 2rem;
             font-weight: 900;
             color: var(--accent-cyan);
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             line-height: 1.3;
-            text-shadow: var(--neon-shadow);
         }
 
         .subtitle {
-            font-size: 1.15rem;
+            font-size: 1.1rem;
             color: var(--text-muted);
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             font-weight: 600;
         }
 
         p, li {
-            font-size: 1.05rem;
+            font-size: 1rem;
             line-height: 1.8;
             color: var(--text-main);
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
 
         ul {
@@ -149,12 +147,11 @@
         }
 
         .highlight-box {
-            background: rgba(0, 240, 255, 0.08);
+            background: rgba(0, 240, 255, 0.05);
             border-right: 4px solid var(--accent-cyan);
-            padding: 20px;
-            border-radius: 12px;
-            margin: 20px 0;
-            box-shadow: inset 0 0 10px rgba(0,240,255,0.05);
+            padding: 18px;
+            border-radius: 8px;
+            margin: 15px 0;
         }
 
         .grid-2 {
@@ -162,59 +159,76 @@
             grid-template-columns: 1fr 1fr;
             gap: 20px;
             margin: 20px 0;
+            align-items: center;
         }
 
         .card-item {
-            background: rgba(19, 27, 46, 0.85);
+            background: rgba(10, 15, 29, 0.7);
             border: 1px solid var(--border-color);
-            padding: 25px;
-            border-radius: 16px;
+            padding: 20px;
+            border-radius: 12px;
             text-align: center;
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease, border-color 0.4s ease;
+            transition: transform 0.3s ease;
         }
 
         .card-item:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: var(--card-shadow-hover);
+            transform: translateY(-5px);
             border-color: var(--accent-cyan);
         }
 
         .card-item h3 {
             color: var(--accent-green);
             margin-bottom: 10px;
-            font-size: 1.25rem;
+            font-size: 1.2rem;
         }
 
         .bad { color: #ff3366 !important; }
         .good { color: var(--accent-green) !important; }
+
+        /* حاويات الرسوم ثلاثية الأبعاد داخل الشرائح */
+        .slide-3d-container {
+            width: 100%;
+            height: 220px;
+            background: rgba(5, 8, 17, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .slide-3d-container canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
 
         footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 20px 40px;
-            background: rgba(2, 4, 10, 0.95);
+            background: rgba(10, 15, 29, 0.95);
             border-top: 1px solid var(--border-color);
-            z-index: 10;
         }
 
         .btn {
             background: linear-gradient(135deg, var(--accent-cyan), #0088ff);
             color: var(--bg-primary);
             border: none;
-            padding: 12px 35px;
+            padding: 12px 30px;
             font-size: 1rem;
-            font-weight: 800;
+            font-weight: 700;
             border-radius: 30px;
             cursor: pointer;
             transition: all 0.3s ease;
             font-family: 'Cairo', sans-serif;
-            box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
         }
 
         .btn:hover {
-            transform: translateY(-2px) scale(1.03);
-            box-shadow: 0 0 30px rgba(0, 240, 255, 0.7);
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.6);
         }
 
         .btn-secondary {
@@ -226,33 +240,26 @@
 
         .btn-secondary:hover {
             background: rgba(0, 240, 255, 0.1);
-            border-color: var(--accent-cyan);
         }
 
         .interactive-box {
             background: rgba(10, 15, 29, 0.7);
             border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 25px;
-            margin-top: 20px;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 15px;
             text-align: center;
         }
 
         .url-box {
             font-family: monospace;
             background: #050811;
-            padding: 15px;
+            padding: 12px;
             border-radius: 8px;
             color: var(--accent-cyan);
             font-size: 1.05rem;
-            margin: 15px 0;
+            margin: 12px 0;
             border: 1px dashed var(--border-color);
-            transition: all 0.3s ease;
-        }
-
-        .url-box:hover {
-            border-color: var(--accent-cyan);
-            background: #0d1626;
         }
 
         /* Wheel of Names Styling */
@@ -261,23 +268,23 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            margin-top: 15px;
+            margin-top: 10px;
         }
 
         .wheel-wrapper {
             position: relative;
-            width: 250px;
-            height: 250px;
-            margin-bottom: 20px;
+            width: 220px;
+            height: 220px;
+            margin-bottom: 15px;
         }
 
         #wheelCanvas {
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            box-shadow: 0 0 30px rgba(0, 240, 255, 0.4);
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.3);
             border: 4px solid var(--accent-cyan);
-            background: var(--bg-secondary);
+            background: #050811;
         }
 
         .wheel-pointer {
@@ -289,38 +296,32 @@
             height: 0;
             border-left: 10px solid transparent;
             border-right: 10px solid transparent;
-            border-top: 22px solid var(--accent-green);
+            border-top: 20px solid var(--accent-green);
             z-index: 10;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
         }
 
         .result-display {
             font-size: 1.3rem;
-            font-weight: 800;
+            font-weight: 700;
             color: var(--accent-green);
-            margin-top: 10px;
+            margin-top: 5px;
             min-height: 35px;
-            text-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
         }
 
         .remaining-badge {
             font-size: 0.85rem;
             color: var(--text-muted);
-            margin-top: 5px;
         }
 
         @media (max-width: 768px) {
             .grid-2 { grid-template-columns: 1fr; }
             header, footer { padding: 15px 20px; }
-            h1 { font-size: 1.6rem; }
+            h1 { font-size: 1.5rem; }
             .slide { padding: 20px; }
         }
     </style>
 </head>
 <body>
-
-    <!-- خلفية تفاعلية ثلاثية الأبعاد -->
-    <canvas id="bg-canvas"></canvas>
 
     <header>
         <div class="logo">الحصن الرقمي <span>// الأمن السيبراني</span></div>
@@ -332,15 +333,13 @@
         <div class="slide active" id="slide-1">
             <h1>حصنك الرقمي: كيف تبقى بأمان على الإنترنت؟</h1>
             <div class="subtitle">رحلة تفاعلية لتصبح حارساً لبياناتك الشخصية وكلمات سرك.</div>
+            
+            <!-- رسم ثلاثي الأبعاد تفاعلي داخل الشريحة -->
+            <div class="slide-3d-container" id="canvas-slide-1"></div>
+
             <div class="highlight-box">
                 <p>الإنترنت عالم ممتع وواسع، لكنه يحتاج إلى وعي حقيقي لحماية خصوصيتك وأجهزتك من المخاطر الرقمية الخفية دون إفساد متعة الاستخدام.</p>
             </div>
-            <p><strong>أهداف الورشة:</strong></p>
-            <ul>
-                <li>فهم قواعد صناعة وحماية كلمات المرور القوية.</li>
-                <li>إدراك كيفية عمل حيل الهندسة الاجتماعية والاحتيال الإلكتروني.</li>
-                <li>تطبيق مهارات عملية فورية لحماية حساباتك وألعابك.</li>
-            </ul>
         </div>
 
         <!-- Slide 2 -->
@@ -364,20 +363,18 @@
         <div class="slide" id="slide-3">
             <h1>مفاتيح السرعة مقابل مفاتيح الأمان</h1>
             <div class="subtitle">لماذا تفشل كلمات المرور التقليدية البسيطة؟</div>
+            
+            <div class="slide-3d-container" id="canvas-slide-3"></div>
+
             <div class="grid-2">
                 <div class="card-item">
                     <h3 class="bad">كلمة مرور ضعيفة</h3>
                     <div class="url-box bad">123456 / football2025</div>
-                    <p>يمكن برامج التخمين الآلية كسرها في أقل من ثانية واحدة!</p>
                 </div>
                 <div class="card-item">
                     <h3 class="good">جملة مرور متينة</h3>
                     <div class="url-box good">Blue#Falcon!98_Secure</div>
-                    <p>تعتمد على خلط الحروف الكبيرة والصغيرة والرموز والأرقام أو الجمل الطويلة.</p>
                 </div>
-            </div>
-            <div class="highlight-box">
-                <p><strong>قاعدة ذهبية:</strong> لا تستخدم نفس كلمة المرور لأكثر من حساب واحد نهائياً.</p>
             </div>
         </div>
 
@@ -385,29 +382,25 @@
         <div class="slide" id="slide-4">
             <h1>المصادقة الثنائية (حارسك الشخصي 2FA)</h1>
             <div class="subtitle">كلمة المرور وحدها لا تكفي لحماية حسابك بالكامل.</div>
-            <p>حتى لو حصل شخص ما على كلمة سرك، تمنعه <strong>المصادقة الثنائية (2FA)</strong> من دخول الحساب عبر طلب خطوة تحقق إضافية:</p>
-            <ul>
-                <li><strong>شيء تعرفه:</strong> كلمة المرور الخاصة بك.</li>
-                <li><strong>شيء تملكه:</strong> هاتفك الذكي لاستقبال رمز رسالة نصية أو تطبيق مصادقة.</li>
-            </ul>
-            <div class="highlight-box">
-                <p>احرص على تفعيل هذه الميزة فوراً في بريدك الإلكتروني ومنصات الألعاب المفضلة لديك.</p>
-            </div>
+            
+            <div class="slide-3d-container" id="canvas-slide-4"></div>
+
+            <p>حتى لو حصل شخص ما على كلمة سرك، تمنعه <strong>المصادقة الثنائية (2FA)</strong> من دخول الحساب عبر طلب خطوة تحقق إضافية (شيء تعرفه + شيء تملكه).</p>
         </div>
 
         <!-- Slide 5 -->
         <div class="slide" id="slide-5">
             <h1>اختراق العقل قبل الجهاز (الهندسة الاجتماعية)</h1>
             <div class="subtitle">عندما يستغل المهاجمون المشاعر لا التقنية.</div>
-            <p>المخترقون الذكيون لا يقتحمون الأنظمة بالقوة دائماً، بل يخدعون البشر أنفسهم عبر تقنية تسمى <strong>الهندسة الاجتماعية</strong> ومن أشهرها <strong>التصيد الاحتيالي (Phishing)</strong>.</p>
+            <p>المخترقون الذكيون يخدعون البشر أنفسهم عبر تقنية تسمى <strong>الهندسة الاجتماعية</strong> ومن أشهرها <strong>التصيد الاحتيالي (Phishing)</strong>.</p>
             <div class="grid-2">
                 <div class="card-item">
                     <h3 class="bad">طعم الإثارة والجوائز</h3>
-                    <p>"مبروك! ربحت 10,000 جوهرة في لعبتك المفضلة، اضغط هنا لتستلمها فوراً!"</p>
+                    <p>"مبروك! ربحت 10,000 جوهرة في لعبتك المفضلة، اضغط هنا!"</p>
                 </div>
                 <div class="card-item">
                     <h3 class="bad">طعم الخوف والذعر</h3>
-                    <p>"تحذير خطير: سيتم إغلاق حسابك خلال ساعة واحدة إن لم تحدث بياناتك!"</p>
+                    <p>"تحذير خطير: سيتم إغلاق حسابك خلال ساعة إن لم تحدث بياناتك!"</p>
                 </div>
             </div>
         </div>
@@ -417,7 +410,7 @@
             <h1>كيف تكشف الكذبة الرقمية؟</h1>
             <div class="subtitle">دليل الفحص السريع قبل النقر على أي رابط.</div>
             <ul>
-                <li><strong>دقة نطاق الرابط (URL):</strong> انتبه للحروف المخادعة، مثل استبدال حرف `m` بـ `rn` أو تغيير اللاحقة الوهمية.</li>
+                <li><strong>دقة نطاق الرابط (URL):</strong> انتبه للحروف المخادعة (مثل استبدال حرف `m` بـ `rn`).</li>
                 <li><strong>الاستعجال المفتعل:</strong> إجبار الضحية على اتخاذ قرار سريع دون تفكير.</li>
                 <li><strong>جهات الاتصال المجهولة:</strong> الرسائل التي ترد من أرقام أو جهات غير رسمية وتطلب تفاصيل خاصة.</li>
             </ul>
@@ -438,7 +431,6 @@
                 <div class="url-box good" style="cursor: pointer;" onclick="alert('صحيح تماماً! نطاق رسمي موثوق ومحمي بشهادة أمان صحيحة.')">
                     ب) https://www.gaming.com/support
                 </div>
-                <p class="remaining-badge" style="color: var(--accent-cyan);">اضغط على الخيار المناسب لتكتشف الإجابة الفورية.</p>
             </div>
         </div>
 
@@ -449,24 +441,23 @@
             <div class="grid-2">
                 <div class="card-item">
                     <h3>1. مراجعة الأجهزة</h3>
-                    <p>ادخل إعدادات حسابك، وافحص قائمة الأجهزة المتصلة، وسجل الخروج من أي جهاز قديم لا تعرفه.</p>
+                    <p>افحص قائمة الأجهزة المتصلة بحسابك، وسجل الخروج من أي جهاز قديم لا تعرفه.</p>
                 </div>
                 <div class="card-item">
                     <h3>2. تفعيل الحماية الثنائية</h3>
-                    <p>فعّل خاصية التحقق بخطوتين في بريدك الإلكتروني الأساسي ومنصات الألعاب فوراً.</p>
+                    <p>فعّل خاصية التحقق بخطوتين في بريدك الإلكتروني ومنصات الألعاب فوراً.</p>
                 </div>
             </div>
-            <p style="text-align: center; margin-top: 15px; color: var(--accent-green);">الالتزام بهذه الخطوات يقلل احتمالية اختراق حسابك بنسبة تزيد عن 99%.</p>
         </div>
 
         <!-- Slide 9 -->
         <div class="slide" id="slide-9">
             <h1>الخصوصية والمشاركات الرقمية</h1>
             <div class="subtitle">آثار أقدامك الرقمية تبقى للأبد على الشبكة.</div>
-            <p>كل صورة تنشرها، وكل موقع جغرافي تشاركه، وكل تعليق تتركه يساهم في بناء هويتك الرقمية:</p>
+            <p>كل صورة تنشرها، وكل موقع جغرافي تشاركه يساهم في بناء هويتك الرقمية:</p>
             <ul>
                 <li>تجنب نشر صور تظهر تفاصيل منزلك، مدرستك، أو وثائقك الشخصية.</li>
-                <li>لا تشارك رقم هاتفك أو اسمك الكامل في المجموعات والمنتديات العامة المفتوحة للجميع.</li>
+                <li>لا تشارك رقم هاتفك أو اسمك الكامل في المجموعات والمنتديات العامة.</li>
                 <li>تذكر دائماً: ما تحذفه اليوم قد يظل محفوظاً في خوادم الإنترنت الخفية.</li>
             </ul>
         </div>
@@ -474,7 +465,7 @@
         <!-- Slide 10 -->
         <div class="slide" id="slide-10">
             <h1>خاتمة الحارس الرقمي والقرعة التفاعلية</h1>
-            <div class="subtitle">القواعد الـ 3 الذهبية.. وعجلة الأرقام العشوائية للأسئلة والأنشطة.</div>
+            <div class="subtitle">القواعد الـ 3 الذهبية.. وعجلة الأرقام العشوائية للأنشطة.</div>
             
             <div style="font-size: 0.95rem; margin-bottom: 10px;">
                 <p>1. <strong>فكّر قبل أن تنقر:</strong> لا تفتح الروابط المجهولة.</p>
@@ -486,7 +477,7 @@
             <div class="wheel-container">
                 <div class="wheel-wrapper">
                     <div class="wheel-pointer"></div>
-                    <canvas id="wheelCanvas" width="300" height="300"></canvas>
+                    <canvas id="wheelCanvas" width="220" height="220"></canvas>
                 </div>
                 <button class="btn" id="spinBtn" onclick="spinWheel()">لف العجلة الآن!</button>
                 <div class="result-display" id="resultDisplay">اختر رقماً عشوائياً</div>
@@ -502,94 +493,59 @@
     </footer>
 
     <script>
-        // --- Three.js Background 3D Animation ---
-        const canvasBg = document.getElementById('bg-canvas');
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ canvas: canvasBg, alpha: true, antialias: true });
+        // دالة مساعدة لإنشاء رسومات ثلاثية الأبعاد متحركة داخل حاويات محددة للشرائح
+        function initMini3D(containerId, type) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
 
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            container.appendChild(renderer.domElement);
 
-        // Create 3D Floating Data Cubes / Geometries (No living entities)
-        const geometryBox = new THREE.BoxGeometry(1.2, 1.2, 1.2);
-        const materialBox = new THREE.MeshStandardMaterial({
-            color: 0x00f0ff,
-            wireframe: true,
-            transparent: true,
-            opacity: 0.25
-        });
+            let mesh;
+            if (type === 'shield') {
+                // شكل تجريدي يعبر عن درع الحماية
+                const geometry = new THREE.IcosahedronGeometry(1.2, 0);
+                const material = new THREE.MeshStandardMaterial({ color: 0x00f0ff, wireframe: true });
+                mesh = new THREE.Mesh(geometry, material);
+            } else if (type === 'lock') {
+                // شكل تجريدي يعبر عن الأمان وتشفير البيانات
+                const geometry = new THREE.TorusKnotGeometry(0.8, 0.3, 64, 16);
+                const material = new THREE.MeshStandardMaterial({ color: 0x00ff88, wireframe: true });
+                mesh = new THREE.Mesh(geometry, material);
+            } else {
+                // مكعبات بيانات متداخلة
+                const geometry = new THREE.BoxGeometry(1.5, 1.5, 1.5);
+                const material = new THREE.MeshStandardMaterial({ color: 0x7000ff, wireframe: true });
+                mesh = new THREE.Mesh(geometry, material);
+            }
 
-        const group = new THREE.Group();
-        const cubesCount = 35;
-        const cubes = [];
+            scene.add(mesh);
 
-        for (let i = 0; i < cubesCount; i++) {
-            const cube = new THREE.Mesh(geometryBox, materialBox);
-            cube.position.set(
-                (Math.random() - 0.5) * 35,
-                (Math.random() - 0.5) * 35,
-                (Math.random() - 0.5) * 35
-            );
-            cube.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
-            const scale = Math.random() * 0.8 + 0.4;
-            cube.scale.set(scale, scale, scale);
-            
-            group.add(cube);
-            cubes.push({
-                mesh: cube,
-                rotSpeedX: (Math.random() - 0.5) * 0.01,
-                rotSpeedY: (Math.random() - 0.5) * 0.01
-            });
+            const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+            scene.add(ambientLight);
+
+            camera.position.z = 3.5;
+
+            function animate() {
+                requestAnimationFrame(animate);
+                mesh.rotation.x += 0.007;
+                mesh.rotation.y += 0.01;
+                renderer.render(scene, camera);
+            }
+            animate();
         }
-        scene.add(group);
 
-        // Lighting
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
-        scene.add(ambientLight);
-        const pointLight = new THREE.PointLight(0x00ff88, 2, 50);
-        pointLight.position.set(10, 10, 10);
-        scene.add(pointLight);
-
-        camera.position.z = 15;
-
-        // Mouse interaction for 3D scene
-        let mouseX = 0;
-        let mouseY = 0;
-        let targetX = 0;
-        let targetY = 0;
-
-        document.addEventListener('mousemove', (event) => {
-            mouseX = (event.clientX - window.innerWidth / 2) * 0.001;
-            mouseY = (event.clientY - window.innerHeight / 2) * 0.001;
+        // تشغيل الرسوم المصغرة داخل الشرائح المستهدفة
+        window.addEventListener('DOMContentLoaded', () => {
+            initMini3D('canvas-slide-1', 'shield');
+            initMini3D('canvas-slide-3', 'lock');
+            initMini3D('canvas-slide-4', 'cube');
         });
 
-        function animateBg() {
-            requestAnimationFrame(animateBg);
-
-            targetX += (mouseX - targetX) * 0.05;
-            targetY += (mouseY - targetY) * 0.05;
-
-            group.rotation.y += 0.002 + targetX;
-            group.rotation.x += 0.001 + targetY;
-
-            cubes.forEach(item => {
-                item.mesh.rotation.x += item.rotSpeedX;
-                item.mesh.rotation.y += item.rotSpeedY;
-            });
-
-            renderer.render(scene, camera);
-        }
-        animateBg();
-
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-
-
-        // --- Presentation Slides Logic ---
+        // --- منطق التنقل بين الشرائح ---
         let currentSlide = 1;
         const totalSlides = 10;
 
@@ -606,18 +562,13 @@
 
         function changeSlide(direction) {
             currentSlide += direction;
-            if (currentSlide > totalSlides) {
-                currentSlide = 1; 
-            }
-            if (currentSlide < 1) {
-                currentSlide = 1;
-            }
+            if (currentSlide > totalSlides) currentSlide = 1;
+            if (currentSlide < 1) currentSlide = 1;
             updateSlides();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-
-        // --- Wheel of Names Logic (Numbers 1 to 25, automatic removal) ---
+        // --- منطق عجلة الأرقام العشوائية (1 إلى 25 مع الحذف التلقائي) ---
         let numbersPool = Array.from({length: 25}, (_, i) => i + 1);
         let currentAngle = 0;
         let isSpinning = false;
@@ -637,7 +588,7 @@
 
             if (numbersPool.length === 0) {
                 ctx.fillStyle = '#f0f4f8';
-                ctx.font = 'bold 15px Cairo';
+                ctx.font = 'bold 14px Cairo';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillText('انتهت جميع الأرقام!', centerX, centerY);
@@ -658,7 +609,7 @@
                 ctx.arc(0, 0, radius - 4, angle, angle + arcSize);
                 ctx.lineTo(0, 0);
                 ctx.fill();
-                ctx.strokeStyle = '#02040a';
+                ctx.strokeStyle = '#050811';
                 ctx.lineWidth = 2;
                 ctx.stroke();
 
@@ -666,8 +617,8 @@
                 ctx.rotate(angle + arcSize / 2);
                 ctx.textAlign = 'right';
                 ctx.fillStyle = '#ffffff';
-                ctx.font = 'bold 13px Cairo';
-                ctx.fillText(numbersPool[i], radius - 22, 4);
+                ctx.font = 'bold 12px Cairo';
+                ctx.fillText(numbersPool[i], radius - 18, 4);
                 ctx.restore();
             }
             ctx.restore();
@@ -684,7 +635,7 @@
             document.getElementById('resultDisplay').innerText = 'جاري التدوير...';
 
             const spinAngle = Math.random() * 2000 + 3000;
-            const duration = 3000;
+            const duration = 2500;
             const startTimestamp = performance.now();
             const initialAngle = currentAngle;
 
@@ -716,6 +667,7 @@
             const selectedNumber = numbersPool[winningIndex];
             document.getElementById('resultDisplay').innerText = `الرقم الفائز: ${selectedNumber}`;
 
+            // حذف الرقم الذي ظهر تلقائياً من المصفوفة لكي لا يتكرر
             numbersPool.splice(winningIndex, 1);
             document.getElementById('remainingCount').innerText = `الأرقام المتبقية: ${numbersPool.length} من 25`;
 
