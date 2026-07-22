@@ -5,17 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>الحصن الرقمي - ورشة الأمن السيبراني التفاعلية</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <!-- مكتبة Three.js للرسومات ثلاثية الأبعاد -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         :root {
-            --bg-primary: #0a0f1d;
-            --bg-secondary: #131b2e;
+            --bg-primary: #02040a;
+            --bg-card: rgba(10, 15, 29, 0.75);
             --accent-cyan: #00f0ff;
-            --accent-purple: #7000ff;
+            --accent-purple: #b100ff;
             --accent-green: #00ff88;
-            --text-main: #f0f4f8;
+            --text-main: #e0e7ff;
             --text-muted: #94a3b8;
-            --card-bg: rgba(19, 27, 46, 0.7);
-            --border-color: rgba(0, 240, 255, 0.2);
+            --border-color: rgba(0, 240, 255, 0.3);
+            --neon-shadow: 0 0 15px rgba(0, 240, 255, 0.5);
+            --card-shadow-hover: 0 20px 40px rgba(0,0,0,0.8);
         }
 
         *, *::before, *::after {
@@ -35,19 +38,15 @@
             justify-content: space-between;
         }
 
-        /* Background Grid Lines */
-        body::before {
-            content: '';
+        /* Three.js Canvas Container */
+        #bg-canvas {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: 
-                linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
-            background-size: 40px 40px;
             z-index: -1;
+            pointer-events: auto;
         }
 
         header {
@@ -56,11 +55,11 @@
             align-items: center;
             padding: 20px 40px;
             border-bottom: 1px solid var(--border-color);
-            background: rgba(10, 15, 29, 0.9);
+            background: rgba(2, 4, 10, 0.85);
             backdrop-filter: blur(10px);
             position: sticky;
             top: 0;
-            z-index: 100;
+            z-index: 10;
         }
 
         .logo {
@@ -70,7 +69,8 @@
             letter-spacing: 1px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+            text-shadow: var(--neon-shadow);
         }
 
         .logo span {
@@ -80,10 +80,11 @@
         .nav-progress {
             font-size: 0.9rem;
             color: var(--text-muted);
-            background: var(--bg-secondary);
-            padding: 6px 16px;
-            border-radius: 20px;
+            background: rgba(0, 240, 255, 0.1);
+            padding: 8px 20px;
+            border-radius: 25px;
             border: 1px solid var(--border-color);
+            box-shadow: 0 0 10px rgba(0,240,255,0.2);
         }
 
         main {
@@ -95,46 +96,49 @@
             max-width: 1000px;
             margin: 0 auto;
             width: 100%;
+            position: relative;
+            z-index: 2;
         }
 
         .slide {
             display: none;
             width: 100%;
-            background: var(--card-bg);
+            background: var(--bg-card);
             border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(15px);
-            animation: fadeIn 0.5s ease forwards;
+            border-radius: 24px;
+            padding: 50px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(20px);
+            animation: slideInRight 0.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateY(20px) scale(0.98); filter: blur(5px); }
+            to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
         }
 
         .slide.active {
             display: block;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
         h1 {
-            font-size: 2rem;
+            font-size: 2.3rem;
             font-weight: 900;
             color: var(--accent-cyan);
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             line-height: 1.3;
+            text-shadow: var(--neon-shadow);
         }
 
         .subtitle {
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             color: var(--text-muted);
             margin-bottom: 30px;
             font-weight: 600;
         }
 
         p, li {
-            font-size: 1rem;
+            font-size: 1.05rem;
             line-height: 1.8;
             color: var(--text-main);
             margin-bottom: 15px;
@@ -145,11 +149,12 @@
         }
 
         .highlight-box {
-            background: rgba(0, 240, 255, 0.05);
+            background: rgba(0, 240, 255, 0.08);
             border-right: 4px solid var(--accent-cyan);
             padding: 20px;
-            border-radius: 8px;
+            border-radius: 12px;
             margin: 20px 0;
+            box-shadow: inset 0 0 10px rgba(0,240,255,0.05);
         }
 
         .grid-2 {
@@ -160,17 +165,24 @@
         }
 
         .card-item {
-            background: var(--bg-secondary);
+            background: rgba(19, 27, 46, 0.85);
             border: 1px solid var(--border-color);
-            padding: 20px;
-            border-radius: 12px;
+            padding: 25px;
+            border-radius: 16px;
             text-align: center;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease, border-color 0.4s ease;
+        }
+
+        .card-item:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: var(--card-shadow-hover);
+            border-color: var(--accent-cyan);
         }
 
         .card-item h3 {
             color: var(--accent-green);
             margin-bottom: 10px;
-            font-size: 1.2rem;
+            font-size: 1.25rem;
         }
 
         .bad { color: #ff3366 !important; }
@@ -181,27 +193,28 @@
             justify-content: space-between;
             align-items: center;
             padding: 20px 40px;
-            background: rgba(10, 15, 29, 0.9);
+            background: rgba(2, 4, 10, 0.95);
             border-top: 1px solid var(--border-color);
+            z-index: 10;
         }
 
         .btn {
             background: linear-gradient(135deg, var(--accent-cyan), #0088ff);
             color: var(--bg-primary);
             border: none;
-            padding: 12px 30px;
+            padding: 12px 35px;
             font-size: 1rem;
-            font-weight: 700;
+            font-weight: 800;
             border-radius: 30px;
             cursor: pointer;
             transition: all 0.3s ease;
             font-family: 'Cairo', sans-serif;
-            box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
         }
 
         .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 25px rgba(0, 240, 255, 0.6);
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.7);
         }
 
         .btn-secondary {
@@ -213,13 +226,13 @@
 
         .btn-secondary:hover {
             background: rgba(0, 240, 255, 0.1);
+            border-color: var(--accent-cyan);
         }
 
-        /* Interactive Elements styling */
         .interactive-box {
-            background: var(--bg-secondary);
+            background: rgba(10, 15, 29, 0.7);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
+            border-radius: 16px;
             padding: 25px;
             margin-top: 20px;
             text-align: center;
@@ -231,9 +244,15 @@
             padding: 15px;
             border-radius: 8px;
             color: var(--accent-cyan);
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             margin: 15px 0;
             border: 1px dashed var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .url-box:hover {
+            border-color: var(--accent-cyan);
+            background: #0d1626;
         }
 
         /* Wheel of Names Styling */
@@ -247,8 +266,8 @@
 
         .wheel-wrapper {
             position: relative;
-            width: 260px;
-            height: 260px;
+            width: 250px;
+            height: 250px;
             margin-bottom: 20px;
         }
 
@@ -256,36 +275,36 @@
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            box-shadow: 0 0 25px rgba(0, 240, 255, 0.3);
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.4);
             border: 4px solid var(--accent-cyan);
             background: var(--bg-secondary);
         }
 
         .wheel-pointer {
             position: absolute;
-            top: -15px;
+            top: -12px;
             left: 50%;
             transform: translateX(-50%);
             width: 0;
             height: 0;
-            border-left: 12px solid transparent;
-            border-right: 12px solid transparent;
-            border-top: 24px solid var(--accent-green);
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 22px solid var(--accent-green);
             z-index: 10;
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
         }
 
         .result-display {
-            font-size: 1.4rem;
-            font-weight: 700;
+            font-size: 1.3rem;
+            font-weight: 800;
             color: var(--accent-green);
             margin-top: 10px;
-            min-height: 40px;
+            min-height: 35px;
             text-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
         }
 
         .remaining-badge {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: var(--text-muted);
             margin-top: 5px;
         }
@@ -300,6 +319,9 @@
 </head>
 <body>
 
+    <!-- خلفية تفاعلية ثلاثية الأبعاد -->
+    <canvas id="bg-canvas"></canvas>
+
     <header>
         <div class="logo">الحصن الرقمي <span>// الأمن السيبراني</span></div>
         <div class="nav-progress" id="progressIndicator">الصفحة 1 من 10</div>
@@ -309,7 +331,7 @@
         <!-- Slide 1 -->
         <div class="slide active" id="slide-1">
             <h1>حصنك الرقمي: كيف تبقى بأمان على الإنترنت؟</h1>
-            <div class="subtitle">رحلة قصيرة لتصبح حارساً لبياناتك الشخصية وكلمات سرك.</div>
+            <div class="subtitle">رحلة تفاعلية لتصبح حارساً لبياناتك الشخصية وكلمات سرك.</div>
             <div class="highlight-box">
                 <p>الإنترنت عالم ممتع وواسع، لكنه يحتاج إلى وعي حقيقي لحماية خصوصيتك وأجهزتك من المخاطر الرقمية الخفية دون إفساد متعة الاستخدام.</p>
             </div>
@@ -335,7 +357,7 @@
                     <p>هي السلاح الأقوى ضد أي محاولة تلاعب أو احتيال عبر الإنترنت.</p>
                 </div>
             </div>
-            <p>الوعي السيبراني ليس معقداً، بل هو مجموعة من العادات البسيطة اليومية التي تضمن لك بيئة رقمية نظيفة وآمنة تماماً.</p>
+            <p>الوعي السيبراني ليس معقداً، بل هو مجموعة من العادات البسيطة اليومية التي تضمن لك بيئة رقمية آمنة.</p>
         </div>
 
         <!-- Slide 3 -->
@@ -366,7 +388,7 @@
             <p>حتى لو حصل شخص ما على كلمة سرك، تمنعه <strong>المصادقة الثنائية (2FA)</strong> من دخول الحساب عبر طلب خطوة تحقق إضافية:</p>
             <ul>
                 <li><strong>شيء تعرفه:</strong> كلمة المرور الخاصة بك.</li>
-                <li><strong>شيء تملكه:</strong> هاتفك الذكي لاستقبال رمز رسالة نصية (SMS) أو تطبيق مصادقة مثل Google Authenticator.</li>
+                <li><strong>شيء تملكه:</strong> هاتفك الذكي لاستقبال رمز رسالة نصية أو تطبيق مصادقة.</li>
             </ul>
             <div class="highlight-box">
                 <p>احرص على تفعيل هذه الميزة فوراً في بريدك الإلكتروني ومنصات الألعاب المفضلة لديك.</p>
@@ -377,7 +399,7 @@
         <div class="slide" id="slide-5">
             <h1>اختراق العقل قبل الجهاز (الهندسة الاجتماعية)</h1>
             <div class="subtitle">عندما يستغل المهاجمون المشاعر لا التقنية.</div>
-            <p>المخترعون الذكيون لا يقتحمون الأنظمة بالقوة دائماً، بل يخدعون البشر أنفسهم عبر تقنية تسمى <strong>الهندسة الاجتماعية</strong> ومن أشهرها <strong>التصيد الاحتيالي (Phishing)</strong>.</p>
+            <p>المخترقون الذكيون لا يقتحمون الأنظمة بالقوة دائماً، بل يخدعون البشر أنفسهم عبر تقنية تسمى <strong>الهندسة الاجتماعية</strong> ومن أشهرها <strong>التصيد الاحتيالي (Phishing)</strong>.</p>
             <div class="grid-2">
                 <div class="card-item">
                     <h3 class="bad">طعم الإثارة والجوائز</h3>
@@ -395,7 +417,7 @@
             <h1>كيف تكشف الكذبة الرقمية؟</h1>
             <div class="subtitle">دليل الفحص السريع قبل النقر على أي رابط.</div>
             <ul>
-                <li><strong>دقة نطاق الرابط (URL):</strong> انتبه للحروف المخادعة، مثل استبدال حرف `m` بـ `rn` أو تغيير اللاحقة (مثل `.com` إلى `.co` وهمية).</li>
+                <li><strong>دقة نطاق الرابط (URL):</strong> انتبه للحروف المخادعة، مثل استبدال حرف `m` بـ `rn` أو تغيير اللاحقة الوهمية.</li>
                 <li><strong>الاستعجال المفتعل:</strong> إجبار الضحية على اتخاذ قرار سريع دون تفكير.</li>
                 <li><strong>جهات الاتصال المجهولة:</strong> الرسائل التي ترد من أرقام أو جهات غير رسمية وتطلب تفاصيل خاصة.</li>
             </ul>
@@ -410,10 +432,10 @@
             <div class="subtitle">ميّز بين الرابط الحقيقي والرابط الاحتيالي المخادع.</div>
             <div class="interactive-box">
                 <p>أي من الرابطين التاليين يمثل الموقع الرسمي لخدمة ألعاب آمنة؟</p>
-                <div class="url-box" style="cursor: pointer; background: #0c1a29;" onclick="alert('خطأ! هذا رابط وهمي يستغل تشابه الحروف لسرقة بياناتك.')">
+                <div class="url-box bad" style="cursor: pointer;" onclick="alert('خطأ! هذا رابط وهمي يستغل تشابه الحروف لسرقة بياناتك.')">
                     أ) https://www.gaming-support-login.co/secure
                 </div>
-                <div class="url-box" style="cursor: pointer; background: #0c291a;" onclick="alert('صحيح تماماً! نطاق رسمي موثوق ومحمي بشهادة أمان صحيحة.')">
+                <div class="url-box good" style="cursor: pointer;" onclick="alert('صحيح تماماً! نطاق رسمي موثوق ومحمي بشهادة أمان صحيحة.')">
                     ب) https://www.gaming.com/support
                 </div>
                 <p class="remaining-badge" style="color: var(--accent-cyan);">اضغط على الخيار المناسب لتكتشف الإجابة الفورية.</p>
@@ -427,7 +449,7 @@
             <div class="grid-2">
                 <div class="card-item">
                     <h3>1. مراجعة الأجهزة</h3>
-                    <p>ادخل إعدادات حسابك، وافحص قائمة "الأجهزة المتصلة"، وسجل الخروج من أي جهاز قديم لا تعرفه.</p>
+                    <p>ادخل إعدادات حسابك، وافحص قائمة الأجهزة المتصلة، وسجل الخروج من أي جهاز قديم لا تعرفه.</p>
                 </div>
                 <div class="card-item">
                     <h3>2. تفعيل الحماية الثنائية</h3>
@@ -441,7 +463,7 @@
         <div class="slide" id="slide-9">
             <h1>الخصوصية والمشاركات الرقمية</h1>
             <div class="subtitle">آثار أقدامك الرقمية تبقى للأبد على الشبكة.</div>
-            <p>كل صورة تنشرها، وكل موقع جغرافي تشاركه، وكل تعليق تتركه يساهم في بناء "هويتك الرقمية":</p>
+            <p>كل صورة تنشرها، وكل موقع جغرافي تشاركه، وكل تعليق تتركه يساهم في بناء هويتك الرقمية:</p>
             <ul>
                 <li>تجنب نشر صور تظهر تفاصيل منزلك، مدرستك، أو وثائقك الشخصية.</li>
                 <li>لا تشارك رقم هاتفك أو اسمك الكامل في المجموعات والمنتديات العامة المفتوحة للجميع.</li>
@@ -452,9 +474,9 @@
         <!-- Slide 10 -->
         <div class="slide" id="slide-10">
             <h1>خاتمة الحارس الرقمي والقرعة التفاعلية</h1>
-            <div class="subtitle">القواعد الـ 3 الذهبية.. وعجلة الأرقام العشوائية للأسئلة أو الأنشطة.</div>
+            <div class="subtitle">القواعد الـ 3 الذهبية.. وعجلة الأرقام العشوائية للأسئلة والأنشطة.</div>
             
-            <div style="font-size: 0.95rem; margin-bottom: 15px;">
+            <div style="font-size: 0.95rem; margin-bottom: 10px;">
                 <p>1. <strong>فكّر قبل أن تنقر:</strong> لا تفتح الروابط المجهولة.</p>
                 <p>2. <strong>حصّن حساباتك:</strong> كلمات مرور قوية + مصادقة ثنائية.</p>
                 <p>3. <strong>احمِ خصوصيتك:</strong> لا تفرط في مشاركة بياناتك الشخصية.</p>
@@ -480,6 +502,94 @@
     </footer>
 
     <script>
+        // --- Three.js Background 3D Animation ---
+        const canvasBg = document.getElementById('bg-canvas');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas: canvasBg, alpha: true, antialias: true });
+
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+        // Create 3D Floating Data Cubes / Geometries (No living entities)
+        const geometryBox = new THREE.BoxGeometry(1.2, 1.2, 1.2);
+        const materialBox = new THREE.MeshStandardMaterial({
+            color: 0x00f0ff,
+            wireframe: true,
+            transparent: true,
+            opacity: 0.25
+        });
+
+        const group = new THREE.Group();
+        const cubesCount = 35;
+        const cubes = [];
+
+        for (let i = 0; i < cubesCount; i++) {
+            const cube = new THREE.Mesh(geometryBox, materialBox);
+            cube.position.set(
+                (Math.random() - 0.5) * 35,
+                (Math.random() - 0.5) * 35,
+                (Math.random() - 0.5) * 35
+            );
+            cube.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
+            const scale = Math.random() * 0.8 + 0.4;
+            cube.scale.set(scale, scale, scale);
+            
+            group.add(cube);
+            cubes.push({
+                mesh: cube,
+                rotSpeedX: (Math.random() - 0.5) * 0.01,
+                rotSpeedY: (Math.random() - 0.5) * 0.01
+            });
+        }
+        scene.add(group);
+
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+        scene.add(ambientLight);
+        const pointLight = new THREE.PointLight(0x00ff88, 2, 50);
+        pointLight.position.set(10, 10, 10);
+        scene.add(pointLight);
+
+        camera.position.z = 15;
+
+        // Mouse interaction for 3D scene
+        let mouseX = 0;
+        let mouseY = 0;
+        let targetX = 0;
+        let targetY = 0;
+
+        document.addEventListener('mousemove', (event) => {
+            mouseX = (event.clientX - window.innerWidth / 2) * 0.001;
+            mouseY = (event.clientY - window.innerHeight / 2) * 0.001;
+        });
+
+        function animateBg() {
+            requestAnimationFrame(animateBg);
+
+            targetX += (mouseX - targetX) * 0.05;
+            targetY += (mouseY - targetY) * 0.05;
+
+            group.rotation.y += 0.002 + targetX;
+            group.rotation.x += 0.001 + targetY;
+
+            cubes.forEach(item => {
+                item.mesh.rotation.x += item.rotSpeedX;
+                item.mesh.rotation.y += item.rotSpeedY;
+            });
+
+            renderer.render(scene, camera);
+        }
+        animateBg();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+
+        // --- Presentation Slides Logic ---
         let currentSlide = 1;
         const totalSlides = 10;
 
@@ -497,7 +607,7 @@
         function changeSlide(direction) {
             currentSlide += direction;
             if (currentSlide > totalSlides) {
-                currentSlide = 1; // Loop back or finish
+                currentSlide = 1; 
             }
             if (currentSlide < 1) {
                 currentSlide = 1;
@@ -506,18 +616,19 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // Wheel of Names Logic (Numbers 1 to 25, removes drawn numbers automatically)
+
+        // --- Wheel of Names Logic (Numbers 1 to 25, automatic removal) ---
         let numbersPool = Array.from({length: 25}, (_, i) => i + 1);
         let currentAngle = 0;
         let isSpinning = false;
 
-        const canvas = document.getElementById('wheelCanvas');
-        const ctx = canvas.getContext('2d');
-        const colors = ['#00f0ff', '#0088ff', '#7000ff', '#00ff88', '#131b2e'];
+        const wheelCanvas = document.getElementById('wheelCanvas');
+        const ctx = wheelCanvas.getContext('2d');
+        const wheelColors = ['#00f0ff', '#0088ff', '#7000ff', '#00ff88', '#1a2b4c'];
 
         function drawWheel() {
-            const width = canvas.width;
-            const height = canvas.height;
+            const width = wheelCanvas.width;
+            const height = wheelCanvas.height;
             const radius = width / 2;
             const centerX = width / 2;
             const centerY = height / 2;
@@ -526,7 +637,7 @@
 
             if (numbersPool.length === 0) {
                 ctx.fillStyle = '#f0f4f8';
-                ctx.font = 'bold 16px Cairo';
+                ctx.font = 'bold 15px Cairo';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 ctx.fillText('انتهت جميع الأرقام!', centerX, centerY);
@@ -542,22 +653,21 @@
             for (let i = 0; i < numbersPool.length; i++) {
                 const angle = i * arcSize;
                 ctx.beginPath();
-                ctx.fillStyle = colors[i % colors.length];
+                ctx.fillStyle = wheelColors[i % wheelColors.length];
                 ctx.moveTo(0, 0);
-                ctx.arc(0, 0, radius - 5, angle, angle + arcSize);
+                ctx.arc(0, 0, radius - 4, angle, angle + arcSize);
                 ctx.lineTo(0, 0);
                 ctx.fill();
-                ctx.strokeStyle = '#0a0f1d';
+                ctx.strokeStyle = '#02040a';
                 ctx.lineWidth = 2;
                 ctx.stroke();
 
-                // Draw number text
                 ctx.save();
                 ctx.rotate(angle + arcSize / 2);
                 ctx.textAlign = 'right';
                 ctx.fillStyle = '#ffffff';
-                ctx.font = 'bold 14px Cairo';
-                ctx.fillText(numbersPool[i], radius - 25, 5);
+                ctx.font = 'bold 13px Cairo';
+                ctx.fillText(numbersPool[i], radius - 22, 4);
                 ctx.restore();
             }
             ctx.restore();
@@ -573,7 +683,7 @@
             isSpinning = true;
             document.getElementById('resultDisplay').innerText = 'جاري التدوير...';
 
-            const spinAngle = Math.random() * 2000 + 3000; // Random intense spin
+            const spinAngle = Math.random() * 2000 + 3000;
             const duration = 3000;
             const startTimestamp = performance.now();
             const initialAngle = currentAngle;
@@ -581,7 +691,6 @@
             function animateSpin(timestamp) {
                 const elapsed = timestamp - startTimestamp;
                 const progress = Math.min(elapsed / duration, 1);
-                // Ease-out cubic
                 const easeProgress = 1 - Math.pow(1 - progress, 3);
 
                 currentAngle = initialAngle + (spinAngle * easeProgress * Math.PI / 180);
@@ -600,7 +709,6 @@
 
         function determineWinner() {
             const arcSize = (2 * Math.PI) / numbersPool.length;
-            // Normalize angle to 0 - 2PI
             const normalizedAngle = (2 * Math.PI - (currentAngle % (2 * Math.PI))) + (Math.PI / 2);
             let winningIndex = Math.floor((normalizedAngle % (2 * Math.PI)) / arcSize) % numbersPool.length;
             if (winningIndex < 0) winningIndex += numbersPool.length;
@@ -608,14 +716,12 @@
             const selectedNumber = numbersPool[winningIndex];
             document.getElementById('resultDisplay').innerText = `الرقم الفائز: ${selectedNumber}`;
 
-            // Remove the selected number automatically
             numbersPool.splice(winningIndex, 1);
             document.getElementById('remainingCount').innerText = `الأرقام المتبقية: ${numbersPool.length} من 25`;
 
             drawWheel();
         }
 
-        // Initial draw
         drawWheel();
     </script>
 </body>
