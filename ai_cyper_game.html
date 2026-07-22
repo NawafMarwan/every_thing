@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>بادر AI — تحدي الحدس الأمني</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --void:#060b09; --panel:#0c1712; --panel-line:#163828;
+    --green:#00ff9c; --green-dim:#0aa565; --green-soft:#8affce;
+    --amber:#ffb020; --red:#ff4d4d;
+    --text:#d6ffe9; --text-dim:#6b9a85;
+    --mono:'JetBrains Mono', monospace; --arabic:'Tajawal', sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{ background:var(--void); color:var(--text); font-family:var(--arabic); width:100%; min-height:100vh; overflow-x:hidden; }
+  body{ display:flex; flex-direction:column; }
+  #rain{ position:fixed; inset:0; z-index:0; opacity:0.16; }
+  .scan-line{ position:fixed; inset:0; z-index:1; pointer-events:none;
+    background:linear-gradient(180deg, transparent 0%, rgba(0,255,156,0.03) 50%, transparent 100%);
+    background-size:100% 6px; animation:scan 8s linear infinite; }
+  @keyframes scan{ 0%{background-position:0 0;} 100%{background-position:0 400px;} }
+ 
+  header{
+    position:relative; z-index:2;
+    display:flex; align-items:center; justify-content:center;
+    padding:20px 20px 10px;
+  }
+  .logo-slot{ background:#fff; border-radius:8px; padding:6px 14px; box-shadow:0 0 14px rgba(0,255,156,0.18); }
+  .logo-slot img{ height:28px; width:auto; display:block; }
+ 
+  main{ position:relative; z-index:2; flex:1; display:flex; flex-direction:column; align-items:center; padding:10px 20px 30px; }
+  .page-title{ font-size:20px; font-weight:900; text-align:center; margin-top:6px; }
+  .page-title .cursor{ color:var(--green); animation:pulse 1s step-end infinite; }
+  @keyframes pulse{ 0%,49%{opacity:1;} 50%,100%{opacity:0;} }
+  .page-sub{ font-family:var(--mono); font-size:11px; color:var(--text-dim); letter-spacing:1px; margin-top:2px; margin-bottom:20px; text-align:center; }
+ 
+  .game-wrap{ max-width:560px; width:100%; }
+  .game-card{ background:var(--panel); border:1px solid var(--panel-line); border-radius:10px; padding:22px; text-align:center; }
+  .prompt-label{ font-family:var(--mono); font-size:11px; color:var(--text-dim); letter-spacing:1px; }
+  .scenario-box{ background:rgba(255,255,255,0.03); border:1px solid var(--panel-line); border-radius:10px; padding:20px; margin:16px 0; font-size:15px; line-height:1.9; text-align:right; }
+  .choice-row{ display:flex; gap:12px; margin-top:16px; }
+  .choice-btn{ flex:1; padding:14px; border-radius:10px; border:1px solid var(--panel-line); background:transparent; color:var(--text); font-family:var(--arabic); font-size:14px; font-weight:700; cursor:pointer; transition:all 0.2s ease; }
+  .choice-btn:hover{ border-color:var(--green); background:rgba(0,255,156,0.06); }
+  .choice-btn.safe-btn{ border-color:var(--green-dim); } .choice-btn.phish-btn{ border-color:var(--red); }
+  .choice-btn:disabled{ opacity:0.35; cursor:not-allowed; }
+  .result-box{ display:none; margin-top:16px; padding:18px; border-radius:10px; text-align:right; }
+  .result-box.correct{ background:rgba(10,165,101,0.1); border:1px solid var(--green-dim); }
+  .result-box.wrong{ background:rgba(255,77,77,0.1); border:1px solid var(--red); }
+  .result-title{ font-family:var(--mono); font-size:13px; margin-bottom:8px; }
+  .result-title.ok{ color:var(--green-soft); } .result-title.no{ color:var(--red); }
+  .result-box p{ font-size:14px; line-height:1.8; }
+  .again-btn{ margin-top:16px; font-family:var(--mono); font-size:12px; color:var(--green); background:transparent; border:1px solid var(--green-dim); border-radius:20px; padding:9px 20px; cursor:pointer; }
+  .again-btn:hover{ background:rgba(0,255,156,0.08); }
+  footer{ position:relative; z-index:2; text-align:center; font-family:var(--mono); font-size:10px; color:var(--text-dim); letter-spacing:1px; padding:10px 0 20px; }
+  @media (max-width:480px){ .choice-row{ flex-direction:column; } }
+</style>
+</head>
+<body>
+ 
+<canvas id="rain"></canvas>
+<div class="scan-line"></div>
+ 
+<header>
+  <div class="logo-slot"><img src="data:image/png;base64,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" alt="شعار بادر AI"></div>
+</header>
+ 
+<main>
+  <h1 class="page-title">تحدي الحدس الأمني<span class="cursor">_</span></h1>
+  <p class="page-sub">GAME // هل تقدر تكتشف محاولة الاحتيال؟</p>
+ 
+  <div class="game-wrap">
+    <div class="game-card">
+      <p class="prompt-label">هل هذا الموقف آمن أم محاولة احتيال؟</p>
+      <div class="scenario-box" id="scenarioText"></div>
+      <div class="choice-row">
+        <button class="choice-btn safe-btn" id="btnSafe" onclick="answerGame(false)">رسالة آمنة</button>
+        <button class="choice-btn phish-btn" id="btnPhish" onclick="answerGame(true)">محاولة احتيال</button>
+      </div>
+      <div class="result-box" id="resultBox">
+        <div class="result-title" id="resultTitle"></div>
+        <p id="resultText"></p>
+        <button class="again-btn" onclick="loadScenario()">موقف جديد ↻</button>
+      </div>
+    </div>
+  </div>
+</main>
+ 
+<footer>جمعية أفياء الشبابية — أفياء الصيفي 1448هـ // بادر AI</footer>
+ 
+<script>
+/* matrix rain */
+const canvas = document.getElementById('rain');
+const ctx = canvas.getContext('2d');
+function resize(){ canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+resize(); window.addEventListener('resize', resize);
+const chars = '01アイウエオカキクケコAI01セキュリティ01';
+const fontSize = 16;
+let drops = new Array(Math.floor(canvas.width / fontSize)).fill(1);
+function drawRain(){
+  ctx.fillStyle = 'rgba(6,11,9,0.08)'; ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle = '#00ff9c'; ctx.font = fontSize + 'px monospace';
+  for(let i=0;i<drops.length;i++){
+    ctx.fillText(chars[Math.floor(Math.random()*chars.length)], i*fontSize, drops[i]*fontSize);
+    if(drops[i]*fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+    drops[i]++;
+  }
+}
+setInterval(drawRain, 50);
+ 
+/* 20 hardcoded scenarios — varied contexts, no repeats within a session */
+const scenarios = [
+  {message:'"عزيزنا العميل، تم تجميد بطاقتك البنكية. اضغط هنا خلال 10 دقائق لتفعيلها: bnk-secure-verify.co"', is_phishing:true, reasoning:'الرابط ليس دومين البنك الرسمي، والرسالة تستخدم ضغط الوقت لدفعك للتصرف بسرعة دون تفكير — أسلوب كلاسيكي في التصيّد.'},
+  {message:'"تذكير من إدارة المدرسة: غدًا إجازة رسمية بمناسبة يوم التأسيس، نتمنى لكم إجازة سعيدة."', is_phishing:false, reasoning:'رسالة معلوماتية عادية، لا تطلب أي بيانات أو ضغط على رابط، ومحتواها منطقي من جهة معروفة.'},
+  {message:'"مبروك! ربحت جهاز آيفون 16. أدخل بياناتك البنكية الآن لاستلام الجائزة خلال 24 ساعة فقط."', is_phishing:true, reasoning:'وعد بربح غير متوقع + طلب بيانات بنكية + ضغط وقتي = ثلاث علامات تصيّد واضحة معًا.'},
+  {message:'"فاتورة الجوال الشهرية جاهزة للعرض من خلال تطبيق مشغّلك المعتاد، تسجيل الدخول بحسابك المعروف."', is_phishing:false, reasoning:'لا يوجد رابط خارجي مشبوه، والدعوة هي لاستخدام التطبيق الرسمي المعروف مسبقًا وليس رابطًا جديدًا.'},
+  {message:'"رسالة من قسم الموارد البشرية: يرجى الدخول عبر هذا الرابط الخارجي لتحديث بيانات راتبك خلال ساعة."', is_phishing:true, reasoning:'الجهات الرسمية لا تطلب تحديث بيانات حساسة عبر رابط خارجي مستعجل — نمط ضغط زمني + بيانات حساسة.'},
+  {message:'"تنبيه: تسجيل دخول جديد لحسابك من جهاز iPhone في نفس مدينتك، إذا لم يكن أنت يمكنك مراجعة الإعدادات."', is_phishing:false, reasoning:'تنبيه أمني حقيقي ومعتاد من مزودي الخدمة، لا يطلب أي إجراء فوري أو بيانات، فقط إعلام واختياري المراجعة.'},
+  {message:'"عزيزي الفائز، محفظتك الرقمية تحتوي على مبلغ عالق، أرسل رسوم التحويل الرمزية لتحرير المبلغ كاملًا."', is_phishing:true, reasoning:'طلب دفع رسوم مقدمة لاستلام مبلغ أكبر هو أسلوب احتيال معروف يُسمى "احتيال الدفعة المقدمة".'},
+  {message:'"جدول الاختبارات النهائية متاح الآن على المنصة التعليمية الرسمية للمدرسة."', is_phishing:false, reasoning:'إعلان روتيني على منصة معروفة ورسمية، دون أي طلب بيانات أو رابط خارجي مريب.'},
+  {message:'"تنبيه أمني: تم اختراق حسابك! أرسل كلمة المرور الحالية فورًا حتى نساعدك في استرجاعه."', is_phishing:true, reasoning:'لا جهة أمنية حقيقية تطلب كلمة المرور نفسها أبدًا — هذا الطلب وحده كافٍ لكشف الاحتيال.'},
+  {message:'"دعوة لحضور ورشة تعريفية عن الذكاء الاصطناعي في مركز الشباب يوم الخميس القادم."', is_phishing:false, reasoning:'دعوة فعالية عادية بدون أي طلب بيانات شخصية أو مالية، ومحتواها متوقع من جهة معروفة.'},
+  {message:'"عرض حصري: احصل على اشتراك مجاني سنة كاملة، فقط أدخل بيانات بطاقتك للتحقق (لن يتم الخصم)."', is_phishing:true, reasoning:'طلب بيانات بطاقة بنكية "للتحقق فقط" في عرض مجاني هو خدعة شائعة لسرقة بيانات الدفع.'},
+  {message:'"تم تحديث سياسة الخصوصية للتطبيق، يمكنك مراجعتها من داخل إعدادات حسابك."', is_phishing:false, reasoning:'إشعار قياسي شائع، يوجّه المستخدم للتطبيق نفسه لا لرابط خارجي، ولا يطلب أي إجراء فوري.'},
+  {message:'"صديقك يحتاج مساعدة عاجلة ويطلب منك تحويل مبلغ صغير الآن عبر هذا الرقم الجديد."', is_phishing:true, reasoning:'طلب مالي عاجل من "حساب" قد يكون مخترقًا مع رقم غير معتاد — علامة كلاسيكية على انتحال هوية.'},
+  {message:'"تذكير بموعد الفحص الدوري لسيارتك من مركز الصيانة المعتمد الذي تتعامل معه."', is_phishing:false, reasoning:'تذكير خدمي روتيني من جهة تعامل معروفة مسبقًا، بدون طلب بيانات أو ضغط.'},
+  {message:'"رسالة من شركة الشحن: طرد بانتظار الدفع الجمركي، ادفع رسوم رمزية عبر هذا الرابط لتفادي الإرجاع."', is_phishing:true, reasoning:'رسوم جمركية مفاجئة مع رابط دفع خارجي ومهلة ضيقة نمط متكرر في احتيال الشحن.'},
+  {message:'"إشعار من البنك: تمت إضافة جهاز جديد لتطبيق الجوال الخاص بك بنجاح، إذا لم تكن أنت تواصل مع الفرع مباشرة."', is_phishing:false, reasoning:'إشعار أمني حقيقي يوجّه للتواصل الرسمي المباشر بدل رابط، وهذا سلوك آمن ومتوقع.'},
+  {message:'"مسابقة اليوم الوطني: أعد نشر هذه الرسالة وأرسل رقم هويتك الوطنية للدخول في السحب."', is_phishing:true, reasoning:'طلب رقم الهوية الوطنية مقابل مسابقة غير رسمية هو محاولة جمع بيانات حساسة بذريعة جذابة.'},
+  {message:'"فريق الدعم الفني: تم حل المشكلة التي أبلغت عنها أمس، شكرًا لصبرك."', is_phishing:false, reasoning:'رسالة متابعة طبيعية لا تحتوي أي طلب أو رابط، ومتوقعة ضمن سياق تواصل سابق حقيقي.'},
+  {message:'"حسابك في المنصة التعليمية سيُحذف خلال ساعة ما لم تعيد تفعيله عبر هذا النموذج الخارجي."', is_phishing:true, reasoning:'تهديد بالحذف + مهلة قصيرة جدًا + نموذج خارجي غير رسمي — كل هذا يخلق ضغطًا نفسيًا مقصودًا.'},
+  {message:'"اجتماع فريق العمل الأسبوعي سينعقد غدًا الساعة العاشرة صباحًا عبر نفس رابط الاجتماعات المعتاد."', is_phishing:false, reasoning:'رسالة عمل روتينية تستخدم قناة معروفة ومعتادة، بدون أي طلب غير معتاد.'}
+];
+ 
+let pool = [];
+let currentScenario = null;
+ 
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+ 
+function loadScenario(){
+  if(pool.length === 0) pool = shuffle(scenarios);
+  currentScenario = pool.pop();
+  document.getElementById('scenarioText').textContent = currentScenario.message;
+  document.getElementById('resultBox').style.display = 'none';
+  document.getElementById('resultBox').className = 'result-box';
+  document.getElementById('btnSafe').disabled = false;
+  document.getElementById('btnPhish').disabled = false;
+}
+ 
+function answerGame(userSaysPhishing){
+  const correct = userSaysPhishing === currentScenario.is_phishing;
+  const box = document.getElementById('resultBox');
+  const title = document.getElementById('resultTitle');
+  box.className = 'result-box ' + (correct ? 'correct' : 'wrong');
+  title.className = 'result-title ' + (correct ? 'ok' : 'no');
+  title.textContent = correct ? '✓ إجابة صحيحة' : '✗ إجابة غير دقيقة — الصحيح: ' + (currentScenario.is_phishing ? 'محاولة احتيال' : 'رسالة آمنة');
+  document.getElementById('resultText').textContent = currentScenario.reasoning;
+  box.style.display = 'block';
+  document.getElementById('btnSafe').disabled = true;
+  document.getElementById('btnPhish').disabled = true;
+}
+ 
+loadScenario();
+</script>
+ 
+</body>
+</html>
