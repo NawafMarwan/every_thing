@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>بادر تايم | Badir Time</title>
+<title>مصنع بادر للحلويات | Badir Sweets Factory</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Reem+Kufi:wght@400;500;600;700&family=Cairo:wght@400;600;700;800;900&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
@@ -200,7 +200,9 @@
     font-size:26px;
     background:linear-gradient(150deg, rgba(31,155,214,0.14), rgba(124,198,62,0.12));
     border:1px solid rgba(31,155,214,0.18);
+    overflow:hidden;
   }
+  .card .icon-badge svg{width:30px;height:30px;display:block;}
   .card .info{
     flex:1 1 auto;
     min-width:0;
@@ -483,7 +485,8 @@
  
   @media (max-width:420px){
     .card{padding:12px 12px;gap:10px;}
-    .card .icon-badge{width:44px;height:44px;font-size:22px;}
+    .card .icon-badge{width:44px;height:44px;}
+    .card .icon-badge svg{width:24px;height:24px;}
     .card h3{font-size:15px;}
     .add-btn{padding:6px 10px;font-size:11px;}
   }
@@ -513,9 +516,9 @@
   <div class="hero-band">
     <div class="brand-mark">
       <div class="brand-icons"><span>🧊</span>·<span>🌿</span>·<span>🍋</span></div>
-      <div class="brand-name-ar">بادر تايم</div>
+      <div class="brand-name-ar">مصنع بادر للحلويات</div>
       <div class="brand-underline"></div>
-      <div class="brand-name-en">Badir Time</div>
+      <div class="brand-name-en">Badir Sweets Factory</div>
     </div>
   </div>
   <div class="tagline">طازج .. من أجلك 🍦 مكونات طبيعية وجودة عالية 🥤</div>
@@ -525,8 +528,8 @@
   <button class="tab-btn active" data-target="icecream" onclick="switchTab('icecream', this)">
     <span class="emoji">🍨</span> مثلجات
   </button>
-  <button class="tab-btn" data-target="juices" onclick="switchTab('juices', this)">
-    <span class="emoji">🥤</span> عصائر
+  <button class="tab-btn" data-target="sweets" onclick="switchTab('sweets', this)">
+    <span class="emoji">🍮</span> حلويات المصنع
   </button>
 </nav>
  
@@ -537,9 +540,9 @@
     <div class="grid" id="icecream-grid"></div>
   </section>
  
-  <section id="juices" style="display:none;">
-    <div class="section-title"><span class="bar"></span> عصائر</div>
-    <div class="grid" id="juices-grid"></div>
+  <section id="sweets" style="display:none;">
+    <div class="section-title"><span class="bar"></span> حلويات المصنع</div>
+    <div class="grid" id="sweets-grid"></div>
   </section>
  
 </main>
@@ -558,25 +561,34 @@
   <div class="confirm-card">
     <div class="confirm-icon">🚴‍♂️❄️</div>
     <h2>تم استلام طلبك!</h2>
-    <p>طلبك الآن قيد التجهيز وهو في طريقه إليك بأسرع وقت ممكن. نتمنى لك تجربة منعشة مع بادر تايم 🧊</p>
+    <p>طلبك الآن قيد التجهيز وهو في طريقه إليك بأسرع وقت ممكن. نتمنى لك تجربة لذيذة مع مصنع بادر للحلويات 🍮</p>
     <div class="order-total">إجمالي الطلب: <span id="finalTotal">0</span> ريال</div>
     <button class="close-confirm" onclick="closeOverlay()">تم، شكراً</button>
   </div>
 </div>
  
 <script>
+  const icons = {
+    oreo: `<svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="15" fill="#3b2a20"/><circle cx="16" cy="16" r="10.5" fill="#f4ead9"/><g fill="#3b2a20" opacity="0.55"><circle cx="16" cy="4.5" r="1"/><circle cx="16" cy="27.5" r="1"/><circle cx="4.5" cy="16" r="1"/><circle cx="27.5" cy="16" r="1"/><circle cx="8" cy="8" r="1"/><circle cx="24" cy="8" r="1"/><circle cx="8" cy="24" r="1"/><circle cx="24" cy="24" r="1"/></g></svg>`,
+    pancakeHoney: `<svg viewBox="0 0 32 32"><ellipse cx="16" cy="24" rx="11" ry="3" fill="#d98c00"/><ellipse cx="16" cy="19" rx="10" ry="3" fill="#e8b25a"/><ellipse cx="16" cy="14" rx="9" ry="3" fill="#f0c070"/><path d="M8 12 Q16 8 24 12" stroke="#d98c00" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="16" cy="9" r="1.6" fill="#d98c00"/></svg>`,
+    pancakeChoco: `<svg viewBox="0 0 32 32"><ellipse cx="16" cy="24" rx="11" ry="3" fill="#5a3620"/><ellipse cx="16" cy="19" rx="10" ry="3" fill="#7a4a2c"/><ellipse cx="16" cy="14" rx="9" ry="3" fill="#f0c070"/><path d="M8 12 Q16 8 24 12" stroke="#5a3620" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="16" cy="9" r="1.6" fill="#5a3620"/></svg>`,
+    souffle: `<svg viewBox="0 0 32 32"><path d="M9 14 L23 14 L21 27 Q16 29 11 27 Z" fill="#f4ead9" stroke="#c9b48f" stroke-width="1"/><ellipse cx="16" cy="14" rx="7.5" ry="2.6" fill="#3b2a20"/><g fill="#3b2a20"><circle cx="12" cy="12.5" r="1"/><circle cx="16" cy="11" r="1.1"/><circle cx="20" cy="12.5" r="1"/><circle cx="14" cy="13.5" r="0.8"/><circle cx="18" cy="13.5" r="0.8"/></g></svg>`,
+    kunafa: `<svg viewBox="0 0 32 32"><rect x="6" y="18" width="20" height="8" rx="2" fill="#e8b25a"/><path d="M6 18 Q16 12 26 18" fill="none" stroke="#d98c00" stroke-width="2"/><path d="M6 20 Q16 15 26 20" fill="none" stroke="#f0c070" stroke-width="1.4"/><circle cx="12" cy="16" r="1.2" fill="#7cc63e"/><circle cx="20" cy="16" r="1.2" fill="#7cc63e"/><circle cx="16" cy="14" r="1.2" fill="#7cc63e"/></svg>`,
+    mango: `<svg viewBox="0 0 32 32"><path d="M16 6 C21 6 24 10 22 15 C21 18 19 20 16 26 C13 20 11 18 10 15 C8 10 11 6 16 6 Z" fill="#f5a428"/><path d="M14 6 Q16 2 19 5" stroke="#4e8a22" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>`,
+    choco: `<svg viewBox="0 0 32 32"><rect x="7" y="10" width="18" height="14" rx="3" fill="#5a3620"/><rect x="7" y="10" width="18" height="5" rx="2" fill="#7a4a2c"/><path d="M16 15 Q19 19 16 24 Q13 19 16 15 Z" fill="#3b2010"/></svg>`
+  };
+ 
   const products = {
     icecream: [
-      {id:'ic1', name:'آيسكريم قهوة سعودية', desc:'الوصفة المميزة للمحل، نكهة كريمية غنية وقوام ناعم فاخر.', price:18, icon:'🍦'},
-      {id:'ic2', name:'آيسكريم مانجو', desc:'مانجو طازجة بقوام كريمي ونكهة استوائية منعشة.', price:14, icon:'🥭'},
-      {id:'ic3', name:'آيسكريم توت بري', desc:'طعم البطيخ الصيفي الحقيقي في كل ملعقة.', price:13, icon:'🍉'},
-      {id:'ic4', name:'آيسكريم كوكيز اوريو', desc:'مزيج من الفواكه الاستوائية بنكهة غنية ومختلفة.', price:16, icon:'🍍'},
+      {id:'ic1', name:'آيسكريم المانجا', desc:'مانجو طازجة بقوام كريمي ونكهة استوائية منعشة.', price:13, icon:icons.mango},
     ],
-    juices: [
-      {id:'j1', name:'جي', desc:'عصير طازج بلمسة كلاسيكية يناسب كل الأوقات.', price:10, icon:'🥤'},
-      {id:'j2', name:'كركديه', desc:'مزيج فواكه متعددة بطعم متوازن ومنعش.', price:12, icon:'🍹'},
-      {id:'j3', name:'بادر جوسي', desc:'عصيرنا المميز بوصفة بادر الخاصة، كثيف ولذيذ.', price:15, icon:'🧃'},
-      {id:'j4', name:'آيس تي', desc:'شاي مثلج بارد ومنعش، مثالي في الأجواء الحارة.', price:8, icon:'🧊'},
+    sweets: [
+      {id:'s1', name:'حلا الأوريو', desc:'طبقات كريمية غنية مع قطع بسكويت الأوريو المقرمشة.', price:12, icon:icons.oreo},
+      {id:'s2', name:'بانكيك عسل', desc:'بانكيك طري محشو ومغطى بعسل طبيعي أصيل.', price:15, icon:icons.pancakeHoney},
+      {id:'s3', name:'بانكيك شوكولاته', desc:'بانكيك طري مغطى بصوص الشوكولاته الغني.', price:16, icon:icons.pancakeChoco},
+      {id:'s4', name:'سوفليه أوريو', desc:'سوفليه ساخن بقلب طري ورشة فتات الأوريو.', price:18, icon:icons.souffle},
+      {id:'s5', name:'كنافة', desc:'كنافة مقرمشة ذهبية بحشوة غنية وقطر عربي أصيل.', price:14, icon:icons.kunafa},
+      {id:'s6', name:'حلا شوكولاته', desc:'قطعة شوكولاته غنية وطرية تذوب في الفم.', price:15, icon:icons.choco},
     ]
   };
  
@@ -586,9 +598,9 @@
  
   function renderProducts(){
     const icGrid = document.getElementById('icecream-grid');
-    const juGrid = document.getElementById('juices-grid');
+    const juGrid = document.getElementById('sweets-grid');
     icGrid.innerHTML = products.icecream.map(cardHTML).join('');
-    juGrid.innerHTML = products.juices.map(cardHTML).join('');
+    juGrid.innerHTML = products.sweets.map(cardHTML).join('');
   }
  
   function cardHTML(p){
@@ -612,7 +624,7 @@
   }
  
   function findProduct(id){
-    return products.icecream.find(p=>p.id===id) || products.juices.find(p=>p.id===id);
+    return products.icecream.find(p=>p.id===id) || products.sweets.find(p=>p.id===id);
   }
  
   function changeQty(id, delta){
@@ -740,7 +752,7 @@
     document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById('icecream').style.display = target === 'icecream' ? 'block' : 'none';
-    document.getElementById('juices').style.display = target === 'juices' ? 'block' : 'none';
+    document.getElementById('sweets').style.display = target === 'sweets' ? 'block' : 'none';
   }
  
   function initSnow(){
@@ -766,3 +778,4 @@
  
 </body>
 </html>
+ 
