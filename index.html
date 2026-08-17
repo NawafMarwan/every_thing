@@ -88,6 +88,10 @@ a{ color:inherit; }
   border-bottom:1px solid var(--line);
   backdrop-filter:blur(6px);
 }
+.site-header::before{
+  content:""; display:block; height:4px; width:100%;
+  background:linear-gradient(90deg, var(--gold-deep) 0%, var(--teal) 50%, var(--gold-deep) 100%);
+}
 .header-inner{
   display:flex; align-items:center; justify-content:space-between;
   gap:18px; padding:14px 22px;
@@ -114,7 +118,7 @@ a{ color:inherit; }
 .brand-title{ text-align:start; min-width:0; display:flex; align-items:center; }
 .brand-name{
   font-family:'Aref Ruqaa',serif; font-weight:700;
-  font-size:clamp(20px,2.4vw,28px);
+  font-size:clamp(23px,2.8vw,34px);
   color:var(--gold-deep);
   line-height:1.15;
 }
@@ -160,6 +164,16 @@ main{ position:relative; z-index:1; }
 }
 .section-head h2{
   font-family:'Aref Ruqaa',serif; font-size:clamp(28px,4vw,40px); color:var(--ink);
+  position:relative; padding-bottom:16px;
+}
+.section-head h2::after{
+  content:""; position:absolute; bottom:0; left:50%; transform:translateX(-50%) rotate(45deg);
+  width:9px; height:9px; background:var(--gold); box-shadow:
+    -22px 0 0 -3.5px var(--gold), 22px 0 0 -3.5px var(--gold);
+}
+.section-head h2::before{
+  content:""; position:absolute; bottom:4px; left:50%; transform:translateX(-50%);
+  width:70px; height:1px; background:linear-gradient(90deg, transparent, var(--line), transparent);
 }
 .section-head p{ color:var(--ink-soft); margin-top:10px; font-size:16px; }
 
@@ -353,6 +367,7 @@ main{ position:relative; z-index:1; }
 /* ===== Footer ===== */
 footer{
   background:var(--ink); color:#CFC9AE; padding:34px 0; text-align:center; font-size:13.5px; position:relative; z-index:1;
+  border-top:3px solid var(--gold);
 }
 footer strong{ color:var(--gold-tint); }
 footer .hij{ margin-top:6px; opacity:.75; }
@@ -362,10 +377,10 @@ footer .hij{ margin-top:6px; opacity:.75; }
   .header-toggle{ display:flex; flex-shrink:0; width:38px; height:38px; }
   .header-toggle svg{ width:19px; height:19px; }
   .brand-logos{ gap:8px; }
-  .logo-box{ height:40px; width:auto; }
-  .logo-divider{ height:30px; }
+  .logo-box{ height:54px; width:auto; }
+  .logo-divider{ height:42px; }
   .brand-title{ overflow:hidden; }
-  .brand-name{ font-size:clamp(14px,4.6vw,20px); white-space:nowrap; }
+  .brand-name{ font-size:clamp(13px,4.2vw,18px); white-space:nowrap; }
   .letter-card{ padding:28px 20px; }
   .thanks-body{ padding:26px 20px; }
 
@@ -377,12 +392,12 @@ footer .hij{ margin-top:6px; opacity:.75; }
 }
 
 @media (max-width:360px){
-  .header-inner{ padding:8px 8px; gap:6px; }
-  .brand-logos{ gap:6px; }
-  .brand-name{ font-size:clamp(11px,3.6vw,15px); }
-  .logo-box{ height:30px; }
-  .logo-divider{ height:24px; }
-  .header-toggle{ width:34px; height:34px; }
+  .header-inner{ padding:7px 7px; gap:5px; }
+  .brand-logos{ gap:5px; }
+  .brand-name{ font-size:clamp(10px,3.4vw,14px); }
+  .logo-box{ height:42px; }
+  .logo-divider{ height:34px; }
+  .header-toggle{ width:36px; height:36px; }
   .header-toggle svg{ width:17px; height:17px; }
 }
 </style>
@@ -872,12 +887,11 @@ var GALLERY_IMAGES = [
    'images/photo-4.jpg',
    'images/photo-5.jpg',
    'images/photo-6.jpg',
-   'images/photo-7.jpg',
 ];
 /* المقاطع الإضافية (غير مقطع فكرة المشروع ومقطع تجربة الخريج): ضع ملف الفيديو داخل مجلد videos/ ثم أضف اسمه هنا */
 var GALLERY_VIDEOS = [
-   'videos/clip-1.mp4',
-   'videos/clip-2.mp4',
+  // 'videos/clip-1.mp4',
+  // 'videos/clip-2.mp4',
 ];
 (function renderGallery(){
   var host = document.getElementById('galleryGrid');
