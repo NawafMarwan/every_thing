@@ -101,7 +101,7 @@ a{ color:inherit; }
   display:flex; align-items:center; justify-content:center;
   height:100px;
 }
-.logo-box img{ height:100%; width:auto; object-fit:contain; }
+.logo-box img{ height:100%; width:auto; max-width:none; object-fit:contain; }
 .logo-placeholder{
   height:92px; width:92px;
   border:2px dashed var(--gold);
@@ -206,7 +206,7 @@ main{ position:relative; z-index:1; }
 /* ===== Card panels (charts / path diagram) ===== */
 .panel{
   background:var(--white); border:1px solid var(--line); border-radius:18px;
-  box-shadow:var(--shadow); padding:26px 22px; margin-bottom:26px;
+  box-shadow:var(--shadow); padding:26px 22px; margin-bottom:26px; min-width:0;
 }
 .panel-title{
   font-size:19px; font-weight:800; margin-bottom:4px; display:flex; align-items:center; gap:8px;
@@ -214,8 +214,8 @@ main{ position:relative; z-index:1; }
 .panel-title .dot{ width:9px; height:9px; border-radius:50%; background:var(--gold); flex-shrink:0; }
 .panel-sub{ font-size:13.5px; color:var(--ink-soft); margin-bottom:18px; }
 .chart-wrap{ position:relative; height:300px; }
-.two-col{ display:grid; grid-template-columns:1.15fr .85fr; gap:20px; align-items:stretch; }
-@media (max-width:860px){ .two-col{ grid-template-columns:1fr; } }
+.two-col{ display:grid; grid-template-columns:1.15fr .85fr; gap:20px; align-items:stretch; min-width:0; }
+@media (max-width:860px){ .two-col{ grid-template-columns:minmax(0,1fr); } }
 
 /* ===== Milestones (إنجازات الفترة) ===== */
 .section-subtitle{ display:flex; align-items:baseline; gap:10px; margin:32px 0 16px; }
@@ -340,8 +340,9 @@ main{ position:relative; z-index:1; }
   border-radius:14px; overflow:hidden; box-shadow:var(--shadow); border:1px solid var(--line);
   aspect-ratio:4/3; background:var(--paper-deep); position:relative;
 }
-.gallery-item img{ width:100%; height:100%; object-fit:cover; transition:.35s; }
-.gallery-item:hover img{ transform:scale(1.06); }
+.gallery-item img{ width:100%; height:100%; object-fit:contain; transition:.35s; }
+.gallery-item:hover img{ transform:scale(1.04); }
+.gallery-item video{ width:100%; height:100%; object-fit:contain; background:#000; }
 .gallery-empty{
   grid-column:1/-1; text-align:center; padding:50px 20px; color:var(--ink-soft);
   background:var(--white); border:1px dashed var(--line); border-radius:16px;
@@ -357,13 +358,14 @@ footer strong{ color:var(--gold-tint); }
 footer .hij{ margin-top:6px; opacity:.75; }
 
 @media (max-width:780px){
-  .header-inner{ flex-wrap:wrap; padding:12px 16px; }
-  .header-toggle{ display:flex; }
-  .brand-title{ order:1; flex-basis:100%; text-align:center; margin-top:4px; }
-  .brand-logos{ order:0; }
-  .logo-box{ height:70px; width:70px; }
-  .logo-divider{ height:46px; }
-  .brand-name{ font-size:26px; }
+  .header-inner{ flex-wrap:nowrap; padding:10px 12px; gap:8px; }
+  .header-toggle{ display:flex; flex-shrink:0; width:38px; height:38px; }
+  .header-toggle svg{ width:19px; height:19px; }
+  .brand-logos{ gap:8px; }
+  .logo-box{ height:40px; width:auto; }
+  .logo-divider{ height:30px; }
+  .brand-title{ overflow:hidden; }
+  .brand-name{ font-size:clamp(14px,4.6vw,20px); white-space:nowrap; }
   .letter-card{ padding:28px 20px; }
   .thanks-body{ padding:26px 20px; }
 
@@ -372,6 +374,16 @@ footer .hij{ margin-top:6px; opacity:.75; }
   .site-nav.open .nav-list{ display:flex; }
   .nav-btn{ width:100%; text-align:start; padding:13px 10px; border-bottom:1px solid rgba(255,255,255,.08); border-inline-end:3px solid transparent; margin-bottom:0; }
   .nav-btn.active{ background:rgba(255,255,255,.05); border-inline-end-color:var(--gold); }
+}
+
+@media (max-width:360px){
+  .header-inner{ padding:8px 8px; gap:6px; }
+  .brand-logos{ gap:6px; }
+  .brand-name{ font-size:clamp(11px,3.6vw,15px); }
+  .logo-box{ height:30px; }
+  .logo-divider{ height:24px; }
+  .header-toggle{ width:34px; height:34px; }
+  .header-toggle svg{ width:17px; height:17px; }
 }
 </style>
 </head>
@@ -471,8 +483,8 @@ footer .hij{ margin-top:6px; opacity:.75; }
         <div class="thanks-donor">إلى شركائنا في «أجر الحرف» و«بركة التلاوة»..<br>أوقاف إبراهيم بن سعد الموسى</div>
       </div>
       <div class="thanks-body">
-        <p>تتزاحم عبارات الشكر، وتتقاصر أمام عظمة عطائكم الذي تجاوز حدود «المِنَح» ليصنع «الحياة» في قلوبٍ كانت تتلعثم بكتاب الله، فأصبحت اليوم تتغنّى به آناء الليل وأطراف النهار.</p>
-        <p>لقد كان دعمكم لمشروع «علّم أعجميًا» لعام 2025م غيثًا سقى هذه الغراس المباركة، ونحن في إدارة مدرسة جامع الحوامي إذ نضع بين أيديكم هذا التقرير .. لا نقدّم مجرد أرقام صامتة، بل نُهديكم أجور أنفاس تلَت، وألسنة لهجَت، وقلوب خشعَت، وكنتم -بعد الله- سبب وصلها بكلام ربّها.</p>
+        <p>تتزاحم عبارات الشكر وتتقاصر أمام عظمة عطائكم الذي تجاوز حدود «المِنَح» ليصنع «الحياة» في قلوب كانت تتلعثم بكتاب الله، فأصبحت اليوم تتغنّى به آناء الليل وأطراف النهار.</p>
+        <p>لقد كان دعمكم لمشروع «علّم أعجميًا» لعام 2025م غيثًا سُقِيَ في هذه الغِراس المباركة، ونحن في إدارة مدرسة جامع الحوامي إذ نضع بين أيديكم هذا التقرير .. لا نقدّم مجرد أرقام صامتة، بل نُهديكم أجور أنفاسٍ تلَت، وألسنةٍ لهجَت، وقلوبٍ خشعَت، وكنتم -بعد الله- سببًا وصلها بكلام ربّها.</p>
         <p>هنيئًا لكم هذا الغرس، وتقبّل الله منكم ما بذلتم، وجعل كلّ حرفٍ نطق به أعجميّ في موازينكم نورًا تامًا يوم القيامة.</p>
         <div class="thanks-foot">
           <div class="org">إدارة مدرسة جامع الحوامي</div>
@@ -525,7 +537,22 @@ footer .hij{ margin-top:6px; opacity:.75; }
       <span class="eyebrow">المحتوى المرئي</span>
       <h2>لقطات من رحلة المشروع</h2>
     </div>
+
+    <div class="section-subtitle"><h3>تجربة خريج</h3><div class="rule"></div></div>
+    <div class="video-frame" id="experienceVideoFrame">
+      <video controls preload="metadata">
+        <source src="videos/experience.mp4" type="video/mp4">
+        متصفحك لا يدعم تشغيل الفيديو.
+      </video>
+    </div>
+
+    <div class="section-subtitle"><h3>الصور</h3><div class="rule"></div></div>
     <div class="gallery-grid" id="galleryGrid"></div>
+
+    <div id="videosBlock" style="display:none">
+      <div class="section-subtitle"><h3>مقاطع أخرى</h3><div class="rule"></div></div>
+      <div class="gallery-grid" id="galleryVideos"></div>
+    </div>
   </div>
 </section>
 
@@ -836,8 +863,8 @@ function showChartFallback(canvasId){
   c.replaceWith(msg);
 }
 
-/* ============ المحتوى المرئي — عدّل هذه القائمة لإضافة صور جديدة ============ */
-/* ضع ملف الصورة داخل مجلد images/ ثم أضف اسمه هنا بين علامتي تنصيص، والموقع سيتكفّل بالباقي تلقائيًا */
+/* ============ المحتوى المرئي — عدّل هذه القوائم لإضافة صور أو مقاطع جديدة ============ */
+/* الصور: ضع ملف الصورة داخل مجلد images/ ثم أضف اسمه هنا بين علامتي تنصيص */
 var GALLERY_IMAGES = [
    'images/photo-1.jpg',
    'images/photo-2.jpg',
@@ -847,18 +874,30 @@ var GALLERY_IMAGES = [
    'images/photo-6.jpg',
    'images/photo-7.jpg',
 ];
+/* المقاطع الإضافية (غير مقطع فكرة المشروع ومقطع تجربة الخريج): ضع ملف الفيديو داخل مجلد videos/ ثم أضف اسمه هنا */
+var GALLERY_VIDEOS = [
+   'videos/clip-1.mp4',
+   'videos/clip-2.mp4',
+];
 (function renderGallery(){
   var host = document.getElementById('galleryGrid');
   if(!GALLERY_IMAGES.length){
     host.innerHTML = '<div class="gallery-empty">' +
       '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10" r="1.5"/><path d="M21 16l-5-5-4 4-3-3-6 6"/></svg>' +
-      '<p>سيتم إضافة لقطات ومقاطع من فعاليات المشروع إلى هذا القسم قريبًا.</p>' +
+      '<p>سيتم إضافة لقطات من فعاليات المشروع إلى هذا القسم قريبًا.</p>' +
       '</div>';
-    return;
+  } else {
+    host.innerHTML = GALLERY_IMAGES.map(function(src){
+      return '<div class="gallery-item"><img src="'+src+'" alt="من فعاليات مشروع علّم أعجميًا" loading="lazy"></div>';
+    }).join('');
   }
-  host.innerHTML = GALLERY_IMAGES.map(function(src){
-    return '<div class="gallery-item"><img src="'+src+'" alt="من فعاليات مشروع علّم أعجميًا" loading="lazy"></div>';
-  }).join('');
+
+  if(GALLERY_VIDEOS.length){
+    document.getElementById('videosBlock').style.display = 'block';
+    document.getElementById('galleryVideos').innerHTML = GALLERY_VIDEOS.map(function(src){
+      return '<div class="gallery-item"><video controls preload="metadata"><source src="'+src+'" type="video/mp4"></video></div>';
+    }).join('');
+  }
 })();
 
 /* ============ التشغيل الأولي ============ */
