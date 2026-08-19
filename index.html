@@ -215,7 +215,56 @@ main{ position:relative; z-index:1; }
 .year-panel, .quarter-panel{ display:none; }
 .year-panel.active, .quarter-panel.active{ display:block; animation:fadeIn .4s ease; }
 
-/* ===== KPI Cards ===== */
+/* ===== KPI Targets page ===== */
+.kpi-targets-grid{
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(290px,1fr));
+  gap:24px; margin-bottom:32px;
+}
+.kpi-target-card{
+  background:var(--white); border:1px solid var(--line); border-radius:20px;
+  padding:28px 24px; box-shadow:var(--shadow);
+  display:flex; flex-direction:column; gap:0;
+  transition:transform .25s, box-shadow .25s;
+}
+.kpi-target-card:hover{ transform:translateY(-5px); box-shadow:0 16px 40px -14px rgba(38,42,31,0.22); }
+.kpi-target-icon{
+  width:58px; height:58px; border-radius:16px;
+  display:flex; align-items:center; justify-content:center; margin-bottom:18px; flex-shrink:0;
+}
+.kpi-target-icon svg{ width:28px; height:28px; }
+.kpi-target-body{ flex:1; }
+.kpi-target-title{ font-size:18px; font-weight:800; color:var(--ink); margin-bottom:7px; }
+.kpi-target-sub{ font-size:13.5px; color:var(--ink-soft); line-height:1.75; margin-bottom:20px; }
+.kpi-progress-row{
+  display:flex; align-items:baseline; gap:7px; margin-bottom:12px;
+  direction:ltr; justify-content:center;
+}
+.kpi-progress-now{ font-size:40px; font-weight:800; color:var(--ink); line-height:1; }
+.kpi-progress-of{ font-size:13px; color:var(--ink-soft); direction:rtl; }
+.kpi-progress-target{ font-size:24px; font-weight:700; color:var(--ink-soft); }
+.kpi-bar-bg{ height:12px; background:var(--paper-deep); border-radius:8px; overflow:hidden; margin-bottom:10px; }
+.kpi-bar-fill{ height:100%; width:0; border-radius:8px; transition:width 1.4s cubic-bezier(.22,1,.36,1); }
+.kpi-pct-row{ display:flex; align-items:center; gap:8px; }
+.kpi-pct-badge{
+  background:var(--gold-deep); color:#fff; font-size:14px; font-weight:800;
+  padding:4px 14px; border-radius:20px; direction:ltr; display:inline-block;
+  min-width:58px; text-align:center;
+}
+.kpi-pct-label{ font-size:13px; color:var(--ink-soft); }
+.kpi-note{
+  max-width:700px; margin:0 auto; padding:18px 22px;
+  background:linear-gradient(135deg,var(--gold-tint-soft),var(--paper));
+  border:1px solid var(--gold-tint); border-radius:14px;
+  display:flex; align-items:flex-start; gap:12px; font-size:14.5px;
+  color:var(--ink-soft); line-height:1.8;
+}
+.kpi-note svg{ color:var(--gold-deep); margin-top:2px; }
+@media(max-width:600px){
+  .kpi-progress-now{ font-size:30px; }
+  .kpi-progress-target{ font-size:18px; }
+}
+
+/* ===== KPI Cards (stats page) ===== */
 .kpi-grid{
   display:grid; grid-template-columns:repeat(auto-fit,minmax(148px,1fr));
   gap:14px; margin-bottom:36px;
@@ -395,7 +444,7 @@ footer strong{ color:var(--gold-tint); }
   display:flex; align-items:center; justify-content:center; gap:20px; flex-wrap:nowrap;
 }
 .footer-logo-awqaf{
-  height:80px; width:auto; max-width:none;
+  height:70px; width:auto; max-width:none;
   filter:brightness(1.9) contrast(0.85);
   opacity:0.88;
 }
@@ -491,6 +540,7 @@ footer strong{ color:var(--gold-tint); }
 <nav class="site-nav" id="siteNav">
   <ul class="nav-list" id="navList">
     <li><button class="nav-btn active" data-target="dashboard">لوحة الإحصائيات</button></li>
+    <li><button class="nav-btn" data-target="kpi">مؤشرات الأداء</button></li>
     <li><button class="nav-btn" data-target="supervisor-word">كلمة المشرف العام</button></li>
     <li><button class="nav-btn" data-target="thanks">رسالة شكر وتقدير</button></li>
     <li><button class="nav-btn" data-target="idea">فكرة المشروع</button></li>
@@ -508,17 +558,18 @@ footer strong{ color:var(--gold-tint); }
     </div>
 
     <div class="pill-group" id="yearPills">
-      <button class="pill active" data-year="2025">2025م — 1447هـ</button>
-      <button class="pill" data-year="2026">2026م — 1448هـ</button>
+      <button class="pill" data-year="2025">2025م — 1447هـ</button>
+      <button class="pill active" data-year="2026">2026م — 1448هـ</button>
+      <button class="pill" data-year="2027">2027م — 1449هـ</button>
     </div>
 
-    <!-- 2025: عرض ثابت (سنة كاملة، بلا أرباع) -->
-    <div class="year-panel active" id="year-2025">
+    <!-- 2025: عرض ثابت -->
+    <div class="year-panel" id="year-2025">
       <div id="statsBody-2025"></div>
     </div>
 
     <!-- 2026: بأرباعه -->
-    <div class="year-panel" id="year-2026">
+    <div class="year-panel active" id="year-2026">
       <div class="pill-group sub" id="quarterPills">
         <button class="pill active" data-quarter="q1">الربع الأول</button>
         <button class="pill" data-quarter="q2">الربع الثاني</button>
@@ -526,6 +577,108 @@ footer strong{ color:var(--gold-tint); }
         <button class="pill" disabled>الربع الرابع <span class="soon">(قريبًا)</span></button>
       </div>
       <div id="statsBody-2026"></div>
+    </div>
+    </div>
+
+    <!-- 2027: بأرباعه -->
+    <div class="year-panel" id="year-2027">
+      <div class="pill-group sub" id="quarterPills2027">
+        <button class="pill" disabled>الربع الأول <span class="soon">(قريبًا)</span></button>
+        <button class="pill" disabled>الربع الثاني <span class="soon">(قريبًا)</span></button>
+        <button class="pill" disabled>الربع الثالث <span class="soon">(قريبًا)</span></button>
+        <button class="pill" disabled>الربع الرابع <span class="soon">(قريبًا)</span></button>
+      </div>
+      <div class="kpi-grid" style="margin-top:20px">
+        <div class="kpi-card" style="grid-column:1/-1;text-align:center;padding:40px;color:var(--ink-soft)">
+          <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" style="margin:0 auto 12px;display:block;color:var(--gold)"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+          <div style="font-size:18px;font-weight:700;color:var(--ink);margin-bottom:8px">بيانات 1449هـ ستُضاف عند توافرها</div>
+          <div style="font-size:14px">تابعونا مطلع العام القادم</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section id="kpi" class="page-section">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">مؤشرات الأداء</span>
+      <h2>التطلعات المستقبلية — رؤيتنا للعام القادم</h2>
+      <p>خارطة طريق العام القادم بإذن الله — نسب التقدم الحالية نحو الأهداف المرسومة</p>
+    </div>
+
+    <div class="kpi-targets-grid">
+
+      <!-- هدف 1 -->
+      <div class="kpi-target-card reveal">
+        <div class="kpi-target-icon" style="background:linear-gradient(135deg,#EFE2BC,#ddd0a0)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold-deep)" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <div class="kpi-target-body">
+          <div class="kpi-target-title">زيادة الطاقة الاستيعابية</div>
+          <div class="kpi-target-sub">استهداف الوصول إلى 140 طالبًا منتظمًا بناءً على النمو الحالي</div>
+          <div class="kpi-progress-row">
+            <span class="kpi-progress-now" id="kpi1-now">0</span>
+            <span class="kpi-progress-of">من</span>
+            <span class="kpi-progress-target">140</span>
+          </div>
+          <div class="kpi-bar-bg"><div class="kpi-bar-fill" id="kpi1-bar" data-pct="91.4" style="background:linear-gradient(90deg,var(--gold-deep),var(--gold))"></div></div>
+          <div class="kpi-pct-row">
+            <span class="kpi-pct-badge" id="kpi1-pct">0%</span>
+            <span class="kpi-pct-label">من الهدف</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- هدف 2 -->
+      <div class="kpi-target-card reveal">
+        <div class="kpi-target-icon" style="background:linear-gradient(135deg,#DCEAE6,#c0ddd6)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.8"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </div>
+        <div class="kpi-target-body">
+          <div class="kpi-target-title">مضاعفة الخاتمين</div>
+          <div class="kpi-target-sub">العمل على تخريج 8 حفّاظ جدد لكتاب الله كاملًا من طلاب مرحلة الحفظ الحاليين</div>
+          <div class="kpi-progress-row">
+            <span class="kpi-progress-now" id="kpi2-now">0</span>
+            <span class="kpi-progress-of">من</span>
+            <span class="kpi-progress-target">8</span>
+          </div>
+          <div class="kpi-bar-bg"><div class="kpi-bar-fill" id="kpi2-bar" data-pct="37.5" style="background:linear-gradient(90deg,var(--teal),#2d8c78)"></div></div>
+          <div class="kpi-pct-row">
+            <span class="kpi-pct-badge" id="kpi2-pct" style="background:var(--teal)">0%</span>
+            <span class="kpi-pct-label">من الهدف</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- هدف 3 -->
+      <div class="kpi-target-card reveal">
+        <div class="kpi-target-icon" style="background:linear-gradient(135deg,#DDE0CC,#c8ccb0)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--olive)" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/><path d="M3.05 11a9 9 0 1 0 .5-2.6"/></svg>
+        </div>
+        <div class="kpi-target-body">
+          <div class="kpi-target-title">توسيع المسار المجتمعي</div>
+          <div class="kpi-target-sub">زيادة عدد المستفيدين من العمالة في الفترة المسائية لتشمل 18 مستفيدًا</div>
+          <div class="kpi-progress-row">
+            <span class="kpi-progress-now" id="kpi3-now">0</span>
+            <span class="kpi-progress-of">من</span>
+            <span class="kpi-progress-target">18</span>
+          </div>
+          <div class="kpi-bar-bg"><div class="kpi-bar-fill" id="kpi3-bar" data-pct="61.1" style="background:linear-gradient(90deg,var(--olive),#8a9060)"></div></div>
+          <div class="kpi-pct-row">
+            <span class="kpi-pct-badge" id="kpi3-pct" style="background:var(--olive)">0%</span>
+            <span class="kpi-pct-label">من الهدف</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ملاحظة ختامية -->
+    <div class="kpi-note reveal">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" style="width:20px;height:20px;flex-shrink:0"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <span>رؤيتنا للعام القادم — بإذن الله — تبنى على حصاد ما أنجزناه معًا، وبدعمكم نواصل.</span>
     </div>
   </div>
 </section>
@@ -583,7 +736,7 @@ footer strong{ color:var(--gold-tint); }
     </div>
 
     <div class="video-frame">
-      <video controls preload="metadata" poster="" controlsList="nodownload" oncontextmenu="return false;">
+      <video controls preload="metadata" poster="">
         <source src="videos/idea-video.mp4" type="video/mp4">
         متصفحك لا يدعم تشغيل الفيديو، يمكنك تحميله من مجلد الموقع مباشرة.
       </video>
@@ -620,7 +773,7 @@ footer strong{ color:var(--gold-tint); }
 
     <div class="section-subtitle"><h3>تجربة خريج</h3><div class="rule"></div></div>
     <div class="video-frame" id="experienceVideoFrame">
-      <video controls preload="metadata" controlsList="nodownload" oncontextmenu="return false;">
+      <video controls preload="metadata">
         <source src="videos/experience.mp4" type="video/mp4">
         متصفحك لا يدعم تشغيل الفيديو.
       </video>
@@ -753,7 +906,7 @@ navToggle.addEventListener('click', function(){
   navToggle.setAttribute('aria-expanded', open ? 'true':'false');
 });
 
-/* ============ سنة 2025 مقابل 2026 ============ */
+/* ============ سنة 2025 مقابل 2026 مقابل 2027 ============ */
 var rendered = {};
 document.getElementById('yearPills').addEventListener('click', function(e){
   var btn = e.target.closest('.pill'); if(!btn) return;
@@ -761,6 +914,7 @@ document.getElementById('yearPills').addEventListener('click', function(e){
   this.querySelectorAll('.pill').forEach(function(p){ p.classList.toggle('active', p===btn); });
   document.getElementById('year-2025').classList.toggle('active', year==='2025');
   document.getElementById('year-2026').classList.toggle('active', year==='2026');
+  document.getElementById('year-2027').classList.toggle('active', year==='2027');
   if(year==='2025' && !rendered['2025']){
     renderStatsBlock(document.getElementById('statsBody-2025'), YEARS_DATA['2025'], '2025');
     rendered['2025'] = true;
@@ -956,21 +1110,21 @@ function showChartFallback(canvasId){
 /* ============ المحتوى المرئي — عدّل هذه القوائم لإضافة صور أو مقاطع جديدة ============ */
 /* الصور: ضع ملف الصورة داخل مجلد images/ ثم أضف اسمه هنا بين علامتي تنصيص */
 var GALLERY_IMAGES = [
-   'images/photo-1.jpg',
-   'images/photo-2.jpg',
-   'images/photo-3.jpg',
-   'images/photo-4.jpg',
-   'images/photo-5.jpg',
-   'images/photo-6.jpg',
-   'images/photo-7.jpg',
-   'images/photo-8.jpg',
-   'images/photo-9.jpg',
-   'images/photo-10.jpg',
-   'images/photo-11.jpg',
-   'images/photo-12.jpeg',
-   'images/photo-13.jpg',
-   'images/photo-14.jpg',
-   'images/photo-15.jpg',
+     'images/photo-1.jpg',
+     'images/photo-2.jpg',
+     'images/photo-3.jpg',
+     'images/photo-4.jpg',
+     'images/photo-5.jpg',
+     'images/photo-6.jpg',
+     'images/photo-7.jpg',
+     'images/photo-8.jpg',
+     'images/photo-9.jpg',
+     'images/photo-10.jpg',
+     'images/photo-11.jpg',
+     'images/photo-12.jpeg',
+     'images/photo-13.jpg',
+     'images/photo-14.jpg',
+     'images/photo-15.jpg',
 ];
 /* المقاطع الإضافية (غير مقطع فكرة المشروع ومقطع تجربة الخريج): ضع ملف الفيديو داخل مجلد videos/ ثم أضف اسمه هنا */
 var GALLERY_VIDEOS = [
@@ -999,8 +1153,70 @@ var GALLERY_VIDEOS = [
 })();
 
 /* ============ التشغيل الأولي ============ */
-renderStatsBlock(document.getElementById('statsBody-2025'), YEARS_DATA['2025'], '2025');
-rendered['2025'] = true;
+// الافتراضي: عرض 2026 أول ما يفتح الموقع
+renderStatsBlock(document.getElementById('statsBody-2026'), YEARS_DATA['q1'], 'q1');
+rendered['q1'] = true;
+
+/* ============ أنيميشن مؤشرات الأداء ============ */
+(function initKpiAnimations(){
+  var KPI_DATA = [
+    { nowId:'kpi1-now', pctId:'kpi1-pct', barId:'kpi1-bar', current:128, target:140 },
+    { nowId:'kpi2-now', pctId:'kpi2-pct', barId:'kpi2-bar', current:3,   target:8   },
+    { nowId:'kpi3-now', pctId:'kpi3-pct', barId:'kpi3-bar', current:11,  target:18  }
+  ];
+  var fired = false;
+  var observer = new IntersectionObserver(function(entries){
+    if(fired) return;
+    var visible = entries.some(function(e){ return e.isIntersecting; });
+    if(!visible) return;
+    fired = true;
+    KPI_DATA.forEach(function(d){
+      var pct = Math.round(d.current/d.target*1000)/10;
+      // counter animation
+      var start = performance.now(); var dur = 1200;
+      (function tick(now){
+        var p = Math.min(1,(now-start)/dur);
+        var eased = 1-Math.pow(1-p,3);
+        var nowEl = document.getElementById(d.nowId);
+        if(nowEl) nowEl.textContent = Math.round(d.current*eased);
+        var pctEl = document.getElementById(d.pctId);
+        if(pctEl) pctEl.textContent = (eased*pct).toFixed(1)+'%';
+        if(p<1) requestAnimationFrame(tick);
+      })(performance.now());
+      // bar animation
+      setTimeout(function(){
+        var bar = document.getElementById(d.barId);
+        if(bar) bar.style.width = pct+'%';
+      }, 80);
+    });
+  }, {threshold:0.2});
+  // observe the first card
+  var firstCard = document.querySelector('.kpi-target-card');
+  if(firstCard) observer.observe(firstCard);
+  // also trigger when tab is clicked
+  document.querySelectorAll('.nav-btn').forEach(function(b){
+    if(b.dataset.target==='kpi') b.addEventListener('click', function(){
+      setTimeout(function(){
+        // make all reveal elements visible immediately (they were hidden before tab opened)
+        document.querySelectorAll('#kpi .reveal').forEach(function(el){
+          el.classList.add('in-view');
+        });
+        if(!fired){ fired=true; observer.disconnect();
+          KPI_DATA.forEach(function(d){
+            var pct = Math.round(d.current/d.target*1000)/10;
+            var start=performance.now(); var dur=1200;
+            (function tick(now){ var p=Math.min(1,(now-start)/dur); var eased=1-Math.pow(1-p,3);
+              var nowEl=document.getElementById(d.nowId); if(nowEl) nowEl.textContent=Math.round(d.current*eased);
+              var pctEl=document.getElementById(d.pctId); if(pctEl) pctEl.textContent=(eased*pct).toFixed(1)+'%';
+              if(p<1) requestAnimationFrame(tick);
+            })(performance.now());
+            setTimeout(function(){ var bar=document.getElementById(d.barId); if(bar) bar.style.width=pct+'%'; },80);
+          });
+        }
+      }, 300);
+    });
+  });
+})();
 
 })();
 </script>
