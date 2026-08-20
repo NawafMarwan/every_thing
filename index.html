@@ -320,6 +320,9 @@ main{ position:relative; z-index:1; }
 .track-bar-fill{ height:100%; width:0; border-radius:6px; transition:width 1s cubic-bezier(.22,1,.36,1); }
 .insight-box{ margin-top:18px; padding:14px 16px; background:var(--paper-deep); border-radius:12px; font-size:13.5px; color:var(--ink-soft); line-height:1.9; }
 .insight-box strong{ color:var(--gold-deep); }
+.cumulative-note{ margin:2px 0 22px; padding:13px 16px; background:var(--gold-tint-soft); border-inline-start:3px solid var(--gold-deep); border-radius:10px; font-size:13px; color:var(--ink-soft); line-height:1.9; display:flex; gap:10px; align-items:flex-start; }
+.cumulative-note svg{ flex-shrink:0; width:18px; height:18px; margin-top:2px; color:var(--gold-deep); }
+.cumulative-note strong{ color:var(--ink); }
 .insight-dot{ display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--gold); margin-inline-start:6px; }
 
 /* ===== Achievement gauges ===== */
@@ -444,9 +447,7 @@ footer strong{ color:var(--gold-tint); }
   display:flex; align-items:center; justify-content:center; gap:20px; flex-wrap:nowrap;
 }
 .footer-logo-awqaf{
-  height:70px; width:auto; max-width:none;
-  filter:brightness(1.9) contrast(0.85);
-  opacity:0.88;
+  height:80px; width:auto; max-width:none;
 }
 .footer-logo-hawami{
   height:84px; width:auto; max-width:none;
@@ -459,7 +460,7 @@ footer strong{ color:var(--gold-tint); }
 .footer-line2{ font-size:16px; font-weight:700; color:var(--gold-tint); letter-spacing:0.3px; }
 .footer-line3{ font-size:12.5px; color:#8A8470; margin-top:2px; }
 @media(max-width:780px){
-  .footer-logo-awqaf{ height:58px; }
+  .footer-logo-awqaf{ height:66px; }
   .footer-logo-hawami{ height:70px; }
   .footer-logo-div{ height:50px; }
   .footer-line1{ font-size:13px; }
@@ -578,7 +579,6 @@ footer strong{ color:var(--gold-tint); }
       </div>
       <div id="statsBody-2026"></div>
     </div>
-    </div>
 
     <!-- 2027: بأرباعه -->
     <div class="year-panel" id="year-2027">
@@ -590,9 +590,9 @@ footer strong{ color:var(--gold-tint); }
       </div>
       <div class="kpi-grid" style="margin-top:20px">
         <div class="kpi-card" style="grid-column:1/-1;text-align:center;padding:40px;color:var(--ink-soft)">
-          <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" style="margin:0 auto 12px;display:block;color:var(--gold)"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
-          <div style="font-size:18px;font-weight:700;color:var(--ink);margin-bottom:8px">بيانات 1449هـ ستُضاف عند توافرها</div>
-          <div style="font-size:14px">تابعونا مطلع العام القادم</div>
+          <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" style="margin:0 auto 12px;display:block;color:var(--gold)"><path d="M12 21V10"/><path d="M12 10C12 6 15 3 19 3c0 4-3 7-7 7z"/><path d="M12 14c0-3-2.5-5.5-6-5.5 0 3 2.5 5.5 6 5.5z"/></svg>
+          <div style="font-size:18px;font-weight:700;color:var(--ink);margin-bottom:8px">سنوات ثلاث من الغرس المبارك، وكل حرف تعلمه طالبٌ في موازين حسناتكم</div>
+          <div style="font-size:14px">بمثل هذا العطاء يستمر الخير</div>
         </div>
       </div>
     </div>
@@ -668,6 +668,27 @@ footer strong{ color:var(--gold-tint); }
           <div class="kpi-bar-bg"><div class="kpi-bar-fill" id="kpi3-bar" data-pct="61.1" style="background:linear-gradient(90deg,var(--olive),#8a9060)"></div></div>
           <div class="kpi-pct-row">
             <span class="kpi-pct-badge" id="kpi3-pct" style="background:var(--olive)">0%</span>
+            <span class="kpi-pct-label">من الهدف</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- هدف 4 -->
+      <div class="kpi-target-card reveal">
+        <div class="kpi-target-icon" style="background:linear-gradient(135deg,#EFDCD5,#dcbfb4)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#7A3B2E" stroke-width="1.8"><path d="M9 18V5l7 3v9"/><circle cx="6" cy="18" r="3"/><circle cx="13" cy="17" r="3"/></svg>
+        </div>
+        <div class="kpi-target-body">
+          <div class="kpi-target-title">تجويد المخرج</div>
+          <div class="kpi-target-sub">ضبط مخارج الحروف وأحكام التجويد لدى جميع الطلاب المجازين وفق المعيار المعتمد</div>
+          <div class="kpi-progress-row">
+            <span class="kpi-progress-now" id="kpi4-now">0</span>
+            <span class="kpi-progress-of">من</span>
+            <span class="kpi-progress-target">100</span>
+          </div>
+          <div class="kpi-bar-bg"><div class="kpi-bar-fill" id="kpi4-bar" data-pct="100" style="background:linear-gradient(90deg,#7A3B2E,#a35a48)"></div></div>
+          <div class="kpi-pct-row">
+            <span class="kpi-pct-badge" id="kpi4-pct" style="background:#7A3B2E">0%</span>
             <span class="kpi-pct-label">من الهدف</span>
           </div>
         </div>
@@ -906,6 +927,13 @@ navToggle.addEventListener('click', function(){
   navToggle.setAttribute('aria-expanded', open ? 'true':'false');
 });
 
+// مزامنة تلقائية عند التحميل: القسم الذي يظهر هو المطابق لزر التبويب الذي يحمل
+// كلاس "active" — لا حاجة لتعديل عنصر <section> يدويًا لمطابقته لاحقًا.
+(function initDefaultTab(){
+  var activeBtn = document.querySelector('.nav-btn.active') || navBtns[0];
+  if(activeBtn) activateTab(activeBtn.dataset.target);
+})();
+
 /* ============ سنة 2025 مقابل 2026 مقابل 2027 ============ */
 var rendered = {};
 document.getElementById('yearPills').addEventListener('click', function(e){
@@ -976,7 +1004,13 @@ function renderStatsBlock(container, dataset, key){
     html += '<div class="section-subtitle"><h3>إنجازات الفترة</h3><div class="rule"></div></div>' +
       '<div class="milestone-grid">' + dataset.milestones.map(function(m){
         return '<div class="milestone-card reveal"><div class="m-num">'+fmtNum(m.value)+'</div><div class="m-label">'+m.label+'</div></div>';
-      }).join('') + '</div>';
+      }).join('') + '</div>' +
+      '<div class="cumulative-note reveal">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>' +
+        '<span><strong>ملاحظة:</strong> الأرقام أعلاه تراكمية منذ بداية العام الدراسي، وتمثل إجمالي المُنجَز حتى نهاية كل ربع. ' +
+        'وقد يتفاوت مقدار الزيادة المسجَّلة من ربع لآخر تبعًا لعدد الطلاب الذين أتمّوا كل مرحلة خلال تلك الفترة تحديدًا، ' +
+        'وهذا لا يعني بالضرورة تراجعًا في الإنجاز الكلي للمشروع.</span>' +
+      '</div>';
   }
 
   html += '<div class="section-subtitle"><h3>توزيع الطلاب على المسارات</h3><div class="rule"></div></div>' +
@@ -1152,17 +1186,37 @@ var GALLERY_VIDEOS = [
   }
 })();
 
-/* ============ التشغيل الأولي ============ */
-// الافتراضي: عرض 2026 أول ما يفتح الموقع
-renderStatsBlock(document.getElementById('statsBody-2026'), YEARS_DATA['q1'], 'q1');
-rendered['q1'] = true;
+/* ============ التشغيل الأولي (تلقائي بالكامل) ============ */
+// لا حاجة لأي تعديل يدوي هنا لاحقًا: يكفي نقل كلاس "active" بين أزرار السنة/الربع
+// في الكود، وسيتم تلقائيًا مزامنة لوحة السنة الظاهرة وتحميل بياناتها المطابقة.
+(function initDefaultView(){
+  var yearBtn = document.querySelector('#yearPills .pill.active') || document.querySelector('#yearPills .pill');
+  var activeYear = yearBtn ? yearBtn.dataset.year : '2026';
+
+  document.querySelectorAll('#yearPills .pill').forEach(function(p){ p.classList.toggle('active', p===yearBtn); });
+  document.querySelectorAll('.year-panel').forEach(function(panel){
+    panel.classList.toggle('active', panel.id === 'year-' + activeYear);
+  });
+
+  if(activeYear === '2025'){
+    renderStatsBlock(document.getElementById('statsBody-2025'), YEARS_DATA['2025'], '2025');
+    rendered['2025'] = true;
+  } else if(activeYear === '2026'){
+    var qBtn = document.querySelector('#quarterPills .pill.active[data-quarter]') || document.querySelector('#quarterPills .pill[data-quarter]:not([disabled])');
+    var activeQuarter = qBtn ? qBtn.dataset.quarter : 'q1';
+    document.querySelectorAll('#quarterPills .pill').forEach(function(p){ p.classList.toggle('active', p===qBtn); });
+    renderStatsBlock(document.getElementById('statsBody-2026'), YEARS_DATA[activeQuarter], activeQuarter);
+    rendered[activeQuarter] = true;
+  }
+})();
 
 /* ============ أنيميشن مؤشرات الأداء ============ */
 (function initKpiAnimations(){
   var KPI_DATA = [
     { nowId:'kpi1-now', pctId:'kpi1-pct', barId:'kpi1-bar', current:128, target:140 },
     { nowId:'kpi2-now', pctId:'kpi2-pct', barId:'kpi2-bar', current:3,   target:8   },
-    { nowId:'kpi3-now', pctId:'kpi3-pct', barId:'kpi3-bar', current:11,  target:18  }
+    { nowId:'kpi3-now', pctId:'kpi3-pct', barId:'kpi3-bar', current:11,  target:18  },
+    { nowId:'kpi4-now', pctId:'kpi4-pct', barId:'kpi4-bar', current:100, target:100 }
   ];
   var fired = false;
   var observer = new IntersectionObserver(function(entries){
