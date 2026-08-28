@@ -816,16 +816,17 @@ footer strong{ color:var(--gold-tint); }
       <h2>لقطات من رحلة المشروع</h2>
     </div>
 
+    <div class="section-subtitle"><h3>فكرة المشروع</h3><div class="rule"></div></div>
+    <div class="video-frame" id="galleryIdeaVideoFrame"></div>
+
+    <div class="section-subtitle"><h3>تقرير 2025م - 1447هـ</h3><div class="rule"></div></div>
+    <div class="video-frame" id="report2025VideoFrame"></div>
+
     <div class="section-subtitle"><h3>تجربة خريج</h3><div class="rule"></div></div>
     <div class="video-frame" id="experienceVideoFrame"></div>
 
     <div class="section-subtitle"><h3>الصور</h3><div class="rule"></div></div>
     <div class="gallery-grid" id="galleryGrid"></div>
-
-    <div id="videosBlock" style="display:none">
-      <div class="section-subtitle"><h3>مقاطع أخرى</h3><div class="rule"></div></div>
-      <div class="gallery-grid" id="galleryVideos"></div>
-    </div>
   </div>
 </section>
 
@@ -980,7 +981,10 @@ var CURRENT_TARGETS = {
       iconBg:'linear-gradient(135deg,#DCEAE6,#c0ddd6)', iconColor:'var(--teal)', barColor:'linear-gradient(90deg,var(--teal),#2d8c78)', badgeBg:'var(--teal)' },
     { title:'توسيع المسار المجتمعي', sub:'زيادة عدد المستفيدين من العمالة في الفترة المسائية لتشمل 18 مستفيدًا', current:15, target:18,
       iconPath:'<circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/><path d="M3.05 11a9 9 0 1 0 .5-2.6"/>',
-      iconBg:'linear-gradient(135deg,#DDE0CC,#c8ccb0)', iconColor:'var(--olive)', barColor:'linear-gradient(90deg,var(--olive),#8a9060)', badgeBg:'var(--olive)' }
+      iconBg:'linear-gradient(135deg,#DDE0CC,#c8ccb0)', iconColor:'var(--olive)', barColor:'linear-gradient(90deg,var(--olive),#8a9060)', badgeBg:'var(--olive)' },
+    { title:'تجويد المخرج', sub:'الحفاظ على معايير الإتقان والجودة في مخرجات الطلاب عند اكتمال هذه الفترة', current:100, target:100,
+      iconPath:'<circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-6"/>',
+      iconBg:'linear-gradient(135deg,#EAD6D2,#d9b8b2)', iconColor:'#8B4A42', barColor:'linear-gradient(90deg,#8B4A42,#a85f55)', badgeBg:'#8B4A42' }
   ]
 };
 
@@ -1299,14 +1303,10 @@ function showChartFallback(canvasId){
 /* ============ روابط فيديوهات يوتيوب — الصق رابط الفيديو كاملًا من يوتيوب هنا ============ */
 /* مقطع «فكرة المشروع» — يظهر في الصفحة الرئيسية وفي صفحة «فكرة المشروع» */
 var IDEA_VIDEO_URL = '';
+/* مقطع «تقرير 2025م - 1447هـ» — يظهر في صفحة «المحتوى المرئي» فقط */
+var REPORT_2025_VIDEO_URL = '';
 /* مقطع «تجربة خريج» — يظهر في صفحة «المحتوى المرئي» */
 var EXPERIENCE_VIDEO_URL = '';
-/* المقاطع الثلاثة الإضافية في صفحة «المحتوى المرئي» (قسم «مقاطع أخرى») — الصق رابط يوتيوب داخل كل علامتي تنصيص */
-var GALLERY_VIDEOS_YOUTUBE = [
-  '',
-  '',
-  ''
-];
 
 /* يحوّل أي رابط يوتيوب (watch / youtu.be / shorts / embed) إلى رابط تضمين، ويبني إطار الفيديو */
 function youtubeEmbedUrl(url){
@@ -1324,12 +1324,17 @@ function youtubeIframeHTML(url, title){
 (function renderConfiguredVideos(){
   var homeFrame = document.getElementById('homeIdeaVideoFrame');
   var ideaFrame = document.getElementById('ideaVideoFrame');
+  var galleryIdeaFrame = document.getElementById('galleryIdeaVideoFrame');
+  var report2025Frame = document.getElementById('report2025VideoFrame');
   var expFrame = document.getElementById('experienceVideoFrame');
   var ideaHTML = youtubeIframeHTML(IDEA_VIDEO_URL, 'فكرة المشروع');
+  var report2025HTML = youtubeIframeHTML(REPORT_2025_VIDEO_URL, 'تقرير 2025م - 1447هـ');
   var expHTML = youtubeIframeHTML(EXPERIENCE_VIDEO_URL, 'تجربة خريج');
   var placeholder = '<div style="display:flex;align-items:center;justify-content:center;height:220px;color:#cfc9b8;font-size:13.5px;padding:0 20px;text-align:center">لم يُضَف رابط الفيديو بعد.</div>';
   if(homeFrame) homeFrame.innerHTML = ideaHTML || placeholder;
   if(ideaFrame) ideaFrame.innerHTML = ideaHTML || placeholder;
+  if(galleryIdeaFrame) galleryIdeaFrame.innerHTML = ideaHTML || placeholder;
+  if(report2025Frame) report2025Frame.innerHTML = report2025HTML || placeholder;
   if(expFrame) expFrame.innerHTML = expHTML || placeholder;
 })();
 
@@ -1365,13 +1370,6 @@ var GALLERY_IMAGES = [
     }).join('');
   }
 
-  var configuredClips = GALLERY_VIDEOS_YOUTUBE.filter(function(u){ return !!u; });
-  if(configuredClips.length){
-    document.getElementById('videosBlock').style.display = 'block';
-    document.getElementById('galleryVideos').innerHTML = configuredClips.map(function(src, i){
-      return '<div class="gallery-item">'+youtubeIframeHTML(src, 'مقطع '+(i+1))+'</div>';
-    }).join('');
-  }
 })();
 
 /* ============ التشغيل الأولي — كل شيء هنا تلقائي بالكامل حسب تاريخ اليوم ============ */
