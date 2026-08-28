@@ -873,8 +873,7 @@ var YEARS_DATA = {
     ],
     milestones: null,
     completion: 95,
-    attendance: 97,
-    outputQuality: 100
+    attendance: 97
   },
   'q1': {
     kpis: [
@@ -896,8 +895,7 @@ var YEARS_DATA = {
       { label: 'أتموا حفظ كتاب الله', value: 2 }
     ],
     completion: 93,
-    attendance: 94,
-    outputQuality: 100
+    attendance: 94
   },
   'q2': {
     kpis: [
@@ -918,8 +916,7 @@ var YEARS_DATA = {
       { label: 'أتمّ حفظ كتاب الله', value: 1 }
     ],
     completion: 90,
-    attendance: 99,
-    outputQuality: 100
+    attendance: 99
   }
 };
 var TRACK_PALETTE = ['#AD8A3E','#6E7350','#1C5A4E','#8B4A42','#8C6E2E','#4A4E3C'];
@@ -1184,8 +1181,6 @@ function renderStatsBlock(container, dataset, key, opts){
             '<div class="g-label">نسبة الإنجاز</div></div>' +
           '<div class="gauge">' + (dataset.attendance==null ? '<div class="gauge-empty">—</div>' : '<div class="ring"><canvas id="gaugeAttendance-'+key+'"></canvas></div>') +
             '<div class="g-label">نسبة الحضور</div></div>' +
-          '<div class="gauge">' + (dataset.outputQuality==null ? '<div class="gauge-empty">—</div>' : '<div class="ring"><canvas id="gaugeQuality-'+key+'"></canvas></div>') +
-            '<div class="g-label">تجويد المخرج</div></div>' +
         '</div>' +
         '<div class="insight-box"><span class="insight-dot"></span>الأكثر إقبالًا: <strong>'+topTrack.name+'</strong> بواقع '+fmtNum(topTrack.value)+' طالبًا ' +
           '('+Math.round(topTrack.value/totalStudents*100)+'٪ من إجمالي '+fmtNum(totalStudents)+' طالبًا)</div>' +
@@ -1280,7 +1275,6 @@ function renderStatsBlock(container, dataset, key, opts){
   }
   if(dataset.completion != null) statCharts[key+'-g1'] = gauge('gaugeCompletion-'+key, dataset.completion, '#6E7350');
   if(dataset.attendance != null) statCharts[key+'-g2'] = gauge('gaugeAttendance-'+key, dataset.attendance, '#AD8A3E');
-  if(dataset.outputQuality != null) statCharts[key+'-g3'] = gauge('gaugeQuality-'+key, dataset.outputQuality, '#1C5A4E');
 }
 
 /* ============ الرسوم البيانية: إعداد عام ============ */
