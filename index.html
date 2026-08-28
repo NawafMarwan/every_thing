@@ -259,6 +259,32 @@ main{ position:relative; z-index:1; }
   color:var(--ink-soft); line-height:1.8;
 }
 .kpi-note svg{ color:var(--gold-deep); margin-top:2px; }
+
+/* ===== زر تنزيل تقرير الفترة ===== */
+.report-download{
+  display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;
+  margin:30px auto 0; max-width:760px;
+  background:linear-gradient(135deg, var(--teal) 0%, #143f37 100%);
+  color:#fff; border-radius:16px; padding:20px 24px; box-shadow:var(--shadow);
+}
+.report-download .rd-icon{
+  width:40px; height:40px; border-radius:12px; background:rgba(255,255,255,.12);
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.report-download .rd-icon svg{ width:20px; height:20px; }
+.report-download .rd-main{ display:flex; align-items:center; gap:14px; }
+.report-download .rd-text{ display:flex; flex-direction:column; gap:2px; }
+.report-download .rd-title{ font-weight:800; font-size:15px; }
+.report-download .rd-sub{ font-size:12.5px; color:#DCEAE6; }
+.report-download .rd-btn{
+  display:inline-flex; align-items:center; gap:8px; background:var(--gold);
+  color:#262A1F; font-weight:800; font-size:13.5px; padding:11px 20px; border-radius:30px;
+  white-space:nowrap; transition:.2s; flex-shrink:0;
+}
+.report-download .rd-btn svg{ width:16px; height:16px; }
+.report-download .rd-btn:hover{ background:var(--gold-tint); }
+.report-download.disabled{ opacity:.6; }
+.report-download.disabled .rd-btn{ pointer-events:none; background:rgba(255,255,255,.18); color:#fff; }
 @media(max-width:600px){
   .kpi-progress-now{ font-size:30px; }
   .kpi-progress-target{ font-size:18px; }
@@ -302,6 +328,13 @@ main{ position:relative; z-index:1; }
 .section-subtitle{ display:flex; align-items:baseline; gap:10px; margin:32px 0 16px; }
 .section-subtitle h3{ font-size:19px; color:var(--gold-deep); font-weight:800; }
 .section-subtitle .rule{ flex:1; height:1px; background:var(--line); }
+.milestone-note{
+  display:flex; align-items:flex-start; gap:10px; margin:14px auto 8px; max-width:760px;
+  padding:12px 16px; background:var(--paper-deep); border-inline-start:3px solid var(--teal);
+  border-radius:10px; font-size:12.5px; color:var(--ink-soft); line-height:1.85;
+}
+.milestone-note svg{ width:16px; height:16px; flex-shrink:0; margin-top:2px; color:var(--teal); }
+.milestone-note strong{ color:var(--ink); font-weight:800; }
 .milestone-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:14px; margin-bottom:8px; }
 .milestone-card{ background:var(--white); border-radius:14px; padding:18px; text-align:center; box-shadow:var(--shadow); border-bottom:3px solid var(--teal); }
 .milestone-card .m-num{ font-weight:800; font-size:28px; color:var(--teal); direction:ltr; }
@@ -320,9 +353,6 @@ main{ position:relative; z-index:1; }
 .track-bar-fill{ height:100%; width:0; border-radius:6px; transition:width 1s cubic-bezier(.22,1,.36,1); }
 .insight-box{ margin-top:18px; padding:14px 16px; background:var(--paper-deep); border-radius:12px; font-size:13.5px; color:var(--ink-soft); line-height:1.9; }
 .insight-box strong{ color:var(--gold-deep); }
-.cumulative-note{ margin:2px 0 22px; padding:13px 16px; background:var(--gold-tint-soft); border-inline-start:3px solid var(--gold-deep); border-radius:10px; font-size:13px; color:var(--ink-soft); line-height:1.9; display:flex; gap:10px; align-items:flex-start; }
-.cumulative-note svg{ flex-shrink:0; width:18px; height:18px; margin-top:2px; color:var(--gold-deep); }
-.cumulative-note strong{ color:var(--ink); }
 .insight-dot{ display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--gold); margin-inline-start:6px; }
 
 /* ===== Achievement gauges ===== */
@@ -416,6 +446,53 @@ main{ position:relative; z-index:1; }
 .reason-card h3{ font-size:16.5px; margin-bottom:8px; color:var(--gold-deep); }
 .reason-card p{ font-size:14px; color:var(--ink-soft); margin:0; }
 
+/* ===== عنوان فرعي فوق مسوّغات المشروع ===== */
+.reason-heading{
+  text-align:center; font-family:'Aref Ruqaa',serif; font-weight:700;
+  font-size:clamp(20px,2.6vw,26px); color:var(--gold-deep);
+  position:relative; margin:0 0 24px; padding-bottom:12px;
+}
+.reason-heading::after{
+  content:""; position:absolute; bottom:0; left:50%; transform:translateX(-50%);
+  width:54px; height:2px; background:linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+/* ===== الصفحة الرئيسية: شارة "أكثر من 26 عامًا" ===== */
+.years-hero{
+  display:flex; justify-content:center; align-items:center;
+  margin:6px auto 8px; padding:10px 0;
+}
+.years-badge{
+  position:relative; display:inline-flex; align-items:center; justify-content:center;
+  min-width:220px;
+}
+.yb-num{
+  font-family:'Cairo',sans-serif; font-weight:800;
+  font-size:clamp(96px,17vw,180px); line-height:0.82;
+  color:var(--paper-deep);
+  -webkit-text-stroke:2.5px var(--gold-tint);
+  text-shadow:0 10px 26px rgba(140,110,46,0.18);
+  letter-spacing:-2px;
+}
+.yb-more{
+  position:absolute; top:2%; right:2%;
+  font-family:'Aref Ruqaa',serif; font-weight:700;
+  font-size:clamp(15px,2vw,20px); color:var(--teal);
+  text-align:center; line-height:1.2;
+}
+.yb-suffix{
+  position:absolute; bottom:8%; left:0;
+  font-family:'Aref Ruqaa',serif; font-weight:700;
+  font-size:clamp(26px,3.6vw,38px); color:var(--gold-deep);
+  text-shadow:0 2px 6px rgba(140,110,46,0.15);
+}
+.home-lede{
+  max-width:760px; margin:6px auto 34px; text-align:center; font-size:17.5px; color:var(--ink);
+  background:var(--gold-tint-soft); border:1px solid var(--gold-tint); border-radius:14px; padding:22px 26px;
+  line-height:2;
+}
+.home-idea-block{ margin-top:56px; padding-top:44px; border-top:1px dashed var(--line); }
+
 /* ===== Gallery ===== */
 .gallery-grid{
   display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:16px;
@@ -447,7 +524,9 @@ footer strong{ color:var(--gold-tint); }
   display:flex; align-items:center; justify-content:center; gap:20px; flex-wrap:nowrap;
 }
 .footer-logo-awqaf{
-  height:80px; width:auto; max-width:none;
+  height:70px; width:auto; max-width:none;
+  filter:brightness(1.9) contrast(0.85);
+  opacity:0.88;
 }
 .footer-logo-hawami{
   height:84px; width:auto; max-width:none;
@@ -460,7 +539,7 @@ footer strong{ color:var(--gold-tint); }
 .footer-line2{ font-size:16px; font-weight:700; color:var(--gold-tint); letter-spacing:0.3px; }
 .footer-line3{ font-size:12.5px; color:#8A8470; margin-top:2px; }
 @media(max-width:780px){
-  .footer-logo-awqaf{ height:66px; }
+  .footer-logo-awqaf{ height:58px; }
   .footer-logo-hawami{ height:70px; }
   .footer-logo-div{ height:50px; }
   .footer-line1{ font-size:13px; }
@@ -540,8 +619,8 @@ footer strong{ color:var(--gold-tint); }
 
 <nav class="site-nav" id="siteNav">
   <ul class="nav-list" id="navList">
-    <li><button class="nav-btn active" data-target="dashboard">لوحة الإحصائيات</button></li>
-    <li><button class="nav-btn" data-target="kpi">مؤشرات الأداء</button></li>
+    <li><button class="nav-btn active" data-target="home">الصفحة الرئيسية</button></li>
+    <li><button class="nav-btn" data-target="dashboard">لوحة الإحصائيات</button></li>
     <li><button class="nav-btn" data-target="supervisor-word">كلمة المشرف العام</button></li>
     <li><button class="nav-btn" data-target="thanks">رسالة شكر وتقدير</button></li>
     <li><button class="nav-btn" data-target="idea">فكرة المشروع</button></li>
@@ -550,7 +629,58 @@ footer strong{ color:var(--gold-tint); }
 </nav>
 
 <main>
-<section id="dashboard" class="page-section active">
+<section id="home" class="page-section active">
+  <div class="wrap">
+
+    <div class="years-hero">
+      <div class="years-badge">
+        <span class="yb-num">26</span>
+        <span class="yb-more">أكثر<br>من</span>
+        <span class="yb-suffix">عامًا</span>
+      </div>
+    </div>
+
+    <div class="section-head">
+      <span class="eyebrow">تعريف المشروع</span>
+      <h2>لماذا مجمع حلقات جامع الحوامي؟</h2>
+    </div>
+
+    <p class="home-lede">يواصل مجمع حلقات جامع الحوامي بحي منفوحة في الرياض مسيرته المباركة منذ تأسيسه عام 1421هـ، متجاوزًا ستة وعشرين عامًا في خدمة القرآن الكريم؛ من تعليمه وتحفيظه، واحتضان حلقاته، وتخريج حفّاظه، إلى ترسيخ قيمه في نفوس الأجيال، وصناعة جيل متقن لكتاب الله، مرتبط به علمًا وعملًا وسلوكًا. ليبقى أثره ممتدًا، ونوره متجددًا، ومنارة هداية وأجرًا لا ينقطع، وصدقة جارية يتعاقب خيرها جيلًا بعد جيل بإذن الله تعالى.</p>
+
+    <div class="home-idea-block">
+      <div class="video-frame">
+        <video controls preload="metadata" poster="">
+          <source src="videos/idea-video.mp4" type="video/mp4">
+          متصفحك لا يدعم تشغيل الفيديو، يمكنك تحميله من مجلد الموقع مباشرة.
+        </video>
+      </div>
+
+      <p class="idea-intro">مشروع «علّم أعجميًا» هو برنامج قرآني متكامل يُعنى بتعليم غير الناطقين بالعربية من الجاليات الهندية والباكستانية.</p>
+
+      <h3 class="reason-heading">مسوغات المشروع</h3>
+      <div class="reason-grid">
+        <div class="reason-card">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-7-4.5-9-9a5 5 0 0 1 9-3 5 5 0 0 1 9 3c-2 4.5-9 9-9 9z"/></svg></div>
+          <h3>الموقع الاستراتيجي</h3>
+          <p>حيث يقع الجامع في قلب الكثافة السكنية للجالية.</p>
+        </div>
+        <div class="reason-card">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+          <h3>الاستثمار الأمثل</h3>
+          <p>من خلال استثمار شغف الجالية بكتاب الله وتلبية حاجتهم الماسّة.</p>
+        </div>
+        <div class="reason-card">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.5-6 8-6s8 2 8 6"/></svg></div>
+          <h3>الأثر المتعدّي</h3>
+          <p>تأهيل الطالب ليكون «سفيرًا للقرآن» ومعلمًا لأسرته ومجتمعه.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section id="dashboard" class="page-section">
   <div class="wrap">
     <div class="section-head">
       <span class="eyebrow">لوحة الإحصائيات</span>
@@ -560,7 +690,7 @@ footer strong{ color:var(--gold-tint); }
 
     <div class="pill-group" id="yearPills">
       <button class="pill" data-year="2025">2025م — 1447هـ</button>
-      <button class="pill active" data-year="2026">2026م — 1448هـ</button>
+      <button class="pill" data-year="2026">2026م — 1448هـ</button>
       <button class="pill" data-year="2027">2027م — 1449هـ</button>
     </div>
 
@@ -569,13 +699,13 @@ footer strong{ color:var(--gold-tint); }
       <div id="statsBody-2025"></div>
     </div>
 
-    <!-- 2026: بأرباعه -->
-    <div class="year-panel active" id="year-2026">
+    <!-- 2026: بأرباعه — التبويب النشط والربع المعروض يُحدَّدان تلقائيًا بالتاريخ عبر الجافاسكربت أسفل الصفحة، لا حاجة لتعديلهما يدويًا -->
+    <div class="year-panel" id="year-2026">
       <div class="pill-group sub" id="quarterPills">
-        <button class="pill active" data-quarter="q1">الربع الأول</button>
+        <button class="pill" data-quarter="q1">الربع الأول</button>
         <button class="pill" data-quarter="q2">الربع الثاني</button>
-        <button class="pill" disabled>الربع الثالث <span class="soon">(قريبًا)</span></button>
-        <button class="pill" disabled>الربع الرابع <span class="soon">(قريبًا)</span></button>
+        <button class="pill" data-quarter="q3" disabled>الربع الثالث <span class="soon">(قريبًا)</span></button>
+        <button class="pill" data-quarter="q4" disabled>الربع الرابع <span class="soon">(قريبًا)</span></button>
       </div>
       <div id="statsBody-2026"></div>
     </div>
@@ -590,116 +720,11 @@ footer strong{ color:var(--gold-tint); }
       </div>
       <div class="kpi-grid" style="margin-top:20px">
         <div class="kpi-card" style="grid-column:1/-1;text-align:center;padding:40px;color:var(--ink-soft)">
-          <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" style="margin:0 auto 12px;display:block;color:var(--gold)"><path d="M12 21V10"/><path d="M12 10C12 6 15 3 19 3c0 4-3 7-7 7z"/><path d="M12 14c0-3-2.5-5.5-6-5.5 0 3 2.5 5.5 6 5.5z"/></svg>
-          <div style="font-size:18px;font-weight:700;color:var(--ink);margin-bottom:8px">سنوات ثلاث من الغرس المبارك، وكل حرف تعلمه طالبٌ في موازين حسناتكم</div>
-          <div style="font-size:14px">بمثل هذا العطاء يستمر الخير</div>
+          <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" style="margin:0 auto 12px;display:block;color:var(--gold)"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+          <div style="font-size:18px;font-weight:700;color:var(--ink);margin-bottom:8px">سنوات ثلاث من الغرس المبارك،</div>
+          <div style="font-size:14px">وكل حرف تعلمه طالبٌ في موزاين حسناتكم بمثل هذا العطاء يستمر الخير</div>
         </div>
       </div>
-    </div>
-  </div>
-</section>
-
-
-<section id="kpi" class="page-section">
-  <div class="wrap">
-    <div class="section-head">
-      <span class="eyebrow">مؤشرات الأداء</span>
-      <h2>التطلعات المستقبلية — رؤيتنا للعام القادم</h2>
-      <p>خارطة طريق العام القادم بإذن الله — نسب التقدم الحالية نحو الأهداف المرسومة</p>
-    </div>
-
-    <div class="kpi-targets-grid">
-
-      <!-- هدف 1 -->
-      <div class="kpi-target-card reveal">
-        <div class="kpi-target-icon" style="background:linear-gradient(135deg,#EFE2BC,#ddd0a0)">
-          <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold-deep)" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        </div>
-        <div class="kpi-target-body">
-          <div class="kpi-target-title">زيادة الطاقة الاستيعابية</div>
-          <div class="kpi-target-sub">استهداف الوصول إلى 140 طالبًا منتظمًا بناءً على النمو الحالي</div>
-          <div class="kpi-progress-row">
-            <span class="kpi-progress-now" id="kpi1-now">0</span>
-            <span class="kpi-progress-of">من</span>
-            <span class="kpi-progress-target">140</span>
-          </div>
-          <div class="kpi-bar-bg"><div class="kpi-bar-fill" id="kpi1-bar" data-pct="91.4" style="background:linear-gradient(90deg,var(--gold-deep),var(--gold))"></div></div>
-          <div class="kpi-pct-row">
-            <span class="kpi-pct-badge" id="kpi1-pct">0%</span>
-            <span class="kpi-pct-label">من الهدف</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- هدف 2 -->
-      <div class="kpi-target-card reveal">
-        <div class="kpi-target-icon" style="background:linear-gradient(135deg,#DCEAE6,#c0ddd6)">
-          <svg viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.8"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-        </div>
-        <div class="kpi-target-body">
-          <div class="kpi-target-title">مضاعفة الخاتمين</div>
-          <div class="kpi-target-sub">العمل على تخريج 8 حفّاظ جدد لكتاب الله كاملًا من طلاب مرحلة الحفظ الحاليين</div>
-          <div class="kpi-progress-row">
-            <span class="kpi-progress-now" id="kpi2-now">0</span>
-            <span class="kpi-progress-of">من</span>
-            <span class="kpi-progress-target">8</span>
-          </div>
-          <div class="kpi-bar-bg"><div class="kpi-bar-fill" id="kpi2-bar" data-pct="37.5" style="background:linear-gradient(90deg,var(--teal),#2d8c78)"></div></div>
-          <div class="kpi-pct-row">
-            <span class="kpi-pct-badge" id="kpi2-pct" style="background:var(--teal)">0%</span>
-            <span class="kpi-pct-label">من الهدف</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- هدف 3 -->
-      <div class="kpi-target-card reveal">
-        <div class="kpi-target-icon" style="background:linear-gradient(135deg,#DDE0CC,#c8ccb0)">
-          <svg viewBox="0 0 24 24" fill="none" stroke="var(--olive)" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/><path d="M3.05 11a9 9 0 1 0 .5-2.6"/></svg>
-        </div>
-        <div class="kpi-target-body">
-          <div class="kpi-target-title">توسيع المسار المجتمعي</div>
-          <div class="kpi-target-sub">زيادة عدد المستفيدين من العمالة في الفترة المسائية لتشمل 18 مستفيدًا</div>
-          <div class="kpi-progress-row">
-            <span class="kpi-progress-now" id="kpi3-now">0</span>
-            <span class="kpi-progress-of">من</span>
-            <span class="kpi-progress-target">18</span>
-          </div>
-          <div class="kpi-bar-bg"><div class="kpi-bar-fill" id="kpi3-bar" data-pct="61.1" style="background:linear-gradient(90deg,var(--olive),#8a9060)"></div></div>
-          <div class="kpi-pct-row">
-            <span class="kpi-pct-badge" id="kpi3-pct" style="background:var(--olive)">0%</span>
-            <span class="kpi-pct-label">من الهدف</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- هدف 4 -->
-      <div class="kpi-target-card reveal">
-        <div class="kpi-target-icon" style="background:linear-gradient(135deg,#EFDCD5,#dcbfb4)">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#7A3B2E" stroke-width="1.8"><path d="M9 18V5l7 3v9"/><circle cx="6" cy="18" r="3"/><circle cx="13" cy="17" r="3"/></svg>
-        </div>
-        <div class="kpi-target-body">
-          <div class="kpi-target-title">تجويد المخرج</div>
-          <div class="kpi-target-sub">ضبط مخارج الحروف وأحكام التجويد لدى جميع الطلاب المجازين وفق المعيار المعتمد</div>
-          <div class="kpi-progress-row">
-            <span class="kpi-progress-now" id="kpi4-now">0</span>
-            <span class="kpi-progress-of">من</span>
-            <span class="kpi-progress-target">100</span>
-          </div>
-          <div class="kpi-bar-bg"><div class="kpi-bar-fill" id="kpi4-bar" data-pct="100" style="background:linear-gradient(90deg,#7A3B2E,#a35a48)"></div></div>
-          <div class="kpi-pct-row">
-            <span class="kpi-pct-badge" id="kpi4-pct" style="background:#7A3B2E">0%</span>
-            <span class="kpi-pct-label">من الهدف</span>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- ملاحظة ختامية -->
-    <div class="kpi-note reveal">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" style="width:20px;height:20px;flex-shrink:0"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-      <span>رؤيتنا للعام القادم — بإذن الله — تبنى على حصاد ما أنجزناه معًا، وبدعمكم نواصل.</span>
     </div>
   </div>
 </section>
@@ -765,6 +790,7 @@ footer strong{ color:var(--gold-tint); }
 
     <p class="idea-intro">مشروع «علّم أعجميًا» هو برنامج قرآني متكامل يُعنى بتعليم غير الناطقين بالعربية من الجاليات الهندية والباكستانية.</p>
 
+    <h3 class="reason-heading">مسوغات المشروع</h3>
     <div class="reason-grid">
       <div class="reason-card">
         <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-7-4.5-9-9a5 5 0 0 1 9-3 5 5 0 0 1 9 3c-2 4.5-9 9-9 9z"/></svg></div>
@@ -902,6 +928,130 @@ var YEARS_DATA = {
 var TRACK_PALETTE = ['#AD8A3E','#6E7350','#1C5A4E','#8B4A42','#8C6E2E','#4A4E3C'];
 function fmtNum(n){ return n.toLocaleString('en-US'); }
 
+/* ============================================================
+   الانتقال التلقائي بين الأرباع والسنوات — بلا أي تدخل يدوي
+   ============================================================
+   كل سطر أدناه يمثل "بداية" فترة (سنة كاملة أو ربع). الموقع يقارن
+   تاريخ اليوم الفعلي بهذا الجدول تلقائيًا في كل زيارة، ويحدّد
+   الفترة "الحالية" تلقائيًا، فتُفعَّل تبويباتها وتُعرض بياناتها،
+   وتنتقل معها بطاقات "التطلعات المستقبلية" وزر تنزيل التقرير —
+   دون الحاجة لتغيير أي class="active" يدويًا بعد اليوم.
+
+   لإضافة ربع جديد مستقبلًا:
+   1) أضف بيانات الربع داخل YEARS_DATA (مثل q3) كما فعلنا مع q1/q2.
+   2) أضف سطرًا هنا بتاريخ بداية ذلك الربع الفعلي.
+   3) عدّل نص الزر المعطّل في HTML (احذف disabled واحذف "قريبًا").
+   هذا كل ما يلزم — البقية تلقائي بالكامل. */
+var PERIOD_SCHEDULE = [
+  { year:'2025', quarter:null, dataKey:'2025', from:'2025-01-01' },
+  { year:'2026', quarter:'q1',  dataKey:'q1',   from:'2026-01-01' },
+  { year:'2026', quarter:'q2',  dataKey:'q2',   from:'2026-04-01' },
+  { year:'2026', quarter:'q3',  dataKey:'q3',   from:'2026-10-01' },
+  { year:'2026', quarter:'q4',  dataKey:'q4',   from:'2026-12-15' },
+  { year:'2027', quarter:'q1',  dataKey:'2027q1', from:'2027-01-01' }
+  /* ملاحظة لنواف: تواريخ q3/q4 وأرباع 2027 مبدئية تقريبية —
+     عدّلها لتطابق تقويم الحلقات الفعلي متى تحدّد. */
+];
+function getLivePeriod(){
+  var todayStr = new Date().toISOString().slice(0,10);
+  var current = PERIOD_SCHEDULE[0];
+  PERIOD_SCHEDULE.forEach(function(p){ if(p.from <= todayStr) current = p; });
+  return current;
+}
+var LIVE_PERIOD = getLivePeriod();
+// إن لم تُدخَل بيانات الربع/السنة الحالية فعليًا بعد، نعرض آخر فترة تتوفر بياناتها
+// بدل ترك الصفحة فارغة — لكن بطاقات "التطلعات" وزر التنزيل يبقيان مرتبطين
+// بالفترة الحقيقية الحالية (LIVE_PERIOD) لا بالفترة المعروضة احتياطيًا.
+function getLiveRenderKey(){
+  if(YEARS_DATA[LIVE_PERIOD.dataKey]) return LIVE_PERIOD.dataKey;
+  for(var i=PERIOD_SCHEDULE.indexOf(LIVE_PERIOD); i>=0; i--){
+    if(YEARS_DATA[PERIOD_SCHEDULE[i].dataKey]) return PERIOD_SCHEDULE[i].dataKey;
+  }
+  return null;
+}
+
+/* بطاقات "التطلعات المستقبلية" — تُعرض فقط في نهاية الفترة الحالية فعليًا
+   (LIVE_PERIOD)، وتنتقل تلقائيًا مع كل ربع جديد، ولا تبقى أبدًا في ربع
+   سابق. عدّل current/target هنا كلما تغيّرت نسب الإنجاز الفعلية. */
+var CURRENT_TARGETS = {
+  note: 'رؤيتنا للعام القادم — بإذن الله — تبنى على حصاد ما أنجزناه معًا، وبدعمكم نواصل.',
+  items: [
+    { title:'زيادة الطاقة الاستيعابية', sub:'استهداف الوصول إلى 140 طالبًا منتظمًا بناءً على النمو الحالي', current:128, target:140,
+      iconPath:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
+      iconBg:'linear-gradient(135deg,#EFE2BC,#ddd0a0)', iconColor:'var(--gold-deep)', barColor:'linear-gradient(90deg,var(--gold-deep),var(--gold))', badgeBg:null },
+    { title:'مضاعفة الخاتمين', sub:'العمل على تخريج 8 حفّاظ جدد لكتاب الله كاملًا من طلاب مرحلة الحفظ الحاليين', current:3, target:8,
+      iconPath:'<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>',
+      iconBg:'linear-gradient(135deg,#DCEAE6,#c0ddd6)', iconColor:'var(--teal)', barColor:'linear-gradient(90deg,var(--teal),#2d8c78)', badgeBg:'var(--teal)' },
+    { title:'توسيع المسار المجتمعي', sub:'زيادة عدد المستفيدين من العمالة في الفترة المسائية لتشمل 18 مستفيدًا', current:11, target:18,
+      iconPath:'<circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/><path d="M3.05 11a9 9 0 1 0 .5-2.6"/>',
+      iconBg:'linear-gradient(135deg,#DDE0CC,#c8ccb0)', iconColor:'var(--olive)', barColor:'linear-gradient(90deg,var(--olive),#8a9060)', badgeBg:'var(--olive)' }
+  ]
+};
+
+/* روابط تنزيل التقرير المصمم لكل فترة — الصق رابط Google Drive (رابط
+   "مشاركة" عام) بين علامتي التنصيص أمام كل فترة. اتركه فارغًا ''
+   ليظهر الزر معطّلاً بعلامة "قريبًا" تلقائيًا حتى تضيف الرابط. */
+var REPORT_LINKS = {
+  '2025': '',
+  'q1':   '',
+  'q2':   '',
+  'q3':   '',
+  'q4':   ''
+};
+var PERIOD_LABELS = {
+  '2025': 'تقرير عام 2025م — 1447هـ',
+  'q1':   'تقرير الربع الأول 1448هـ',
+  'q2':   'تقرير الربع الثاني 1448هـ',
+  'q3':   'تقرير الربع الثالث 1448هـ',
+  'q4':   'تقرير الربع الرابع 1448هـ'
+};
+function downloadButtonHtml(key){
+  var link = REPORT_LINKS[key] || '';
+  var label = PERIOD_LABELS[key] || 'تقرير هذه الفترة';
+  var has = !!link;
+  return '<div class="report-download'+(has?'':' disabled')+'">' +
+    '<div class="rd-main"><div class="rd-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></div>' +
+    '<div class="rd-text"><div class="rd-title">'+label+'</div>' +
+    '<div class="rd-sub">'+(has?'نسخة مصمّمة بصيغة PDF جاهزة للتنزيل أو المشاركة':'الرابط لم يُضف بعد')+'</div></div></div>' +
+    '<a class="rd-btn" '+(has? 'href="'+link+'" target="_blank" rel="noopener"' : 'href="javascript:void(0)" aria-disabled="true"')+'>' +
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg>' +
+    (has?'تنزيل التقرير':'قريبًا') + '</a></div>';
+}
+function targetsBlockHtml(){
+  var cards = CURRENT_TARGETS.items.map(function(it,i){
+    var id = 'liveTarget'+i;
+    return '<div class="kpi-target-card reveal">' +
+      '<div class="kpi-target-icon" style="background:'+it.iconBg+'"><svg viewBox="0 0 24 24" fill="none" stroke="'+it.iconColor+'" stroke-width="1.8">'+it.iconPath+'</svg></div>' +
+      '<div class="kpi-target-body">' +
+        '<div class="kpi-target-title">'+it.title+'</div>' +
+        '<div class="kpi-target-sub">'+it.sub+'</div>' +
+        '<div class="kpi-progress-row"><span class="kpi-progress-now" id="'+id+'-now">0</span><span class="kpi-progress-of">من</span><span class="kpi-progress-target">'+it.target+'</span></div>' +
+        '<div class="kpi-bar-bg"><div class="kpi-bar-fill" id="'+id+'-bar" style="background:'+it.barColor+'"></div></div>' +
+        '<div class="kpi-pct-row"><span class="kpi-pct-badge" id="'+id+'-pct"'+(it.badgeBg?' style="background:'+it.badgeBg+'"':'')+'>0%</span><span class="kpi-pct-label">من الهدف</span></div>' +
+      '</div></div>';
+  }).join('');
+  return '<div class="section-subtitle"><h3>التطلعات المستقبلية لهذه الفترة</h3><div class="rule"></div></div>' +
+    '<div class="kpi-targets-grid">'+cards+'</div>' +
+    '<div class="kpi-note reveal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" style="width:20px;height:20px;flex-shrink:0"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span>'+CURRENT_TARGETS.note+'</span></div>';
+}
+function animateTargets(container){
+  CURRENT_TARGETS.items.forEach(function(it,i){
+    var id = 'liveTarget'+i;
+    var pct = Math.round(it.current/it.target*1000)/10;
+    var start = performance.now(); var dur = 1100;
+    (function tick(now){
+      var p = Math.min(1,(now-start)/dur); var eased = 1-Math.pow(1-p,3);
+      var nowEl = container.querySelector('#'+id+'-now'); if(nowEl) nowEl.textContent = Math.round(it.current*eased);
+      var pctEl = container.querySelector('#'+id+'-pct'); if(pctEl) pctEl.textContent = (eased*pct).toFixed(1)+'%';
+      if(p<1) requestAnimationFrame(tick);
+    })(performance.now());
+    setTimeout(function(){
+      var bar = container.querySelector('#'+id+'-bar');
+      if(bar) bar.style.width = pct+'%';
+    }, 80);
+  });
+}
+
 /* ============ التبويبات الرئيسية ============ */
 var navBtns = document.querySelectorAll('.nav-btn');
 var sections = document.querySelectorAll('.page-section');
@@ -927,15 +1077,14 @@ navToggle.addEventListener('click', function(){
   navToggle.setAttribute('aria-expanded', open ? 'true':'false');
 });
 
-// مزامنة تلقائية عند التحميل: القسم الذي يظهر هو المطابق لزر التبويب الذي يحمل
-// كلاس "active" — لا حاجة لتعديل عنصر <section> يدويًا لمطابقته لاحقًا.
-(function initDefaultTab(){
-  var activeBtn = document.querySelector('.nav-btn.active') || navBtns[0];
-  if(activeBtn) activateTab(activeBtn.dataset.target);
-})();
-
 /* ============ سنة 2025 مقابل 2026 مقابل 2027 ============ */
 var rendered = {};
+// الربع الافتراضي المعروض عند فتح تبويب سنة 2026 هو الربع الحالي فعليًا
+// (يُحسب تلقائيًا من LIVE_PERIOD)، لا ربع ثابت مكتوب يدويًا.
+function defaultQuarterFor2026(){
+  if(LIVE_PERIOD.year==='2026' && LIVE_PERIOD.quarter && YEARS_DATA[LIVE_PERIOD.dataKey]) return LIVE_PERIOD.dataKey;
+  return getLiveRenderKey() && PERIOD_SCHEDULE.some(function(p){return p.dataKey===getLiveRenderKey() && p.year==='2026';}) ? getLiveRenderKey() : 'q1';
+}
 document.getElementById('yearPills').addEventListener('click', function(e){
   var btn = e.target.closest('.pill'); if(!btn) return;
   var year = btn.dataset.year;
@@ -944,12 +1093,16 @@ document.getElementById('yearPills').addEventListener('click', function(e){
   document.getElementById('year-2026').classList.toggle('active', year==='2026');
   document.getElementById('year-2027').classList.toggle('active', year==='2027');
   if(year==='2025' && !rendered['2025']){
-    renderStatsBlock(document.getElementById('statsBody-2025'), YEARS_DATA['2025'], '2025');
+    renderStatsBlock(document.getElementById('statsBody-2025'), YEARS_DATA['2025'], '2025', {live: LIVE_PERIOD.dataKey==='2025'});
     rendered['2025'] = true;
   }
-  if(year==='2026' && !rendered['q1']){
-    renderStatsBlock(document.getElementById('statsBody-2026'), YEARS_DATA['q1'], 'q1');
-    rendered['q1'] = true;
+  if(year==='2026'){
+    var q = defaultQuarterFor2026();
+    document.getElementById('quarterPills').querySelectorAll('.pill').forEach(function(p){ p.classList.toggle('active', p.dataset.quarter===q); });
+    if(!rendered[q]){
+      renderStatsBlock(document.getElementById('statsBody-2026'), YEARS_DATA[q], q, {live: LIVE_PERIOD.dataKey===q});
+      rendered[q] = true;
+    }
   }
 });
 
@@ -957,8 +1110,10 @@ document.getElementById('yearPills').addEventListener('click', function(e){
 document.getElementById('quarterPills').addEventListener('click', function(e){
   var btn = e.target.closest('.pill:not([disabled])'); if(!btn || !btn.dataset.quarter) return;
   var q = btn.dataset.quarter;
+  if(!YEARS_DATA[q]) return;
   this.querySelectorAll('.pill').forEach(function(p){ p.classList.toggle('active', p===btn); });
-  renderStatsBlock(document.getElementById('statsBody-2026'), YEARS_DATA[q], q);
+  renderStatsBlock(document.getElementById('statsBody-2026'), YEARS_DATA[q], q, {live: LIVE_PERIOD.dataKey===q});
+  rendered[q] = true;
 });
 
 /* ============ عدّاد متحرك + ظهور تدريجي ============ */
@@ -987,7 +1142,8 @@ function reveal(container){
 
 /* ============ عرض لوحة إحصائيات فترة واحدة (سنة أو ربع) ============ */
 var statCharts = {};
-function renderStatsBlock(container, dataset, key){
+function renderStatsBlock(container, dataset, key, opts){
+  opts = opts || {};
   Object.keys(statCharts).forEach(function(k){ if(k.indexOf(key)===0){ statCharts[k].destroy(); delete statCharts[k]; } });
 
   var totalStudents = dataset.tracks.reduce(function(s,x){ return s + x.value; }, 0);
@@ -1005,12 +1161,8 @@ function renderStatsBlock(container, dataset, key){
       '<div class="milestone-grid">' + dataset.milestones.map(function(m){
         return '<div class="milestone-card reveal"><div class="m-num">'+fmtNum(m.value)+'</div><div class="m-label">'+m.label+'</div></div>';
       }).join('') + '</div>' +
-      '<div class="cumulative-note reveal">' +
-        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>' +
-        '<span><strong>ملاحظة:</strong> الأرقام أعلاه تراكمية منذ بداية العام الدراسي، وتمثل إجمالي المُنجَز حتى نهاية كل ربع. ' +
-        'وقد يتفاوت مقدار الزيادة المسجَّلة من ربع لآخر تبعًا لعدد الطلاب الذين أتمّوا كل مرحلة خلال تلك الفترة تحديدًا، ' +
-        'وهذا لا يعني بالضرورة تراجعًا في الإنجاز الكلي للمشروع.</span>' +
-      '</div>';
+      '<div class="milestone-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l2 2"/></svg>' +
+      '<span><strong>ملاحظة:</strong> الأعداد الموضحة أعلاه <strong>تراكمية</strong>، أي أنها تمثل إجمالي المنجَز منذ بداية العام الدراسي وحتى نهاية هذه الفترة، وليست إنجاز الربع بمفرده. لذا فإن اختلاف الرقم صعودًا أو نزولًا بين ربعٍ وآخر لا يعني بالضرورة تراجعًا في الإنجاز، بل قد يعود لاختلاف توقيت رصد البيانات أو موعد إتمام الطلاب لمساراتهم.</span></div>';
   }
 
   html += '<div class="section-subtitle"><h3>توزيع الطلاب على المسارات</h3><div class="rule"></div></div>' +
@@ -1038,9 +1190,13 @@ function renderStatsBlock(container, dataset, key){
       '</div>' +
     '</div>';
 
+  if(opts.live){ html += targetsBlockHtml(); }
+  html += downloadButtonHtml(key);
+
   container.innerHTML = html;
   animateCounters(container);
   reveal(container);
+  if(opts.live){ animateTargets(container); }
 
   function buildTrackChart(mode){
     if(!chartsAvailable){ showChartFallback('tracksChart-'+key); return; }
@@ -1186,90 +1342,36 @@ var GALLERY_VIDEOS = [
   }
 })();
 
-/* ============ التشغيل الأولي (تلقائي بالكامل) ============ */
-// لا حاجة لأي تعديل يدوي هنا لاحقًا: يكفي نقل كلاس "active" بين أزرار السنة/الربع
-// في الكود، وسيتم تلقائيًا مزامنة لوحة السنة الظاهرة وتحميل بياناتها المطابقة.
-(function initDefaultView(){
-  var yearBtn = document.querySelector('#yearPills .pill.active') || document.querySelector('#yearPills .pill');
-  var activeYear = yearBtn ? yearBtn.dataset.year : '2026';
+/* ============ التشغيل الأولي — كل شيء هنا تلقائي بالكامل حسب تاريخ اليوم ============ */
+(function initLivePeriod(){
+  // 1) تفعيل تبويب السنة الصحيحة (2025 / 2026 / 2027) تلقائيًا
+  var year = LIVE_PERIOD.year;
+  document.querySelectorAll('#yearPills .pill').forEach(function(p){ p.classList.toggle('active', p.dataset.year===year); });
+  document.getElementById('year-2025').classList.toggle('active', year==='2025');
+  document.getElementById('year-2026').classList.toggle('active', year==='2026');
+  document.getElementById('year-2027').classList.toggle('active', year==='2027');
 
-  document.querySelectorAll('#yearPills .pill').forEach(function(p){ p.classList.toggle('active', p===yearBtn); });
-  document.querySelectorAll('.year-panel').forEach(function(panel){
-    panel.classList.toggle('active', panel.id === 'year-' + activeYear);
+  // 2) تفعيل/تعطيل أزرار الأرباع تلقائيًا حسب توفّر بياناتها في YEARS_DATA
+  //    (بمجرد إضافة بيانات ربع جديد في YEARS_DATA، يُفعَّل زرّه هنا تلقائيًا)
+  document.querySelectorAll('#quarterPills .pill[data-quarter]').forEach(function(p){
+    var has = !!YEARS_DATA[p.dataset.quarter];
+    if(has){
+      p.removeAttribute('disabled');
+      var soon = p.querySelector('.soon'); if(soon) soon.remove();
+    }
   });
 
-  if(activeYear === '2025'){
-    renderStatsBlock(document.getElementById('statsBody-2025'), YEARS_DATA['2025'], '2025');
+  // 3) عرض بيانات الفترة الحالية فعليًا (أو آخر فترة متوفّرة إن لم تُدخَل بيانات الفترة الحالية بعد)
+  var renderKey = getLiveRenderKey();
+  if(renderKey === '2025'){
+    renderStatsBlock(document.getElementById('statsBody-2025'), YEARS_DATA['2025'], '2025', {live: LIVE_PERIOD.dataKey==='2025'});
     rendered['2025'] = true;
-  } else if(activeYear === '2026'){
-    var qBtn = document.querySelector('#quarterPills .pill.active[data-quarter]') || document.querySelector('#quarterPills .pill[data-quarter]:not([disabled])');
-    var activeQuarter = qBtn ? qBtn.dataset.quarter : 'q1';
-    document.querySelectorAll('#quarterPills .pill').forEach(function(p){ p.classList.toggle('active', p===qBtn); });
-    renderStatsBlock(document.getElementById('statsBody-2026'), YEARS_DATA[activeQuarter], activeQuarter);
-    rendered[activeQuarter] = true;
+  } else if(renderKey && YEARS_DATA[renderKey] && PERIOD_SCHEDULE.some(function(p){ return p.dataKey===renderKey && p.year==='2026'; })){
+    document.querySelectorAll('#quarterPills .pill').forEach(function(p){ p.classList.toggle('active', p.dataset.quarter===renderKey); });
+    renderStatsBlock(document.getElementById('statsBody-2026'), YEARS_DATA[renderKey], renderKey, {live: LIVE_PERIOD.dataKey===renderKey});
+    rendered[renderKey] = true;
   }
-})();
-
-/* ============ أنيميشن مؤشرات الأداء ============ */
-(function initKpiAnimations(){
-  var KPI_DATA = [
-    { nowId:'kpi1-now', pctId:'kpi1-pct', barId:'kpi1-bar', current:128, target:140 },
-    { nowId:'kpi2-now', pctId:'kpi2-pct', barId:'kpi2-bar', current:3,   target:8   },
-    { nowId:'kpi3-now', pctId:'kpi3-pct', barId:'kpi3-bar', current:11,  target:18  },
-    { nowId:'kpi4-now', pctId:'kpi4-pct', barId:'kpi4-bar', current:100, target:100 }
-  ];
-  var fired = false;
-  var observer = new IntersectionObserver(function(entries){
-    if(fired) return;
-    var visible = entries.some(function(e){ return e.isIntersecting; });
-    if(!visible) return;
-    fired = true;
-    KPI_DATA.forEach(function(d){
-      var pct = Math.round(d.current/d.target*1000)/10;
-      // counter animation
-      var start = performance.now(); var dur = 1200;
-      (function tick(now){
-        var p = Math.min(1,(now-start)/dur);
-        var eased = 1-Math.pow(1-p,3);
-        var nowEl = document.getElementById(d.nowId);
-        if(nowEl) nowEl.textContent = Math.round(d.current*eased);
-        var pctEl = document.getElementById(d.pctId);
-        if(pctEl) pctEl.textContent = (eased*pct).toFixed(1)+'%';
-        if(p<1) requestAnimationFrame(tick);
-      })(performance.now());
-      // bar animation
-      setTimeout(function(){
-        var bar = document.getElementById(d.barId);
-        if(bar) bar.style.width = pct+'%';
-      }, 80);
-    });
-  }, {threshold:0.2});
-  // observe the first card
-  var firstCard = document.querySelector('.kpi-target-card');
-  if(firstCard) observer.observe(firstCard);
-  // also trigger when tab is clicked
-  document.querySelectorAll('.nav-btn').forEach(function(b){
-    if(b.dataset.target==='kpi') b.addEventListener('click', function(){
-      setTimeout(function(){
-        // make all reveal elements visible immediately (they were hidden before tab opened)
-        document.querySelectorAll('#kpi .reveal').forEach(function(el){
-          el.classList.add('in-view');
-        });
-        if(!fired){ fired=true; observer.disconnect();
-          KPI_DATA.forEach(function(d){
-            var pct = Math.round(d.current/d.target*1000)/10;
-            var start=performance.now(); var dur=1200;
-            (function tick(now){ var p=Math.min(1,(now-start)/dur); var eased=1-Math.pow(1-p,3);
-              var nowEl=document.getElementById(d.nowId); if(nowEl) nowEl.textContent=Math.round(d.current*eased);
-              var pctEl=document.getElementById(d.pctId); if(pctEl) pctEl.textContent=(eased*pct).toFixed(1)+'%';
-              if(p<1) requestAnimationFrame(tick);
-            })(performance.now());
-            setTimeout(function(){ var bar=document.getElementById(d.barId); if(bar) bar.style.width=pct+'%'; },80);
-          });
-        }
-      }, 300);
-    });
-  });
+  // إن كانت السنة الحالية 2027 ولا بيانات بعد، يبقى القسم الثابت "ستُضاف عند توافرها" كما هو — لا حاجة لأي إجراء.
 })();
 
 })();
