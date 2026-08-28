@@ -429,6 +429,7 @@ main{ position:relative; z-index:1; }
   box-shadow:var(--shadow); border:1px solid var(--line); background:#0d0d0d;
 }
 .video-frame video{ width:100%; display:block; max-height:460px; background:#000; }
+.video-frame iframe{ width:100%; aspect-ratio:16/9; max-height:460px; display:block; border:0; background:#000; }
 .idea-intro{
   max-width:760px; margin:0 auto 34px; text-align:center; font-size:17.5px; color:var(--ink);
   background:var(--gold-tint-soft); border:1px solid var(--gold-tint); border-radius:14px; padding:22px 26px;
@@ -504,6 +505,7 @@ main{ position:relative; z-index:1; }
 .gallery-item img{ width:100%; height:100%; object-fit:contain; transition:.35s; }
 .gallery-item:hover img{ transform:scale(1.04); }
 .gallery-item video{ width:100%; height:100%; object-fit:contain; background:#000; }
+.gallery-item iframe{ width:100%; height:100%; border:0; background:#000; }
 .gallery-empty{
   grid-column:1/-1; text-align:center; padding:50px 20px; color:var(--ink-soft);
   background:var(--white); border:1px dashed var(--line); border-radius:16px;
@@ -648,12 +650,7 @@ footer strong{ color:var(--gold-tint); }
     <p class="home-lede">يواصل مجمع حلقات جامع الحوامي بحي منفوحة في الرياض مسيرته المباركة منذ تأسيسه عام 1421هـ، متجاوزًا ستة وعشرين عامًا في خدمة القرآن الكريم؛ من تعليمه وتحفيظه، واحتضان حلقاته، وتخريج حفّاظه، إلى ترسيخ قيمه في نفوس الأجيال، وصناعة جيل متقن لكتاب الله، مرتبط به علمًا وعملًا وسلوكًا. ليبقى أثره ممتدًا، ونوره متجددًا، ومنارة هداية وأجرًا لا ينقطع، وصدقة جارية يتعاقب خيرها جيلًا بعد جيل بإذن الله تعالى.</p>
 
     <div class="home-idea-block">
-      <div class="video-frame">
-        <video controls preload="metadata" poster="">
-          <source src="videos/idea-video.mp4" type="video/mp4">
-          متصفحك لا يدعم تشغيل الفيديو، يمكنك تحميله من مجلد الموقع مباشرة.
-        </video>
-      </div>
+      <div class="video-frame" id="homeIdeaVideoFrame"></div>
 
       <p class="idea-intro">مشروع «علّم أعجميًا» هو برنامج قرآني متكامل يُعنى بتعليم غير الناطقين بالعربية من الجاليات الهندية والباكستانية.</p>
 
@@ -781,12 +778,7 @@ footer strong{ color:var(--gold-tint); }
       <h2>لماذا «علّم أعجميًا»؟</h2>
     </div>
 
-    <div class="video-frame">
-      <video controls preload="metadata" poster="">
-        <source src="videos/idea-video.mp4" type="video/mp4">
-        متصفحك لا يدعم تشغيل الفيديو، يمكنك تحميله من مجلد الموقع مباشرة.
-      </video>
-    </div>
+    <div class="video-frame" id="ideaVideoFrame"></div>
 
     <p class="idea-intro">مشروع «علّم أعجميًا» هو برنامج قرآني متكامل يُعنى بتعليم غير الناطقين بالعربية من الجاليات الهندية والباكستانية.</p>
 
@@ -819,12 +811,7 @@ footer strong{ color:var(--gold-tint); }
     </div>
 
     <div class="section-subtitle"><h3>تجربة خريج</h3><div class="rule"></div></div>
-    <div class="video-frame" id="experienceVideoFrame">
-      <video controls preload="metadata">
-        <source src="videos/experience.mp4" type="video/mp4">
-        متصفحك لا يدعم تشغيل الفيديو.
-      </video>
-    </div>
+    <div class="video-frame" id="experienceVideoFrame"></div>
 
     <div class="section-subtitle"><h3>الصور</h3><div class="rule"></div></div>
     <div class="gallery-grid" id="galleryGrid"></div>
@@ -879,7 +866,8 @@ var YEARS_DATA = {
     ],
     milestones: null,
     completion: 95,
-    attendance: 97
+    attendance: 97,
+    outputQuality: 100
   },
   'q1': {
     kpis: [
@@ -901,7 +889,8 @@ var YEARS_DATA = {
       { label: 'أتموا حفظ كتاب الله', value: 2 }
     ],
     completion: 93,
-    attendance: 94
+    attendance: 94,
+    outputQuality: 100
   },
   'q2': {
     kpis: [
@@ -922,7 +911,8 @@ var YEARS_DATA = {
       { label: 'أتمّ حفظ كتاب الله', value: 1 }
     ],
     completion: 90,
-    attendance: 99
+    attendance: 99,
+    outputQuality: 100
   }
 };
 var TRACK_PALETTE = ['#AD8A3E','#6E7350','#1C5A4E','#8B4A42','#8C6E2E','#4A4E3C'];
@@ -982,7 +972,7 @@ var CURRENT_TARGETS = {
     { title:'مضاعفة الخاتمين', sub:'العمل على تخريج 8 حفّاظ جدد لكتاب الله كاملًا من طلاب مرحلة الحفظ الحاليين', current:3, target:8,
       iconPath:'<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>',
       iconBg:'linear-gradient(135deg,#DCEAE6,#c0ddd6)', iconColor:'var(--teal)', barColor:'linear-gradient(90deg,var(--teal),#2d8c78)', badgeBg:'var(--teal)' },
-    { title:'توسيع المسار المجتمعي', sub:'زيادة عدد المستفيدين من العمالة في الفترة المسائية لتشمل 18 مستفيدًا', current:11, target:18,
+    { title:'توسيع المسار المجتمعي', sub:'زيادة عدد المستفيدين من العمالة في الفترة المسائية لتشمل 18 مستفيدًا', current:15, target:18,
       iconPath:'<circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/><path d="M3.05 11a9 9 0 1 0 .5-2.6"/>',
       iconBg:'linear-gradient(135deg,#DDE0CC,#c8ccb0)', iconColor:'var(--olive)', barColor:'linear-gradient(90deg,var(--olive),#8a9060)', badgeBg:'var(--olive)' }
   ]
@@ -1184,6 +1174,8 @@ function renderStatsBlock(container, dataset, key, opts){
             '<div class="g-label">نسبة الإنجاز</div></div>' +
           '<div class="gauge">' + (dataset.attendance==null ? '<div class="gauge-empty">—</div>' : '<div class="ring"><canvas id="gaugeAttendance-'+key+'"></canvas></div>') +
             '<div class="g-label">نسبة الحضور</div></div>' +
+          '<div class="gauge">' + (dataset.outputQuality==null ? '<div class="gauge-empty">—</div>' : '<div class="ring"><canvas id="gaugeQuality-'+key+'"></canvas></div>') +
+            '<div class="g-label">تجويد المخرج</div></div>' +
         '</div>' +
         '<div class="insight-box"><span class="insight-dot"></span>الأكثر إقبالًا: <strong>'+topTrack.name+'</strong> بواقع '+fmtNum(topTrack.value)+' طالبًا ' +
           '('+Math.round(topTrack.value/totalStudents*100)+'٪ من إجمالي '+fmtNum(totalStudents)+' طالبًا)</div>' +
@@ -1278,6 +1270,7 @@ function renderStatsBlock(container, dataset, key, opts){
   }
   if(dataset.completion != null) statCharts[key+'-g1'] = gauge('gaugeCompletion-'+key, dataset.completion, '#6E7350');
   if(dataset.attendance != null) statCharts[key+'-g2'] = gauge('gaugeAttendance-'+key, dataset.attendance, '#AD8A3E');
+  if(dataset.outputQuality != null) statCharts[key+'-g3'] = gauge('gaugeQuality-'+key, dataset.outputQuality, '#1C5A4E');
 }
 
 /* ============ الرسوم البيانية: إعداد عام ============ */
@@ -1296,6 +1289,43 @@ function showChartFallback(canvasId){
   msg.textContent = 'تعذّر تحميل الرسم البياني — تحقّق من اتصال الجهاز بالإنترنت ثم أعد تحميل الصفحة.';
   c.replaceWith(msg);
 }
+
+/* ============ روابط فيديوهات يوتيوب — الصق رابط الفيديو كاملًا من يوتيوب هنا ============ */
+/* مقطع «فكرة المشروع» — يظهر في الصفحة الرئيسية وفي صفحة «فكرة المشروع» */
+var IDEA_VIDEO_URL = '';
+/* مقطع «تجربة خريج» — يظهر في صفحة «المحتوى المرئي» */
+var EXPERIENCE_VIDEO_URL = '';
+/* المقاطع الثلاثة الإضافية في صفحة «المحتوى المرئي» (قسم «مقاطع أخرى») — الصق رابط يوتيوب داخل كل علامتي تنصيص */
+var GALLERY_VIDEOS_YOUTUBE = [
+  '',
+  '',
+  ''
+];
+
+/* يحوّل أي رابط يوتيوب (watch / youtu.be / shorts / embed) إلى رابط تضمين، ويبني إطار الفيديو */
+function youtubeEmbedUrl(url){
+  if(!url) return null;
+  var m = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([\w-]{11})/);
+  var id = m ? m[1] : null;
+  if(!id) return null;
+  return 'https://www.youtube.com/embed/' + id;
+}
+function youtubeIframeHTML(url, title){
+  var embed = youtubeEmbedUrl(url);
+  if(!embed) return '';
+  return '<iframe src="'+embed+'" title="'+title+'" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>';
+}
+(function renderConfiguredVideos(){
+  var homeFrame = document.getElementById('homeIdeaVideoFrame');
+  var ideaFrame = document.getElementById('ideaVideoFrame');
+  var expFrame = document.getElementById('experienceVideoFrame');
+  var ideaHTML = youtubeIframeHTML(IDEA_VIDEO_URL, 'فكرة المشروع');
+  var expHTML = youtubeIframeHTML(EXPERIENCE_VIDEO_URL, 'تجربة خريج');
+  var placeholder = '<div style="display:flex;align-items:center;justify-content:center;height:220px;color:#cfc9b8;font-size:13.5px;padding:0 20px;text-align:center">لم يُضَف رابط الفيديو بعد.</div>';
+  if(homeFrame) homeFrame.innerHTML = ideaHTML || placeholder;
+  if(ideaFrame) ideaFrame.innerHTML = ideaHTML || placeholder;
+  if(expFrame) expFrame.innerHTML = expHTML || placeholder;
+})();
 
 /* ============ المحتوى المرئي — عدّل هذه القوائم لإضافة صور أو مقاطع جديدة ============ */
 /* الصور: ضع ملف الصورة داخل مجلد images/ ثم أضف اسمه هنا بين علامتي تنصيص */
@@ -1316,11 +1346,6 @@ var GALLERY_IMAGES = [
      'images/photo-14.jpg',
      'images/photo-15.jpg',
 ];
-/* المقاطع الإضافية (غير مقطع فكرة المشروع ومقطع تجربة الخريج): ضع ملف الفيديو داخل مجلد videos/ ثم أضف اسمه هنا */
-var GALLERY_VIDEOS = [
-  // 'videos/clip-1.mp4',
-  // 'videos/clip-2.mp4',
-];
 (function renderGallery(){
   var host = document.getElementById('galleryGrid');
   if(!GALLERY_IMAGES.length){
@@ -1334,10 +1359,11 @@ var GALLERY_VIDEOS = [
     }).join('');
   }
 
-  if(GALLERY_VIDEOS.length){
+  var configuredClips = GALLERY_VIDEOS_YOUTUBE.filter(function(u){ return !!u; });
+  if(configuredClips.length){
     document.getElementById('videosBlock').style.display = 'block';
-    document.getElementById('galleryVideos').innerHTML = GALLERY_VIDEOS.map(function(src){
-      return '<div class="gallery-item"><video controls preload="metadata"><source src="'+src+'" type="video/mp4"></video></div>';
+    document.getElementById('galleryVideos').innerHTML = configuredClips.map(function(src, i){
+      return '<div class="gallery-item">'+youtubeIframeHTML(src, 'مقطع '+(i+1))+'</div>';
     }).join('');
   }
 })();
