@@ -998,31 +998,44 @@ var CURRENT_TARGETS = {
 };
 
 /* روابط تنزيل التقرير المصمم لكل فترة — الصق رابط Google Drive (رابط
-   "مشاركة" عام) بين علامتي التنصيص أمام كل فترة. اتركه فارغًا ''
-   ليظهر الزر معطّلاً بعلامة "قريبًا" تلقائيًا حتى تضيف الرابط. */
+   "مشاركة" لملف واحد تحديدًا، وليس رابط مجلد) بين علامتي التنصيص أمام
+   كل فترة. اتركه فارغًا '' ليظهر الزر معطّلاً بعلامة "قريبًا" تلقائيًا
+   حتى تضيف الرابط. الرابط يُحوَّل تلقائيًا إلى رابط "تنزيل مباشر" حتى
+   لا يدخل الزائر إلى واجهة درايف أو المجلد، بل يبدأ التنزيل مباشرة. */
 var REPORT_LINKS = {
-  '2025': '',
-  'q1':   '',
-  'q2':   '',
-  'q3':   '',
-  'q4':   ''
+  '2025':    '',
+  'h1-2025': '',
+  'q1':      '',
+  'q2':      '',
+  'q3':      '',
+  'q4':      ''
 };
 var PERIOD_LABELS = {
-  '2025': 'تقرير عام 2025م — 1447هـ',
-  'q1':   'تقرير الربع الأول 1448هـ',
-  'q2':   'تقرير الربع الثاني 1448هـ',
-  'q3':   'تقرير الربع الثالث 1448هـ',
-  'q4':   'تقرير الربع الرابع 1448هـ'
+  '2025':    'تقرير عام 2025م — 1447هـ (السنة كاملة)',
+  'h1-2025': 'تقرير النصف الأول من عام 2025م',
+  'q1':      'تقرير الربع الأول 1448هـ',
+  'q2':      'تقرير الربع الثاني 1448هـ',
+  'q3':      'تقرير الربع الثالث 1448هـ',
+  'q4':      'تقرير الربع الرابع 1448هـ'
 };
+/* يحوّل رابط مشاركة Google Drive لملف (بأي صيغة شائعة) إلى رابط تنزيل
+   مباشر، بحيث يبدأ تنزيل الملف على جهاز الزائر فورًا دون المرور بواجهة
+   درايف أو الدخول إلى أي مجلد. */
+function driveDirectDownloadUrl(url){
+  if(!url) return '';
+  var m = url.match(/\/file\/d\/([\w-]+)/) || url.match(/[?&]id=([\w-]+)/);
+  var id = m ? m[1] : null;
+  return id ? 'https://drive.google.com/uc?export=download&id=' + id : url;
+}
 function downloadButtonHtml(key){
-  var link = REPORT_LINKS[key] || '';
+  var link = driveDirectDownloadUrl(REPORT_LINKS[key] || '');
   var label = PERIOD_LABELS[key] || 'تقرير هذه الفترة';
   var has = !!link;
   return '<div class="report-download'+(has?'':' disabled')+'">' +
     '<div class="rd-main"><div class="rd-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></div>' +
     '<div class="rd-text"><div class="rd-title">'+label+'</div>' +
     '<div class="rd-sub">'+(has?'نسخة مصمّمة بصيغة PDF جاهزة للتنزيل أو المشاركة':'الرابط لم يُضف بعد')+'</div></div></div>' +
-    '<a class="rd-btn" '+(has? 'href="'+link+'" target="_blank" rel="noopener"' : 'href="javascript:void(0)" aria-disabled="true"')+'>' +
+    '<a class="rd-btn" '+(has? 'href="'+link+'" target="_blank" rel="noopener" download' : 'href="javascript:void(0)" aria-disabled="true"')+'>' +
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg>' +
     (has?'تنزيل التقرير':'قريبًا') + '</a></div>';
 }
@@ -1200,7 +1213,11 @@ function renderStatsBlock(container, dataset, key, opts){
     '</div>';
 
   if(opts.live){ html += targetsBlockHtml(); }
-  html += downloadButtonHtml(key);
+  if(key === '2025'){
+    html += downloadButtonHtml('h1-2025') + downloadButtonHtml('2025');
+  } else {
+    html += downloadButtonHtml(key);
+  }
 
   container.innerHTML = html;
   animateCounters(container);
