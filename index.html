@@ -1363,31 +1363,39 @@ function youtubeIframeHTML(url, title){
 
 /* ============ المحتوى المرئي — عدّل هذه القوائم لإضافة صور جديدة ============ */
 /* كل صورة تُوضع داخل مجلد images/ بنفس اسم الملف، ثم تُصنَّف هنا حسب القسم الذي تنتمي إليه */
-/* صور الحوافز الداخلية في الحلقات (photo-1 إلى photo-6) */
+/* صور الحوافز الداخلية في الحلقات */
 var GALLERY_INCENTIVES_IMAGES = [
      'images/photo-1.jpg',
      'images/photo-2.jpg',
      'images/photo-3.jpg',
      'images/photo-4.jpg',
      'images/photo-5.jpg',
-     'images/photo-6.jpg',
+     'images/photo-12.jpeg',
+     'images/photo-24.jpeg',
+     'images/photo-25.jpg',
 ];
-/* صور الحفل الختامي للمرحلة الأولى من المشروع (photo-7 إلى photo-13) */
-var GALLERY_CLOSING_CEREMONY_IMAGES = [
+/* صور عامة */
+var GALLERY_GENERAL_IMAGES = [
+     'images/photo-6.jpg',
      'images/photo-7.jpg',
+     'images/photo-10.jpg',
+     'images/photo-13.jpg',
+     'images/photo-16.jpg',
+     'images/photo-17.jpg',
+     'images/photo-22.jpg',
+     'images/photo-23.jpg',
+];
+/* صور من الحفل الختامي للمرحلة الأولى من المشروع */
+var GALLERY_CLOSING_CEREMONY_IMAGES = [
      'images/photo-8.jpg',
      'images/photo-9.jpg',
-     'images/photo-10.jpg',
      'images/photo-11.jpg',
-     'images/photo-12.jpeg',
-     'images/photo-13.jpg',
-];
-/* صور عامة (photo-14 وما بعدها حتى photo-25) — أضف أي صورة جديدة بنفس النمط */
-var GALLERY_GENERAL_IMAGES = [
      'images/photo-14.jpg',
      'images/photo-15.jpg',
-     // 'images/photo-16.jpg',
-     // ... إلى 'images/photo-25.jpg'
+     'images/photo-18.jpg',
+     'images/photo-19.jpg',
+     'images/photo-20.jpg',
+     'images/photo-21.jpg',
 ];
 function renderGalleryGrid(hostId, images){
   var host = document.getElementById(hostId);
