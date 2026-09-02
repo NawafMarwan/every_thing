@@ -1003,10 +1003,10 @@ var CURRENT_TARGETS = {
    حتى تضيف الرابط. الرابط يُحوَّل تلقائيًا إلى رابط "تنزيل مباشر" حتى
    لا يدخل الزائر إلى واجهة درايف أو المجلد، بل يبدأ التنزيل مباشرة. */
 var REPORT_LINKS = {
-  '2025':    '',
-  'h1-2025': '',
-  'q1':      '',
-  'q2':      '',
+  '2025':    'https://drive.google.com/file/d/1iDk3bXOqT2bjMmMzKgf-X7QLT5JoAhHa/view?usp=sharing',
+  'h1-2025': 'https://drive.google.com/file/d/1SLdnrHN_1qEQiijBNK5ICcqIn4FtqfqC/view?usp=sharing',
+  'q1':      'https://drive.google.com/file/d/1CxJK7GnIM2W8HifnadJYcacoN15vXzyx/view?usp=sharing',
+  'q2':      '', // زر التنزيل مخفي بالكامل لهذه الفترة (انظر renderStatsBlock)، لا يُعرض حتى لو أُضيف رابط هنا
   'q3':      '',
   'q4':      ''
 };
@@ -1215,7 +1215,7 @@ function renderStatsBlock(container, dataset, key, opts){
   if(opts.live){ html += targetsBlockHtml(); }
   if(key === '2025'){
     html += downloadButtonHtml('h1-2025') + downloadButtonHtml('2025');
-  } else {
+  } else if(key !== 'q2'){
     html += downloadButtonHtml(key);
   }
 
@@ -1325,11 +1325,11 @@ function showChartFallback(canvasId){
 
 /* ============ روابط فيديوهات يوتيوب — الصق رابط الفيديو كاملًا من يوتيوب هنا ============ */
 /* مقطع «فكرة المشروع» — يظهر في الصفحة الرئيسية وفي صفحة «فكرة المشروع» */
-var IDEA_VIDEO_URL = '';
+var IDEA_VIDEO_URL = 'https://youtu.be/IA01jvZV-xc';
 /* مقطع «تقرير 2025م - 1447هـ» — يظهر في صفحة «المحتوى المرئي» فقط */
-var REPORT_2025_VIDEO_URL = '';
+var REPORT_2025_VIDEO_URL = 'https://youtu.be/x2PkWiiJI08';
 /* مقطع «تجربة خريج» — يظهر في صفحة «المحتوى المرئي» */
-var EXPERIENCE_VIDEO_URL = '';
+var EXPERIENCE_VIDEO_URL = 'https://youtu.be/nUExLJxMeEU';
 
 /* يحوّل أي رابط يوتيوب (watch / youtu.be / shorts / embed) إلى رابط تضمين، ويبني إطار الفيديو */
 function youtubeEmbedUrl(url){
