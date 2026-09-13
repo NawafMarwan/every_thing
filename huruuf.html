@@ -248,7 +248,7 @@
   .cell{
     background:var(--neutral-cell);
     color:var(--text);
-    border-radius:10px;
+    clip-path:polygon(25% 4%, 75% 4%, 100% 50%, 75% 96%, 25% 96%, 0% 50%);
     display:flex;
     align-items:center;
     justify-content:center;
@@ -256,12 +256,15 @@
     font-weight:800;
     cursor:pointer;
     user-select:none;
-    border:2px solid rgba(255,255,255,.04);
+    filter:drop-shadow(0 3px 0 rgba(0,0,0,.28));
     transition:background-color .18s ease, color .18s ease, transform .1s ease;
   }
   .cell:hover{transform:translateY(-2px);}
-  .cell.win-path{outline:3px solid #fff;outline-offset:-3px;animation:pulse 1s ease-in-out infinite;}
-  @keyframes pulse{0%,100%{outline-color:#fff;}50%{outline-color:#ffd23f;}}
+  .cell.win-path{animation:hexPulse 1s ease-in-out infinite;}
+  @keyframes hexPulse{
+    0%,100%{filter:drop-shadow(0 0 5px #fff) drop-shadow(0 3px 0 rgba(0,0,0,.28));}
+    50%{filter:drop-shadow(0 0 12px #ffd23f) drop-shadow(0 3px 0 rgba(0,0,0,.28));}
+  }
 
   /* ---------- overlay ---------- */
   .overlay{
@@ -529,7 +532,7 @@ function applyScoreCardStyles(){
   labelBEl.textContent = team.b.name;
   boardEl.style.setProperty('--edge-a', ca.bg);
   boardEl.style.setProperty('--edge-b', cb.bg);
-  hintTextEl.textContent = `${team.a.name} يفوز بخط عمودي متصل (أعلى ↕ أسفل) — ${team.b.name} يفوز بخط أفقي متصل (يمين ↔ شمال)`;
+  hintTextEl.textContent = `${team.a.name} يفوز بخط عمودي متصل (أعلى ↕ أسفل) — ${team.b.name} يفوز بخط أفقي متصل (يمين ↔ شمال) — الاتصال بالزوايا يُحتسب أيضًا`;
 }
 
 function buildBoard(){
@@ -645,7 +648,8 @@ function checkAxis(teamKey, axis){
     }
   }
 
-  const dirs = [[1,0],[-1,0],[0,1],[0,-1]];
+  // 8-directional: orthogonal neighbors plus diagonals (corner touches count as connected)
+  const dirs = [[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]];
   while(stack.length){
     const cur = stack.pop();
     const [r,c] = idxToRC(cur);
