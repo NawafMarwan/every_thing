@@ -28,14 +28,15 @@
     background:var(--bg);
     color:var(--text);
     font-family:'Cairo',sans-serif;
-    min-height:100vh;
-    padding:16px;
+    height:100vh;
+    height:100dvh;
+    padding:10px;
     display:flex;
     flex-direction:column;
     align-items:center;
-    gap:16px;
+    gap:8px;
     position:relative;
-    overflow-x:hidden;
+    overflow:hidden;
   }
 
   /* ---------- animated interactive background ---------- */
@@ -66,19 +67,27 @@
     100%{transform:translate(0,0) scale(1);}
   }
 
-  .app{position:relative;z-index:1;width:100%;display:flex;flex-direction:column;align-items:center;gap:16px;}
+  .app{
+    position:relative;z-index:1;
+    width:100%;height:100%;
+    max-width:1000px;
+    display:flex;flex-direction:column;align-items:center;
+    gap:6px;
+    min-height:0;
+  }
 
   /* ---------- title ---------- */
   .logo{
-    margin:4px 0 0;
+    margin:0;
     text-align:center;
     font-weight:900;
-    font-size:clamp(30px,7vw,58px);
+    font-size:clamp(20px, min(6vw, 5.5vh), 52px);
     letter-spacing:2px;
     display:flex;
     gap:.15em;
     justify-content:center;
     flex-wrap:wrap;
+    flex:0 0 auto;
     animation:pop-in .6s cubic-bezier(.2,1.4,.4,1) both;
   }
   .logo span{
@@ -91,7 +100,12 @@
     0%{transform:translateY(-14px) scale(.85);opacity:0;}
     100%{transform:translateY(0) scale(1);opacity:1;}
   }
-  .subtitle{color:var(--muted);font-size:14px;margin-top:-10px;text-align:center;}
+  .subtitle{
+    color:var(--muted);
+    font-size:clamp(11px, 2vh, 14px);
+    text-align:center;
+    flex:0 0 auto;
+  }
 
   /* ---------- generic panels/controls ---------- */
   .panel{
@@ -182,41 +196,54 @@
 
   .scoreboard{
     width:100%;
-    max-width:1000px;
+    max-width:900px;
     display:flex;
     gap:12px;
+    flex:0 0 auto;
   }
   .score-card{
     flex:1;
     border-radius:14px;
-    padding:10px 16px;
+    padding:8px 16px;
     display:flex;
     align-items:center;
     justify-content:space-between;
     font-weight:800;
     color:#fff;
   }
-  .score-card .name{font-size:clamp(14px,2.2vw,18px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .score-card .points{font-size:22px;}
+  .score-card .name{font-size:clamp(13px,2.2vw,18px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .score-card .points{font-size:20px;}
 
   .hint{
     width:100%;
-    max-width:640px;
+    max-width:900px;
     text-align:center;
-    font-size:13px;
+    font-size:clamp(10px, 1.6vh, 13px);
     color:var(--muted);
+    flex:0 0 auto;
   }
 
-  .board-wrap{
+  .board-area{
+    flex:1 1 auto;
+    min-height:0;
     width:100%;
-    max-width:640px;
-    aspect-ratio:1/1;
+    max-width:900px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+  }
+  .board-wrap{
     display:grid;
     gap:6px;
     background:var(--panel);
-    border:1px solid var(--line);
     border-radius:16px;
     padding:10px;
+    border:6px solid var(--line);
+    border-top-color:var(--edge-a, var(--line));
+    border-bottom-color:var(--edge-a, var(--line));
+    border-right-color:var(--edge-b, var(--line));
+    border-left-color:var(--edge-b, var(--line));
   }
   .cell{
     background:var(--neutral-cell);
@@ -225,7 +252,7 @@
     display:flex;
     align-items:center;
     justify-content:center;
-    font-size:clamp(18px,4.5vw,34px);
+    font-size:var(--cell-font, 28px);
     font-weight:800;
     cursor:pointer;
     user-select:none;
@@ -343,7 +370,7 @@
   </div>
 
   <!-- ================= GAME SCREEN ================= -->
-  <div id="gameScreen" hidden style="width:100%;display:flex;flex-direction:column;align-items:center;gap:16px;">
+  <div id="gameScreen" hidden style="width:100%;flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;gap:8px;">
     <div class="scoreboard">
       <div class="score-card" id="cardA">
         <span class="name" id="labelA"></span>
@@ -355,16 +382,18 @@
       </div>
     </div>
 
-    <div class="hint">اضغط على الحرف بعد الإجابة الصحيحة حتى يصل للون الفريق الفائز — أول فريق يربط خطًا كاملاً أفقيًا أو عموديًا يفوز</div>
+    <div class="hint" id="hintText"></div>
 
-    <div class="board-wrap" id="board"></div>
+    <div class="board-area">
+      <div class="board-wrap" id="board"></div>
+    </div>
   </div>
 </div>
 
 <div class="overlay" id="overlay">
   <div class="win-card">
     <h2 id="winTitle">🎉 فاز الفريق!</h2>
-    <p>تكوّن خط متصل كامل أفقيًا أو عموديًا</p>
+    <p id="winDesc">تكوّن خط متصل كامل</p>
     <div class="actions">
       <button class="btn-main" id="rematchBtn">🔁 إعادة بنفس الأسماء والألوان</button>
       <button class="btn-ghost" id="newSetupBtn">⚙️ إعداد جديد (أسماء وألوان)</button>
@@ -463,14 +492,17 @@ const team = {
 };
 
 const boardEl = document.getElementById('board');
+const boardArea = document.querySelector('.board-area');
 const scoreAEl = document.getElementById('scoreA');
 const scoreBEl = document.getElementById('scoreB');
 const labelAEl = document.getElementById('labelA');
 const labelBEl = document.getElementById('labelB');
 const cardAEl = document.getElementById('cardA');
 const cardBEl = document.getElementById('cardB');
+const hintTextEl = document.getElementById('hintText');
 const overlay = document.getElementById('overlay');
 const winTitle = document.getElementById('winTitle');
+const winDesc = document.getElementById('winDesc');
 
 let size = 5;
 let cellsData = [];   // {letter, state: 'neutral'|'gray'|'a'|'b'}
@@ -495,6 +527,9 @@ function applyScoreCardStyles(){
   cardBEl.style.color = cb.text;
   labelAEl.textContent = team.a.name;
   labelBEl.textContent = team.b.name;
+  boardEl.style.setProperty('--edge-a', ca.bg);
+  boardEl.style.setProperty('--edge-b', cb.bg);
+  hintTextEl.textContent = `${team.a.name} يفوز بخط عمودي متصل (أعلى ↕ أسفل) — ${team.b.name} يفوز بخط أفقي متصل (يمين ↔ شمال)`;
 }
 
 function buildBoard(){
@@ -515,6 +550,35 @@ function buildBoard(){
     boardEl.appendChild(div);
     cellEls.push(div);
   });
+
+  fitBoard();
+}
+
+/* ---------------- fit board to 100% of available viewport space ---------------- */
+function fitBoard(){
+  if(gameScreen.hidden) return;
+  const rect = boardArea.getBoundingClientRect();
+  const availW = rect.width;
+  const availH = rect.height;
+  if(availW <= 0 || availH <= 0) return;
+  const border = 12; // border+padding safety margin
+  const s = Math.max(140, Math.floor(Math.min(availW, availH)) - border);
+  boardEl.style.width = s + 'px';
+  boardEl.style.height = s + 'px';
+  const cellSize = (s - 20 - (size - 1) * 6) / size; // minus padding & gaps
+  boardEl.style.setProperty('--cell-font', Math.max(12, Math.floor(cellSize * 0.42)) + 'px');
+}
+
+let fitBoardScheduled = false;
+function scheduleFitBoard(){
+  if(fitBoardScheduled) return;
+  fitBoardScheduled = true;
+  requestAnimationFrame(() => { fitBoardScheduled = false; fitBoard(); });
+}
+window.addEventListener('resize', scheduleFitBoard);
+window.addEventListener('orientationchange', scheduleFitBoard);
+if(typeof ResizeObserver !== 'undefined'){
+  new ResizeObserver(scheduleFitBoard).observe(boardArea);
 }
 
 function idxToRC(idx){ return [Math.floor(idx/size), idx % size]; }
@@ -558,8 +622,10 @@ function updateScores(){
   scoreBEl.textContent = cellsData.filter(c => c.state === 'b').length;
 }
 
+// team 'a' can only win vertically (top<->bottom edges), team 'b' only horizontally (right<->left edges)
 function checkWin(teamKey){
-  return checkAxis(teamKey, 'h') || checkAxis(teamKey, 'v');
+  const axis = teamKey === 'a' ? 'v' : 'h';
+  return checkAxis(teamKey, axis);
 }
 
 function checkAxis(teamKey, axis){
@@ -615,6 +681,9 @@ function endGame(teamKey, path){
   const c = COLORS[t.color];
   winTitle.textContent = `🎉 ${t.name} فاز!`;
   winTitle.style.color = c.bg;
+  winDesc.textContent = teamKey === 'a'
+    ? 'تكوّن خط عمودي متصل من الأعلى إلى الأسفل'
+    : 'تكوّن خط أفقي متصل من اليمين إلى الشمال';
   overlay.classList.add('show');
   fireConfetti();
 }
