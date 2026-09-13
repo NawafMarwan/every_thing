@@ -234,11 +234,9 @@
     overflow:hidden;
   }
   .board-wrap{
-    display:grid;
-    gap:6px;
+    position:relative;
     background:var(--panel);
     border-radius:16px;
-    padding:10px;
     border:6px solid var(--line);
     border-top-color:var(--edge-a, var(--line));
     border-bottom-color:var(--edge-a, var(--line));
@@ -246,9 +244,10 @@
     border-left-color:var(--edge-b, var(--line));
   }
   .cell{
+    position:absolute;
     background:var(--neutral-cell);
     color:var(--text);
-    clip-path:polygon(25% 4%, 75% 4%, 100% 50%, 75% 96%, 25% 96%, 0% 50%);
+    clip-path:polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
     display:flex;
     align-items:center;
     justify-content:center;
@@ -256,14 +255,14 @@
     font-weight:800;
     cursor:pointer;
     user-select:none;
-    filter:drop-shadow(0 3px 0 rgba(0,0,0,.28));
+    filter:drop-shadow(0 1px 0 rgba(0,0,0,.28));
     transition:background-color .18s ease, color .18s ease, transform .1s ease;
   }
-  .cell:hover{transform:translateY(-2px);}
-  .cell.win-path{animation:hexPulse 1s ease-in-out infinite;}
+  .cell:hover{z-index:2;filter:brightness(1.15);}
+  .cell.win-path{z-index:3;animation:hexPulse 1s ease-in-out infinite;}
   @keyframes hexPulse{
-    0%,100%{filter:drop-shadow(0 0 5px #fff) drop-shadow(0 3px 0 rgba(0,0,0,.28));}
-    50%{filter:drop-shadow(0 0 12px #ffd23f) drop-shadow(0 3px 0 rgba(0,0,0,.28));}
+    0%,100%{filter:drop-shadow(0 0 5px #fff) drop-shadow(0 1px 0 rgba(0,0,0,.28));}
+    50%{filter:drop-shadow(0 0 12px #ffd23f) drop-shadow(0 1px 0 rgba(0,0,0,.28));}
   }
 
   /* ---------- overlay ---------- */
@@ -537,8 +536,6 @@ function applyScoreCardStyles(){
 
 function buildBoard(){
   size = parseInt(gridSizeSel.value, 10);
-  boardEl.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
-  boardEl.style.gridTemplateRows = `repeat(${size}, 1fr)`;
   boardEl.innerHTML = '';
   cellEls = [];
 
@@ -557,19 +554,47 @@ function buildBoard(){
   fitBoard();
 }
 
-/* ---------------- fit board to 100% of available viewport space ---------------- */
+/* ---------------- seamless honeycomb layout, fit to 100% of available viewport space ---------------- */
+// Flat-top regular hexagons (points on left/right): columns are packed at 3/4 of the
+// hex width and every other column is offset vertically by half a hex height, so
+// neighboring cells touch edge-to-edge with no gaps (real honeycomb tessellation).
+const HEX_RATIO = Math.sqrt(3) / 2; // height/width of a regular flat-top hexagon
+const HEX_COL_STEP = 0.75;          // horizontal center-to-center spacing, as a fraction of width
+const BOARD_BORDER = 6;             // must match .board-wrap border-width in CSS
+const BOARD_INSET = 10;             // breathing room between the border and the hex cluster
+
 function fitBoard(){
   if(gameScreen.hidden) return;
   const rect = boardArea.getBoundingClientRect();
   const availW = rect.width;
   const availH = rect.height;
   if(availW <= 0 || availH <= 0) return;
-  const border = 12; // border+padding safety margin
-  const s = Math.max(140, Math.floor(Math.min(availW, availH)) - border);
-  boardEl.style.width = s + 'px';
-  boardEl.style.height = s + 'px';
-  const cellSize = (s - 20 - (size - 1) * 6) / size; // minus padding & gaps
-  boardEl.style.setProperty('--cell-font', Math.max(12, Math.floor(cellSize * 0.42)) + 'px');
+
+  const usableW = availW - 2 * (BOARD_BORDER + BOARD_INSET);
+  const usableH = availH - 2 * (BOARD_BORDER + BOARD_INSET);
+  if(usableW <= 0 || usableH <= 0) return;
+
+  const wByWidth = usableW / (1 + HEX_COL_STEP * (size - 1));
+  const wByHeight = usableH / (HEX_RATIO * (size + 0.5));
+  const w = Math.max(24, Math.min(wByWidth, wByHeight));
+  const h = w * HEX_RATIO;
+
+  const totalW = w + HEX_COL_STEP * w * (size - 1);
+  const totalH = size * h + h / 2;
+
+  boardEl.style.width = Math.ceil(totalW + 2 * (BOARD_BORDER + BOARD_INSET)) + 'px';
+  boardEl.style.height = Math.ceil(totalH + 2 * (BOARD_BORDER + BOARD_INSET)) + 'px';
+
+  cellEls.forEach((el, idx) => {
+    const r = Math.floor(idx / size), c = idx % size;
+    el.style.width = w + 'px';
+    el.style.height = h + 'px';
+    // right-anchored so column 0 stays on the right edge, matching the RTL "يمين" convention
+    el.style.right = Math.round(c * HEX_COL_STEP * w + BOARD_INSET) + 'px';
+    el.style.top = Math.round(r * h + (c % 2 === 1 ? h / 2 : 0) + BOARD_INSET) + 'px';
+  });
+
+  boardEl.style.setProperty('--cell-font', Math.max(11, Math.floor(h * 0.42)) + 'px');
 }
 
 let fitBoardScheduled = false;
@@ -586,6 +611,16 @@ if(typeof ResizeObserver !== 'undefined'){
 
 function idxToRC(idx){ return [Math.floor(idx/size), idx % size]; }
 function rcToIdx(r,c){ return r*size + c; }
+
+// True 6-neighbor hex adjacency matching the odd-column-shifted-down layout drawn in fitBoard()
+function hexNeighbors(r, c){
+  const crossRowDeltas = (c % 2 === 0) ? [-1, 0] : [0, 1];
+  return [
+    [r-1, c], [r+1, c],
+    [r+crossRowDeltas[0], c-1], [r+crossRowDeltas[1], c-1],
+    [r+crossRowDeltas[0], c+1], [r+crossRowDeltas[1], c+1],
+  ];
+}
 
 const STATE_ORDER = ['neutral','gray','a','b'];
 
@@ -648,8 +683,6 @@ function checkAxis(teamKey, axis){
     }
   }
 
-  // 8-directional: orthogonal neighbors plus diagonals (corner touches count as connected)
-  const dirs = [[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]];
   while(stack.length){
     const cur = stack.pop();
     const [r,c] = idxToRC(cur);
@@ -657,8 +690,7 @@ function checkAxis(teamKey, axis){
     if(axis === 'h' && c === size-1) return buildPath(parent, cur);
     if(axis === 'v' && r === size-1) return buildPath(parent, cur);
 
-    for(const [dr,dc] of dirs){
-      const nr = r+dr, nc = c+dc;
+    for(const [nr,nc] of hexNeighbors(r,c)){
       if(nr<0||nr>=size||nc<0||nc>=size) continue;
       const nIdx = rcToIdx(nr,nc);
       if(visited[nIdx]) continue;
