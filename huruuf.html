@@ -3,29 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
-<title>لعبة الحروف</title>
+<title>حروف مع غيم</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#0f172a;
-    --panel:#16213e;
-    --panel-2:#1c2b4a;
+    --bg:#0b1120;
+    --panel:#141d36;
+    --panel-2:#1b2a4d;
     --line:#2a3a5c;
     --text:#eef2ff;
     --muted:#93a3c2;
-    --team-a:#2f7bff;
-    --team-a-dark:#1a4fb0;
-    --team-b:#ff4757;
-    --team-b-dark:#b3222f;
     --neutral-cell:#233252;
-    --gold:#ffcf4d;
+    --gray-cell:#5b6478;
+    --blue:#2f7bff;    --blue-dark:#1a4fb0;
+    --red:#ff4757;     --red-dark:#b3222f;
+    --yellow:#ffd23f;  --yellow-dark:#c99a00;
+    --green:#2ecc71;   --green-dark:#1e8449;
   }
   *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;}
+  html,body{margin:0;padding:0;height:100%;}
   body{
-    background:radial-gradient(circle at 50% -10%, #1c2c52, var(--bg) 60%);
+    background:var(--bg);
     color:var(--text);
     font-family:'Cairo',sans-serif;
     min-height:100vh;
@@ -34,49 +34,151 @@
     flex-direction:column;
     align-items:center;
     gap:16px;
+    position:relative;
+    overflow-x:hidden;
   }
-  h1{
-    margin:4px 0 0;
-    font-size:clamp(22px,4vw,34px);
-    font-weight:900;
-    letter-spacing:1px;
-  }
-  .subtitle{color:var(--muted);font-size:14px;margin-top:-8px;}
 
+  /* ---------- animated interactive background ---------- */
+  #bgLayer{
+    position:fixed;
+    inset:-10%;
+    z-index:0;
+    pointer-events:none;
+    filter:blur(60px);
+    opacity:.55;
+    will-change:transform;
+  }
+  .blob{
+    position:absolute;
+    border-radius:50%;
+    mix-blend-mode:screen;
+    opacity:.65;
+    animation:float 18s ease-in-out infinite;
+  }
+  .blob.b1{width:38vw;height:38vw;background:var(--blue);top:-5%;left:0%;animation-duration:20s;}
+  .blob.b2{width:34vw;height:34vw;background:var(--red);top:20%;right:-5%;animation-duration:24s;animation-delay:-4s;}
+  .blob.b3{width:30vw;height:30vw;background:var(--yellow);bottom:-8%;left:15%;animation-duration:22s;animation-delay:-9s;}
+  .blob.b4{width:32vw;height:32vw;background:var(--green);bottom:0%;right:15%;animation-duration:26s;animation-delay:-14s;}
+  @keyframes float{
+    0%{transform:translate(0,0) scale(1);}
+    33%{transform:translate(4%,6%) scale(1.08);}
+    66%{transform:translate(-5%,-3%) scale(.95);}
+    100%{transform:translate(0,0) scale(1);}
+  }
+
+  .app{position:relative;z-index:1;width:100%;display:flex;flex-direction:column;align-items:center;gap:16px;}
+
+  /* ---------- title ---------- */
+  .logo{
+    margin:4px 0 0;
+    text-align:center;
+    font-weight:900;
+    font-size:clamp(30px,7vw,58px);
+    letter-spacing:2px;
+    display:flex;
+    gap:.15em;
+    justify-content:center;
+    flex-wrap:wrap;
+    animation:pop-in .6s cubic-bezier(.2,1.4,.4,1) both;
+  }
+  .logo span{
+    -webkit-text-stroke:1.5px rgba(0,0,0,.35);
+    text-shadow:0 4px 0 rgba(0,0,0,.35), 0 10px 18px rgba(0,0,0,.4);
+    transform:rotate(var(--r,0deg));
+    display:inline-block;
+  }
+  @keyframes pop-in{
+    0%{transform:translateY(-14px) scale(.85);opacity:0;}
+    100%{transform:translateY(0) scale(1);opacity:1;}
+  }
+  .subtitle{color:var(--muted);font-size:14px;margin-top:-10px;text-align:center;}
+
+  /* ---------- generic panels/controls ---------- */
+  .panel{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:18px;
+    width:100%;
+    max-width:640px;
+  }
+  .field{margin-bottom:16px;}
+  .field:last-child{margin-bottom:0;}
+  .field label{display:block;font-size:14px;color:var(--muted);margin-bottom:6px;font-weight:700;}
+  input[type=text]{
+    width:100%;
+    font-family:inherit;
+    font-size:16px;
+    border-radius:10px;
+    border:1px solid var(--line);
+    background:var(--panel-2);
+    color:var(--text);
+    padding:10px 12px;
+    font-weight:700;
+  }
+  select{
+    font-family:inherit;
+    font-size:14px;
+    border-radius:10px;
+    border:1px solid var(--line);
+    background:var(--panel-2);
+    color:var(--text);
+    padding:8px 10px;
+  }
+  button{
+    font-family:inherit;
+    cursor:pointer;
+    transition:transform .08s ease, filter .15s ease, box-shadow .15s ease;
+    border:none;
+    border-radius:10px;
+  }
+  button:hover{filter:brightness(1.12);}
+  button:active{transform:scale(.96);}
+  .btn-main{
+    background:linear-gradient(135deg,var(--yellow),#ffb700);
+    color:#1a1a1a;
+    font-weight:800;
+    font-size:16px;
+    padding:12px 22px;
+    width:100%;
+  }
+  .btn-ghost{
+    background:var(--panel-2);
+    color:var(--text);
+    font-weight:700;
+    padding:8px 14px;
+    border:1px solid var(--line);
+    font-size:14px;
+  }
+
+  .swatches{display:flex;gap:10px;flex-wrap:wrap;}
+  .swatch{
+    width:44px;height:44px;
+    border-radius:12px;
+    border:3px solid transparent;
+    cursor:pointer;
+    position:relative;
+  }
+  .swatch.blue{background:var(--blue);}
+  .swatch.red{background:var(--red);}
+  .swatch.yellow{background:var(--yellow);}
+  .swatch.green{background:var(--green);}
+  .swatch.selected{border-color:#fff;box-shadow:0 0 0 3px rgba(255,255,255,.25);}
+  .swatch:disabled{opacity:.25;cursor:not-allowed;}
+
+  .setup-grid{display:flex;gap:14px;flex-wrap:wrap;}
+  .setup-grid .team-box{flex:1;min-width:220px;}
+
+  /* ---------- top bar in game screen ---------- */
   .topbar{
     width:100%;
     max-width:1000px;
     display:flex;
-    flex-wrap:wrap;
+    justify-content:space-between;
+    align-items:center;
     gap:10px;
-    justify-content:center;
-    align-items:center;
+    flex-wrap:wrap;
   }
-  .control{
-    background:var(--panel);
-    border:1px solid var(--line);
-    border-radius:12px;
-    padding:8px 12px;
-    display:flex;
-    align-items:center;
-    gap:8px;
-    font-size:14px;
-  }
-  .control label{color:var(--muted);}
-  select,button,input[type=text]{
-    font-family:inherit;
-    font-size:14px;
-    border-radius:8px;
-    border:1px solid var(--line);
-    background:var(--panel-2);
-    color:var(--text);
-    padding:6px 10px;
-  }
-  button{cursor:pointer;transition:transform .08s ease, filter .15s ease;}
-  button:hover{filter:brightness(1.15);}
-  button:active{transform:scale(.96);}
-  .btn-main{background:var(--gold);color:#1a1a1a;font-weight:800;border:none;}
-  .btn-ghost{background:transparent;}
 
   .scoreboard{
     width:100%;
@@ -92,18 +194,18 @@
     align-items:center;
     justify-content:space-between;
     font-weight:800;
-    border:2px solid transparent;
-  }
-  .score-card.a{background:linear-gradient(135deg,var(--team-a-dark),var(--team-a));}
-  .score-card.b{background:linear-gradient(135deg,var(--team-b-dark),var(--team-b));}
-  .score-card input{
-    background:rgba(0,0,0,.25);
-    border:1px solid rgba(255,255,255,.3);
     color:#fff;
-    max-width:130px;
-    font-weight:800;
   }
+  .score-card .name{font-size:clamp(14px,2.2vw,18px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .score-card .points{font-size:22px;}
+
+  .hint{
+    width:100%;
+    max-width:640px;
+    text-align:center;
+    font-size:13px;
+    color:var(--muted);
+  }
 
   .board-wrap{
     width:100%;
@@ -118,6 +220,7 @@
   }
   .cell{
     background:var(--neutral-cell);
+    color:var(--text);
     border-radius:10px;
     display:flex;
     align-items:center;
@@ -127,74 +230,13 @@
     cursor:pointer;
     user-select:none;
     border:2px solid rgba(255,255,255,.04);
-    transition:background .2s ease, transform .12s ease, border-color .2s ease;
+    transition:background-color .18s ease, color .18s ease, transform .1s ease;
   }
-  .cell:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.25);}
-  .cell.a{background:linear-gradient(160deg,var(--team-a),var(--team-a-dark));}
-  .cell.b{background:linear-gradient(160deg,var(--team-b),var(--team-b-dark));}
-  .cell.locked{cursor:not-allowed;}
-  .cell.win-path{outline:3px solid var(--gold);outline-offset:-3px;}
+  .cell:hover{transform:translateY(-2px);}
+  .cell.win-path{outline:3px solid #fff;outline-offset:-3px;animation:pulse 1s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{outline-color:#fff;}50%{outline-color:#ffd23f;}}
 
-  .edge-hint{
-    width:100%;
-    max-width:640px;
-    display:flex;
-    justify-content:space-between;
-    font-size:13px;
-    color:var(--muted);
-    padding:0 6px;
-  }
-
-  .buzzers{
-    width:100%;
-    max-width:1000px;
-    display:flex;
-    gap:14px;
-    align-items:stretch;
-  }
-  .buzzer{
-    flex:1;
-    border:none;
-    border-radius:16px;
-    padding:22px 10px;
-    font-size:clamp(16px,2.6vw,22px);
-    font-weight:900;
-    color:#fff;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:6px;
-    box-shadow:0 6px 0 rgba(0,0,0,.25);
-  }
-  .buzzer small{font-weight:600;opacity:.85;font-size:12px;}
-  .buzzer.a{background:linear-gradient(160deg,var(--team-a),var(--team-a-dark));}
-  .buzzer.b{background:linear-gradient(160deg,var(--team-b),var(--team-b-dark));}
-  .buzzer:disabled{opacity:.35;cursor:not-allowed;box-shadow:none;}
-  .buzzer:not(:disabled):active{transform:translateY(4px);box-shadow:none;}
-
-  .status{
-    width:100%;
-    max-width:1000px;
-    background:var(--panel);
-    border:1px solid var(--line);
-    border-radius:14px;
-    padding:14px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:12px;
-    flex-wrap:wrap;
-  }
-  .status .msg{font-weight:800;font-size:16px;}
-  .timer{
-    font-size:26px;
-    font-weight:900;
-    min-width:64px;
-    text-align:center;
-    color:var(--gold);
-  }
-  .status .actions{display:flex;gap:8px;}
-
+  /* ---------- overlay ---------- */
   .overlay{
     position:fixed;inset:0;
     background:rgba(5,8,20,.82);
@@ -207,129 +249,252 @@
   .overlay.show{display:flex;}
   .win-card{
     background:var(--panel);
-    border:2px solid var(--gold);
+    border:2px solid #fff3;
     border-radius:20px;
     padding:34px 40px;
     text-align:center;
     max-width:420px;
+    position:relative;
+    z-index:2;
+    animation:pop-in .35s cubic-bezier(.2,1.4,.4,1) both;
   }
-  .win-card h2{font-size:30px;margin:0 0 8px;}
-  .win-card p{color:var(--muted);margin:0 0 18px;}
+  .win-card h2{font-size:28px;margin:0 0 8px;}
+  .win-card p{color:var(--muted);margin:0 0 20px;}
+  .win-card .actions{display:flex;flex-direction:column;gap:10px;}
+
+  #confettiCanvas{position:fixed;inset:0;z-index:1;pointer-events:none;}
+
+  .corner-btn{
+    position:fixed;
+    top:14px;
+    left:14px;
+    z-index:20;
+  }
+
+  [hidden]{display:none!important;}
 
   @media (max-width:480px){
-    .buzzers{flex-direction:row;}
-    .status{flex-direction:column;align-items:stretch;text-align:center;}
+    .corner-btn{top:auto;bottom:14px;left:14px;}
   }
 </style>
 </head>
 <body>
 
-<h1>🔤 لعبة الحروف</h1>
-<div class="subtitle">اربط خلاياك بلونك من طرف إلى الطرف الآخر لتفوز</div>
-
-<div class="topbar">
-  <div class="control">
-    <label for="gridSize">حجم اللوح</label>
-    <select id="gridSize">
-      <option value="5">5×5</option>
-      <option value="6">6×6</option>
-      <option value="7">7×7</option>
-    </select>
-  </div>
-  <div class="control">
-    <label for="answerTime">مدة الإجابة</label>
-    <select id="answerTime">
-      <option value="10">10 ثواني</option>
-      <option value="15" selected>15 ثانية</option>
-      <option value="20">20 ثانية</option>
-      <option value="30">30 ثانية</option>
-    </select>
-  </div>
-  <button class="btn-main" id="newGameBtn">🔄 لعبة جديدة</button>
+<div id="bgLayer">
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+  <div class="blob b3"></div>
+  <div class="blob b4"></div>
 </div>
 
-<div class="scoreboard">
-  <div class="score-card a">
-    <input type="text" id="nameA" value="الفريق الأزرق" maxlength="18">
-    <span class="points" id="scoreA">0</span>
+<canvas id="confettiCanvas"></canvas>
+
+<button class="btn-ghost corner-btn" id="restartSideBtn" hidden>🔁 إعادة اللعبة</button>
+
+<div class="app">
+  <h1 class="logo" id="logoTitle"></h1>
+  <div class="subtitle">لعبة الحروف الجماعية — اربط لونك بخط كامل وافوز!</div>
+
+  <!-- ================= SETUP SCREEN ================= -->
+  <div class="panel" id="setupScreen">
+    <div class="setup-grid">
+      <div class="team-box">
+        <div class="field">
+          <label>اسم الفريق الأول</label>
+          <input type="text" id="setupNameA" value="الأذكياء" maxlength="18">
+        </div>
+        <div class="field">
+          <label>لون الفريق الأول</label>
+          <div class="swatches" data-team="a">
+            <button class="swatch blue selected" data-color="blue"></button>
+            <button class="swatch red" data-color="red"></button>
+            <button class="swatch yellow" data-color="yellow"></button>
+            <button class="swatch green" data-color="green"></button>
+          </div>
+        </div>
+      </div>
+      <div class="team-box">
+        <div class="field">
+          <label>اسم الفريق الثاني</label>
+          <input type="text" id="setupNameB" value="الأقوياء" maxlength="18">
+        </div>
+        <div class="field">
+          <label>لون الفريق الثاني</label>
+          <div class="swatches" data-team="b">
+            <button class="swatch blue" data-color="blue"></button>
+            <button class="swatch red selected" data-color="red"></button>
+            <button class="swatch yellow" data-color="yellow"></button>
+            <button class="swatch green" data-color="green"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="field" style="margin-top:6px;">
+      <label>حجم اللوح</label>
+      <select id="gridSize">
+        <option value="5">5×5</option>
+        <option value="6">6×6</option>
+        <option value="7">7×7</option>
+      </select>
+    </div>
+    <div class="field">
+      <button class="btn-main" id="startBtn">🚀 ابدأ اللعبة</button>
+    </div>
   </div>
-  <div class="score-card b">
-    <input type="text" id="nameB" value="الفريق الأحمر" maxlength="18">
-    <span class="points" id="scoreB">0</span>
+
+  <!-- ================= GAME SCREEN ================= -->
+  <div id="gameScreen" hidden style="width:100%;display:flex;flex-direction:column;align-items:center;gap:16px;">
+    <div class="scoreboard">
+      <div class="score-card" id="cardA">
+        <span class="name" id="labelA"></span>
+        <span class="points" id="scoreA">0</span>
+      </div>
+      <div class="score-card" id="cardB">
+        <span class="name" id="labelB"></span>
+        <span class="points" id="scoreB">0</span>
+      </div>
+    </div>
+
+    <div class="hint">اضغط على الحرف بعد الإجابة الصحيحة حتى يصل للون الفريق الفائز — أول فريق يربط خطًا كاملاً أفقيًا أو عموديًا يفوز</div>
+
+    <div class="board-wrap" id="board"></div>
   </div>
-</div>
-
-<div class="edge-hint">
-  <span id="hintA">↔️ الأزرق يفوز بخط من اليمين لليسار</span>
-  <span id="hintB">↕️ الأحمر يفوز بخط من الأعلى للأسفل</span>
-</div>
-
-<div class="board-wrap" id="board"></div>
-
-<div class="status">
-  <div class="msg" id="statusMsg">اضغط جرس الفريق بعد الإجابة الصحيحة، ثم اختر الحرف من اللوح</div>
-  <div class="timer" id="timer">--</div>
-  <div class="actions">
-    <button class="btn-ghost" id="resetBuzzerBtn">إعادة الجرس</button>
-  </div>
-</div>
-
-<div class="buzzers">
-  <button class="buzzer a" id="buzzA">
-    🔵 <span id="buzzLabelA">جرس الفريق الأزرق</span>
-    <small>مفتاح الاختصار: Z</small>
-  </button>
-  <button class="buzzer b" id="buzzB">
-    🔴 <span id="buzzLabelB">جرس الفريق الأحمر</span>
-    <small>مفتاح الاختصار: M</small>
-  </button>
 </div>
 
 <div class="overlay" id="overlay">
   <div class="win-card">
-    <h2 id="winTitle">🎉 الفريق الأزرق فاز!</h2>
-    <p>تكوّن خط متصل من طرف اللوح إلى الطرف الآخر</p>
-    <button class="btn-main" id="playAgainBtn">لعبة جديدة</button>
+    <h2 id="winTitle">🎉 فاز الفريق!</h2>
+    <p>تكوّن خط متصل كامل أفقيًا أو عموديًا</p>
+    <div class="actions">
+      <button class="btn-main" id="rematchBtn">🔁 إعادة بنفس الأسماء والألوان</button>
+      <button class="btn-ghost" id="newSetupBtn">⚙️ إعداد جديد (أسماء وألوان)</button>
+    </div>
   </div>
 </div>
 
 <script>
 const ARABIC_LETTERS = ["ا","ب","ت","ث","ج","ح","خ","د","ذ","ر","ز","س","ش","ص","ض","ط","ظ","ع","غ","ف","ق","ك","ل","م","ن","ه","و","ي"];
 
-const boardEl = document.getElementById('board');
+const COLORS = {
+  blue:   {bg:'var(--blue)',   dark:'var(--blue-dark)',   text:'#fff',    label:'الأزرق'},
+  red:    {bg:'var(--red)',    dark:'var(--red-dark)',    text:'#fff',    label:'الأحمر'},
+  yellow: {bg:'var(--yellow)', dark:'var(--yellow-dark)', text:'#1a1a1a', label:'الأصفر'},
+  green:  {bg:'var(--green)',  dark:'var(--green-dark)',  text:'#fff',    label:'الأخضر'},
+};
+
+/* ---------------- title logo render ---------------- */
+const titleText = 'حروف مع غيم';
+const paletteCycle = ['var(--blue)','var(--yellow)','var(--red)','var(--green)'];
+const logoEl = document.getElementById('logoTitle');
+[...titleText].forEach((ch, i) => {
+  const span = document.createElement('span');
+  span.textContent = ch === ' ' ? ' ' : ch;
+  span.style.color = paletteCycle[i % paletteCycle.length];
+  span.style.setProperty('--r', (i % 2 === 0 ? '-3deg' : '3deg'));
+  logoEl.appendChild(span);
+});
+
+/* ---------------- background parallax ---------------- */
+const bgLayer = document.getElementById('bgLayer');
+let targetX = 0, targetY = 0, curX = 0, curY = 0;
+window.addEventListener('mousemove', (e) => {
+  targetX = (e.clientX / window.innerWidth - 0.5) * 24;
+  targetY = (e.clientY / window.innerHeight - 0.5) * 24;
+});
+function animateBg(){
+  curX += (targetX - curX) * 0.04;
+  curY += (targetY - curY) * 0.04;
+  bgLayer.style.transform = `translate(${curX}px, ${curY}px)`;
+  requestAnimationFrame(animateBg);
+}
+animateBg();
+
+/* ---------------- setup screen ---------------- */
+const setupScreen = document.getElementById('setupScreen');
+const gameScreen = document.getElementById('gameScreen');
+const setupNameA = document.getElementById('setupNameA');
+const setupNameB = document.getElementById('setupNameB');
 const gridSizeSel = document.getElementById('gridSize');
-const answerTimeSel = document.getElementById('answerTime');
-const statusMsg = document.getElementById('statusMsg');
-const timerEl = document.getElementById('timer');
-const buzzA = document.getElementById('buzzA');
-const buzzB = document.getElementById('buzzB');
+const restartSideBtn = document.getElementById('restartSideBtn');
+
+let teamColor = {a:'blue', b:'red'};
+
+function wireSwatches(team){
+  const group = document.querySelector(`.swatches[data-team="${team}"]`);
+  group.querySelectorAll('.swatch').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const color = btn.dataset.color;
+      const other = team === 'a' ? 'b' : 'a';
+      if(teamColor[other] === color) return; // already taken by other team
+      teamColor[team] = color;
+      group.querySelectorAll('.swatch').forEach(b => b.classList.toggle('selected', b.dataset.color === color));
+      refreshSwatchAvailability();
+    });
+  });
+}
+function refreshSwatchAvailability(){
+  ['a','b'].forEach(team => {
+    const other = team === 'a' ? 'b' : 'a';
+    const group = document.querySelector(`.swatches[data-team="${team}"]`);
+    group.querySelectorAll('.swatch').forEach(b => {
+      b.disabled = (b.dataset.color === teamColor[other]);
+    });
+  });
+}
+wireSwatches('a');
+wireSwatches('b');
+refreshSwatchAvailability();
+
+document.getElementById('startBtn').addEventListener('click', () => {
+  team.a.name = setupNameA.value.trim() || 'الفريق الأول';
+  team.b.name = setupNameB.value.trim() || 'الفريق الثاني';
+  team.a.color = teamColor.a;
+  team.b.color = teamColor.b;
+  setupScreen.hidden = true;
+  gameScreen.hidden = false;
+  restartSideBtn.hidden = false;
+  startNewRound();
+});
+
+/* ---------------- game state ---------------- */
+const team = {
+  a:{name:'الأذكياء', color:'blue'},
+  b:{name:'الأقوياء', color:'red'},
+};
+
+const boardEl = document.getElementById('board');
 const scoreAEl = document.getElementById('scoreA');
 const scoreBEl = document.getElementById('scoreB');
-const nameAEl = document.getElementById('nameA');
-const nameBEl = document.getElementById('nameB');
+const labelAEl = document.getElementById('labelA');
+const labelBEl = document.getElementById('labelB');
+const cardAEl = document.getElementById('cardA');
+const cardBEl = document.getElementById('cardB');
 const overlay = document.getElementById('overlay');
 const winTitle = document.getElementById('winTitle');
 
 let size = 5;
-let cellsData = [];     // {letter, owner: null|'a'|'b'}
+let cellsData = [];   // {letter, state: 'neutral'|'gray'|'a'|'b'}
 let cellEls = [];
-let scores = {a:0, b:0};
 let gameOver = false;
-let buzzedTeam = null;  // 'a' | 'b' | null
-let timerInterval = null;
-let timeLeft = 0;
 
 function pickLetters(n){
   const pool = [];
-  while(pool.length < n){
-    pool.push(...ARABIC_LETTERS);
-  }
-  // shuffle full pool then take n, allowing repeats only when n > alphabet size
+  while(pool.length < n) pool.push(...ARABIC_LETTERS);
   for(let i = pool.length - 1; i > 0; i--){
     const j = Math.floor(Math.random()*(i+1));
     [pool[i],pool[j]] = [pool[j],pool[i]];
   }
   return pool.slice(0, n);
+}
+
+function applyScoreCardStyles(){
+  const ca = COLORS[team.a.color], cb = COLORS[team.b.color];
+  cardAEl.style.background = `linear-gradient(135deg, ${ca.dark}, ${ca.bg})`;
+  cardAEl.style.color = ca.text;
+  cardBEl.style.background = `linear-gradient(135deg, ${cb.dark}, ${cb.bg})`;
+  cardBEl.style.color = cb.text;
+  labelAEl.textContent = team.a.name;
+  labelBEl.textContent = team.b.name;
 }
 
 function buildBoard(){
@@ -340,73 +505,77 @@ function buildBoard(){
   cellEls = [];
 
   const letters = pickLetters(size*size);
-  cellsData = letters.map(l => ({letter:l, owner:null}));
+  cellsData = letters.map(l => ({letter:l, state:'neutral'}));
 
   cellsData.forEach((cellData, idx) => {
     const div = document.createElement('div');
     div.className = 'cell';
     div.textContent = cellData.letter;
-    div.dataset.idx = idx;
-    div.addEventListener('click', () => onCellClick(idx));
+    div.addEventListener('click', () => cycleCell(idx));
     boardEl.appendChild(div);
     cellEls.push(div);
   });
-
-  gameOver = false;
-  overlay.classList.remove('show');
 }
 
 function idxToRC(idx){ return [Math.floor(idx/size), idx % size]; }
 function rcToIdx(r,c){ return r*size + c; }
 
-function onCellClick(idx){
+const STATE_ORDER = ['neutral','gray','a','b'];
+
+function cycleCell(idx){
   if(gameOver) return;
-  if(!buzzedTeam){
-    statusMsg.textContent = 'لازم فريق يضغط الجرس أولًا قبل اختيار الحرف';
-    return;
+  const cell = cellsData[idx];
+  const nextState = STATE_ORDER[(STATE_ORDER.indexOf(cell.state) + 1) % STATE_ORDER.length];
+  cell.state = nextState;
+  renderCell(idx);
+  updateScores();
+
+  if(nextState === 'a' || nextState === 'b'){
+    const path = checkWin(nextState);
+    if(path){ endGame(nextState, path); return; }
   }
-  if(cellsData[idx].owner){
-    statusMsg.textContent = 'هذا الحرف تم اختياره من قبل، اختر حرفًا آخر';
-    return;
-  }
-  assignCell(idx, buzzedTeam);
 }
 
-function assignCell(idx, team){
-  cellsData[idx].owner = team;
-  cellEls[idx].classList.add(team);
-  scores[team]++;
-  updateScores();
-  stopBuzzTimer();
-  const winPath = checkWin(team);
-  if(winPath){
-    endGame(team, winPath);
+function renderCell(idx){
+  const cell = cellsData[idx];
+  const el = cellEls[idx];
+  el.classList.remove('win-path');
+  if(cell.state === 'neutral'){
+    el.style.background = 'var(--neutral-cell)';
+    el.style.color = 'var(--text)';
+  } else if(cell.state === 'gray'){
+    el.style.background = 'var(--gray-cell)';
+    el.style.color = '#fff';
   } else {
-    resetBuzzerState(`تم! اختر الحرف التالي واضغط الجرس مجددًا.`);
+    const c = COLORS[team[cell.state].color];
+    el.style.background = `linear-gradient(160deg, ${c.bg}, ${c.dark})`;
+    el.style.color = c.text;
   }
 }
 
 function updateScores(){
-  scoreAEl.textContent = scores.a;
-  scoreBEl.textContent = scores.b;
+  scoreAEl.textContent = cellsData.filter(c => c.state === 'a').length;
+  scoreBEl.textContent = cellsData.filter(c => c.state === 'b').length;
 }
 
-// team 'a' connects right edge (col size-1) to left edge (col 0)
-// team 'b' connects top edge (row 0) to bottom edge (row size-1)
-function checkWin(team){
-  const visited = new Array(size*size).fill(false);
-  const stack = [];
-  const parent = new Array(size*size).fill(-1);
+function checkWin(teamKey){
+  return checkAxis(teamKey, 'h') || checkAxis(teamKey, 'v');
+}
 
-  if(team === 'a'){
+function checkAxis(teamKey, axis){
+  const visited = new Array(size*size).fill(false);
+  const parent = new Array(size*size).fill(-1);
+  const stack = [];
+
+  if(axis === 'h'){
     for(let r=0;r<size;r++){
       const idx = rcToIdx(r,0);
-      if(cellsData[idx].owner === 'a'){ stack.push(idx); visited[idx]=true; }
+      if(cellsData[idx].state === teamKey){ stack.push(idx); visited[idx]=true; }
     }
   } else {
     for(let c=0;c<size;c++){
       const idx = rcToIdx(0,c);
-      if(cellsData[idx].owner === 'b'){ stack.push(idx); visited[idx]=true; }
+      if(cellsData[idx].state === teamKey){ stack.push(idx); visited[idx]=true; }
     }
   }
 
@@ -415,19 +584,15 @@ function checkWin(team){
     const cur = stack.pop();
     const [r,c] = idxToRC(cur);
 
-    if(team === 'a' && c === size-1){
-      return buildPath(parent, cur);
-    }
-    if(team === 'b' && r === size-1){
-      return buildPath(parent, cur);
-    }
+    if(axis === 'h' && c === size-1) return buildPath(parent, cur);
+    if(axis === 'v' && r === size-1) return buildPath(parent, cur);
 
     for(const [dr,dc] of dirs){
       const nr = r+dr, nc = c+dc;
       if(nr<0||nr>=size||nc<0||nc>=size) continue;
       const nIdx = rcToIdx(nr,nc);
       if(visited[nIdx]) continue;
-      if(cellsData[nIdx].owner !== team) continue;
+      if(cellsData[nIdx].state !== teamKey) continue;
       visited[nIdx] = true;
       parent[nIdx] = cur;
       stack.push(nIdx);
@@ -439,93 +604,96 @@ function checkWin(team){
 function buildPath(parent, endIdx){
   const path = [];
   let cur = endIdx;
-  while(cur !== -1){
-    path.push(cur);
-    cur = parent[cur];
-  }
+  while(cur !== -1){ path.push(cur); cur = parent[cur]; }
   return path;
 }
 
-function endGame(team, path){
+function endGame(teamKey, path){
   gameOver = true;
   path.forEach(i => cellEls[i].classList.add('win-path'));
-  const teamName = team === 'a' ? nameAEl.value : nameBEl.value;
-  winTitle.textContent = `🎉 ${teamName} فاز!`;
+  const t = team[teamKey];
+  const c = COLORS[t.color];
+  winTitle.textContent = `🎉 ${t.name} فاز!`;
+  winTitle.style.color = c.bg;
   overlay.classList.add('show');
-  statusMsg.textContent = `${teamName} فاز باللعبة!`;
-  buzzA.disabled = true;
-  buzzB.disabled = true;
-  timerEl.textContent = '--';
+  fireConfetti();
 }
 
-function onBuzz(team){
-  if(gameOver || buzzedTeam) return;
-  buzzedTeam = team;
-  buzzA.disabled = true;
-  buzzB.disabled = true;
-  const teamName = team === 'a' ? nameAEl.value : nameBEl.value;
-  statusMsg.textContent = `${teamName} ضغط الجرس! اختر الحرف الصحيح من اللوح خلال المدة المحددة`;
-  startBuzzTimer();
-}
-
-function startBuzzTimer(){
-  timeLeft = parseInt(answerTimeSel.value, 10);
-  timerEl.textContent = timeLeft;
-  stopBuzzTimer(true);
-  timerInterval = setInterval(() => {
-    timeLeft--;
-    timerEl.textContent = timeLeft;
-    if(timeLeft <= 0){
-      stopBuzzTimer();
-      resetBuzzerState('انتهى الوقت! الجرس مفتوح للفريقين من جديد.');
-    }
-  }, 1000);
-}
-
-function stopBuzzTimer(skipReset){
-  if(timerInterval){ clearInterval(timerInterval); timerInterval = null; }
-  if(!skipReset) timerEl.textContent = '--';
-}
-
-function resetBuzzerState(message){
-  buzzedTeam = null;
-  if(!gameOver){
-    buzzA.disabled = false;
-    buzzB.disabled = false;
-  }
-  if(message) statusMsg.textContent = message;
-  timerEl.textContent = '--';
-}
-
-buzzA.addEventListener('click', () => onBuzz('a'));
-buzzB.addEventListener('click', () => onBuzz('b'));
-document.getElementById('resetBuzzerBtn').addEventListener('click', () => {
-  stopBuzzTimer();
-  resetBuzzerState('تمت إعادة الجرس يدويًا.');
-});
-
-document.addEventListener('keydown', (e) => {
-  const tag = document.activeElement.tagName;
-  if(tag === 'INPUT' || tag === 'SELECT') return;
-  if(e.key.toLowerCase() === 'z') onBuzz('a');
-  if(e.key.toLowerCase() === 'm') onBuzz('b');
-});
-
-document.getElementById('newGameBtn').addEventListener('click', () => {
-  scores = {a:0,b:0};
-  updateScores();
-  stopBuzzTimer();
-  resetBuzzerState('لعبة جديدة! اضغط الجرس بعد كل إجابة صحيحة.');
-  buzzA.disabled = false;
-  buzzB.disabled = false;
+function startNewRound(){
+  gameOver = false;
+  overlay.classList.remove('show');
+  applyScoreCardStyles();
   buildBoard();
-});
-document.getElementById('playAgainBtn').addEventListener('click', () => {
-  document.getElementById('newGameBtn').click();
-});
-gridSizeSel.addEventListener('change', () => document.getElementById('newGameBtn').click());
+  updateScores();
+}
 
-buildBoard();
+document.getElementById('rematchBtn').addEventListener('click', startNewRound);
+restartSideBtn.addEventListener('click', () => {
+  if(confirm('هل تريد إعادة اللعبة من البداية بنفس الأسماء والألوان؟')) startNewRound();
+});
+document.getElementById('newSetupBtn').addEventListener('click', () => {
+  overlay.classList.remove('show');
+  gameScreen.hidden = true;
+  restartSideBtn.hidden = true;
+  setupScreen.hidden = false;
+});
+gridSizeSel.addEventListener('change', () => {
+  if(!gameScreen.hidden) startNewRound();
+});
+
+/* ---------------- lightweight confetti ---------------- */
+const confettiCanvas = document.getElementById('confettiCanvas');
+const ctx = confettiCanvas.getContext('2d');
+let confettiParticles = [];
+let confettiRAF = null;
+
+function resizeCanvas(){
+  confettiCanvas.width = window.innerWidth;
+  confettiCanvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+function fireConfetti(){
+  const colors = ['#2f7bff','#ff4757','#ffd23f','#2ecc71'];
+  confettiParticles = [];
+  const count = 140;
+  for(let i=0;i<count;i++){
+    confettiParticles.push({
+      x: Math.random()*confettiCanvas.width,
+      y: -20 - Math.random()*confettiCanvas.height*0.4,
+      w: 6 + Math.random()*6,
+      h: 8 + Math.random()*8,
+      color: colors[Math.floor(Math.random()*colors.length)],
+      vy: 2 + Math.random()*3,
+      vx: -1.5 + Math.random()*3,
+      rot: Math.random()*Math.PI,
+      vr: -0.15 + Math.random()*0.3,
+    });
+  }
+  const start = performance.now();
+  if(confettiRAF) cancelAnimationFrame(confettiRAF);
+  function tick(now){
+    ctx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
+    let alive = false;
+    for(const p of confettiParticles){
+      p.x += p.vx; p.y += p.vy; p.rot += p.vr;
+      if(p.y < confettiCanvas.height + 20) alive = true;
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+      ctx.restore();
+    }
+    if(alive && now - start < 4500){
+      confettiRAF = requestAnimationFrame(tick);
+    } else {
+      ctx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
+    }
+  }
+  confettiRAF = requestAnimationFrame(tick);
+}
 </script>
 </body>
 </html>
