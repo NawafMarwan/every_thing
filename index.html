@@ -467,6 +467,32 @@ main{ position:relative; z-index:1; }
   width:54px; height:2px; background:linear-gradient(90deg, transparent, var(--gold), transparent);
 }
 
+/* ===== الصفحة الرئيسية: قسم "من نحن" وإحصاءات الحلقات ===== */
+.about-stats-grid{
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:16px;
+  max-width:600px; margin:0 auto 22px;
+}
+.about-stats-grid .kpi-card{ margin-bottom:0; }
+.about-closing{
+  text-align:center; max-width:760px; margin:0 auto 34px; font-size:15.5px;
+  color:var(--ink-soft); line-height:1.9;
+}
+
+/* ===== النطاق الجغرافي ===== */
+.geo-box{
+  max-width:820px; margin:0 auto 34px; background:var(--white); border:1px solid var(--line);
+  border-radius:16px; padding:22px 26px; box-shadow:var(--shadow);
+}
+.geo-row{ display:flex; align-items:flex-start; gap:12px; }
+.geo-row + .geo-row{ margin-top:14px; padding-top:14px; border-top:1px dashed var(--line); }
+.geo-row .icon{
+  width:36px; height:36px; border-radius:10px; background:var(--teal-tint); color:var(--teal);
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.geo-row .icon svg{ width:18px; height:18px; }
+.geo-row p{ margin:0; font-size:14.5px; color:var(--ink); line-height:1.85; }
+.geo-row p strong{ color:var(--gold-deep); }
+
 /* ===== الصفحة الرئيسية: شارة "أكثر من 26 عامًا" ===== */
 .years-hero{
   display:flex; justify-content:center; align-items:center;
@@ -663,24 +689,37 @@ footer strong{ color:var(--gold-tint); }
     <div class="home-idea-block">
       <div class="video-frame" id="homeIdeaVideoFrame"></div>
 
-      <p class="idea-intro">مشروع «علّم أعجميًا» هو برنامج قرآني متكامل يُعنى بتعليم غير الناطقين بالعربية من الجاليات الهندية والباكستانية.</p>
+      <h3 class="reason-heading">من نحن</h3>
+      <p class="idea-intro">مجمع حلقات الحوامي بمنفوحة الجديدة بمدينة الرياض، تأسست في عام 1421هـ بتصريح رقم [136] تحت إشراف الجمعية الخيرية لتحفيظ القرآن الكريم بالرياض(مكنون) نطاق الوسط.</p>
 
-      <h3 class="reason-heading">مسوغات المشروع</h3>
+      <div class="about-stats-grid">
+        <div class="kpi-card"><div class="kpi-num">+360</div><div class="kpi-label">عدد الطلاب</div></div>
+        <div class="kpi-card"><div class="kpi-num">20</div><div class="kpi-label">عدد الحلقات</div></div>
+      </div>
+      <p class="about-closing">و يعتبر من أكبر المجمعات القرآنية على مستوى مدينة الرياض.</p>
+
       <div class="reason-grid">
         <div class="reason-card">
-          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-7-4.5-9-9a5 5 0 0 1 9-3 5 5 0 0 1 9 3c-2 4.5-9 9-9 9z"/></svg></div>
-          <h3>الموقع الاستراتيجي</h3>
-          <p>حيث يقع الجامع في قلب الكثافة السكنية للجالية.</p>
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7Z"/></svg></div>
+          <h3>رسالتنا</h3>
+          <p>تعليم القرآن الكريم من خلال عمل مؤسسي متقن يحقق رضا العاملين والمستفيدين.</p>
         </div>
         <div class="reason-card">
-          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
-          <h3>الاستثمار الأمثل</h3>
-          <p>من خلال استثمار شغف الجالية بكتاب الله وتلبية حاجتهم الماسّة.</p>
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/><circle cx="12" cy="12" r="3"/></svg></div>
+          <h3>رؤيتنا</h3>
+          <p>أن يحقق المجمع الريادة والإتقان في تعليم القرآن الكريم وفق أعلى معايير التميز والجودة.</p>
         </div>
-        <div class="reason-card">
-          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.5-6 8-6s8 2 8 6"/></svg></div>
-          <h3>الأثر المتعدّي</h3>
-          <p>تأهيل الطالب ليكون «سفيرًا للقرآن» ومعلمًا لأسرته ومجتمعه.</p>
+      </div>
+
+      <h3 class="reason-heading">النطاق الجغرافي</h3>
+      <div class="geo-box">
+        <div class="geo-row">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-7-4.5-9-9a5 5 0 0 1 9-3 5 5 0 0 1 9 3c-2 4.5-9 9-9 9z"/><circle cx="12" cy="10" r="2.5"/></svg></div>
+          <p><strong>المقر:</strong> جامع الحوامي، حي منفوحة، مدينة الرياض.</p>
+        </div>
+        <div class="geo-row">
+          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+          <p><strong>الميزة التنافسية:</strong> الموقع الاستراتيجي الذي يخدم كثافة سكانية عالية في وسط الرياض.</p>
         </div>
       </div>
     </div>
@@ -731,7 +770,7 @@ footer strong{ color:var(--gold-tint); }
         <p>حيث يقع الجامع في قلب الكثافة السكنية للجالية.</p>
       </div>
       <div class="reason-card">
-        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+        <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></div>
         <h3>الاستثمار الأمثل</h3>
         <p>من خلال استثمار شغف الجالية بكتاب الله وتلبية حاجتهم الماسّة.</p>
       </div>
@@ -1324,7 +1363,9 @@ function showChartFallback(canvasId){
 }
 
 /* ============ روابط فيديوهات يوتيوب — الصق رابط الفيديو كاملًا من يوتيوب هنا ============ */
-/* مقطع «فكرة المشروع» — يظهر في الصفحة الرئيسية وفي صفحة «فكرة المشروع» */
+/* مقطع تعريفي بالحلقات — يظهر في الصفحة الرئيسية فقط */
+var HALAQAT_VIDEO_URL = 'https://youtu.be/RvRJ1FFgDUw';
+/* مقطع «فكرة المشروع» — يظهر في صفحة «فكرة المشروع» وفي صفحة «المحتوى المرئي» */
 var IDEA_VIDEO_URL = 'https://youtu.be/IA01jvZV-xc';
 /* مقطع «تقرير 2025م - 1447هـ» — يظهر في صفحة «المحتوى المرئي» فقط */
 var REPORT_2025_VIDEO_URL = 'https://youtu.be/x2PkWiiJI08';
@@ -1350,11 +1391,12 @@ function youtubeIframeHTML(url, title){
   var galleryIdeaFrame = document.getElementById('galleryIdeaVideoFrame');
   var report2025Frame = document.getElementById('report2025VideoFrame');
   var expFrame = document.getElementById('experienceVideoFrame');
+  var halaqatHTML = youtubeIframeHTML(HALAQAT_VIDEO_URL, 'تعريف بالحلقات');
   var ideaHTML = youtubeIframeHTML(IDEA_VIDEO_URL, 'فكرة المشروع');
   var report2025HTML = youtubeIframeHTML(REPORT_2025_VIDEO_URL, 'تقرير حصاد 2025');
   var expHTML = youtubeIframeHTML(EXPERIENCE_VIDEO_URL, 'تجربة خريج');
   var placeholder = '<div style="display:flex;align-items:center;justify-content:center;height:220px;color:#cfc9b8;font-size:13.5px;padding:0 20px;text-align:center">لم يُضَف رابط الفيديو بعد.</div>';
-  if(homeFrame) homeFrame.innerHTML = ideaHTML || placeholder;
+  if(homeFrame) homeFrame.innerHTML = halaqatHTML || placeholder;
   if(ideaFrame) ideaFrame.innerHTML = ideaHTML || placeholder;
   if(galleryIdeaFrame) galleryIdeaFrame.innerHTML = ideaHTML || placeholder;
   if(report2025Frame) report2025Frame.innerHTML = report2025HTML || placeholder;
