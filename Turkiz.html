@@ -1,1 +1,375 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FF7A45">
+<title>رحلة الطائف</title>
+<meta name="description" content="خارطة تفاعلية لرحلة النبي ﷺ إلى الطائف، من سيرة ابن هشام والصحيحين.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<style>
+:root {
+  --bg: #FFF8EE;
+  --surface: #FFFFFF;
+  --text: #23303B;
+  --muted: #6B7785;
+  --line: #F1E4D0;
+  --coral: #FF7A45;
+  --sun: #FFC23C;
+  --teal: #12B5A6;
+  --violet: #7A5CFA;
+  --rose: #F25C8A;
+  --sky: #2F9BFF;
+  --shadow: 0 2px 4px rgba(120, 80, 30, .05), 0 12px 32px rgba(120, 80, 30, .10);
+  --radius: 22px;
+  --font: 'Cairo', 'Segoe UI', Tahoma, system-ui, sans-serif;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font);
+  font-size: 17px;
+  line-height: 1.85;
+  color: var(--text);
+  background:
+    radial-gradient(900px 480px at 100% -10%, rgba(255, 194, 60, .28), transparent 60%),
+    radial-gradient(800px 480px at -10% 30%, rgba(18, 181, 166, .16), transparent 60%),
+    radial-gradient(700px 420px at 50% 110%, rgba(242, 92, 138, .14), transparent 60%),
+    var(--bg);
+  background-attachment: fixed;
+}
+h1, h2, h3, p { margin: 0; }
+button { font: inherit; color: inherit; cursor: pointer; }
+:focus-visible { outline: 3px solid var(--sun); outline-offset: 2px; }
 
+/* ---------- الترويسة ---------- */
+header.hero {
+  max-width: 1180px; margin: 0 auto; padding: 28px 16px 8px; text-align: center;
+}
+.chip {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 4px 16px; border-radius: 99px; font-size: 14px; font-weight: 700;
+  background: #fff; color: var(--coral); border: 2px solid rgba(255, 122, 69, .25);
+}
+.hero h1 {
+  margin-top: 12px;
+  font-size: clamp(30px, 6vw, 54px); font-weight: 900; line-height: 1.35;
+  background: linear-gradient(90deg, var(--coral), var(--rose) 45%, var(--violet));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.hero p.lead { margin: 8px auto 0; max-width: 720px; color: var(--muted); font-size: 18px; font-weight: 500; }
+
+.facts {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 18px auto 0; max-width: 900px;
+}
+.fact {
+  padding: 8px 16px; border-radius: 16px; background: var(--surface); box-shadow: var(--shadow);
+  font-size: 15px; font-weight: 600; border-top: 4px solid var(--c, var(--teal));
+}
+.fact b { color: var(--c, var(--teal)); font-weight: 800; }
+
+/* ---------- التخطيط ---------- */
+main {
+  max-width: 1180px; margin: 0 auto; padding: 18px 16px 48px;
+  display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 18px; align-items: start;
+}
+@media (max-width: 899px) { main { grid-template-columns: minmax(0, 1fr); } }
+
+.card {
+  background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow);
+  border: 1px solid var(--line);
+}
+
+/* ---------- الخارطة ---------- */
+.map-wrap { position: sticky; top: 14px; overflow: hidden; }
+@media (max-width: 899px) { .map-wrap { position: relative; top: 0; } }
+#map { height: 560px; width: 100%; background: #EAF6F5; }
+@media (max-width: 899px) { #map { height: 400px; } }
+.map-bar {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;
+  padding: 12px 14px; border-top: 1px solid var(--line);
+}
+.btns { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 16px; border-radius: 99px; border: 0; font-weight: 700; font-size: 15px;
+  background: #FFF1E8; color: var(--coral); transition: transform .15s, background .2s;
+}
+.btn:hover { transform: translateY(-1px); background: #FFE3D2; }
+.btn.primary { background: linear-gradient(135deg, var(--coral), var(--rose)); color: #fff; }
+.legend { display: flex; flex-wrap: wrap; gap: 12px; font-size: 13px; color: var(--muted); font-weight: 600; }
+.legend i { display: inline-block; width: 26px; height: 0; vertical-align: middle; margin-inline-end: 6px; border-top: 4px solid; }
+.legend .go i { border-color: var(--sky); border-top-style: dotted; }
+.legend .back i { border-color: var(--coral); }
+
+/* علامات الخارطة */
+.pin {
+  width: 38px; height: 38px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg);
+  background: var(--c); border: 3px solid #fff; box-shadow: 0 6px 14px rgba(0, 0, 0, .22);
+  display: grid; place-items: center; transition: transform .2s;
+}
+.pin span { transform: rotate(45deg); color: #fff; font: 800 16px var(--font); }
+.pin.on { transform: rotate(-45deg) scale(1.25); }
+.leaflet-tooltip.tip {
+  font-family: var(--font); font-weight: 700; font-size: 13px; color: var(--text);
+  border: 0; border-radius: 10px; box-shadow: var(--shadow); padding: 2px 10px;
+}
+.leaflet-container { font-family: var(--font); }
+
+/* ---------- المحطات ---------- */
+.stops { display: grid; gap: 12px; }
+.stop {
+  --c: var(--teal);
+  position: relative; padding: 16px 18px 16px 16px; text-align: right; width: 100%;
+  background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow);
+  border: 2px solid transparent; border-inline-start: 6px solid var(--c);
+  transition: border-color .2s, transform .2s;
+}
+.stop:hover { transform: translateY(-2px); }
+.stop.on { border-color: var(--c); background: color-mix(in srgb, var(--c) 6%, #fff); }
+.stop-head { display: flex; align-items: center; gap: 12px; }
+.num {
+  flex: 0 0 auto; width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center;
+  background: var(--c); color: #fff; font-weight: 900; font-size: 18px;
+}
+.stop h3 { font-size: 19px; font-weight: 800; line-height: 1.5; }
+.stop .place { font-size: 14px; color: var(--muted); font-weight: 600; }
+.stop .body { display: none; margin-top: 10px; }
+.stop.on .body { display: block; animation: rise .35s ease both; }
+@keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.stop .body p { font-size: 16.5px; }
+.stop .body p + p { margin-top: 8px; }
+blockquote {
+  margin: 10px 0 0; padding: 10px 14px; border-radius: 14px;
+  background: color-mix(in srgb, var(--c) 9%, #fff);
+  border-inline-start: 4px solid var(--c);
+  font-size: 16.5px; font-weight: 600; line-height: 2;
+}
+.quran { font-weight: 700; color: #0B7D73; }
+.src {
+  display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; margin-inline-end: 6px;
+  padding: 2px 12px; border-radius: 99px; font-size: 13px; font-weight: 700;
+  background: #F4F0FF; color: var(--violet);
+}
+.src.ih { background: #FFF1E8; color: #D9541C; }
+.src.sh { background: #E6F8F6; color: #0B8579; }
+.note {
+  margin-top: 10px; padding: 8px 12px; border-radius: 12px; font-size: 14.5px; font-weight: 600;
+  background: #FFF8DF; color: #8A6400;
+}
+
+/* ---------- المصادر ---------- */
+section.sources { max-width: 1180px; margin: 0 auto; padding: 0 16px 56px; }
+section.sources .card { padding: 20px 22px; }
+section.sources h2 { font-size: 22px; font-weight: 800; margin-bottom: 8px; }
+section.sources ul { margin: 0; padding-inline-start: 20px; }
+section.sources li { margin: 4px 0; }
+section.sources .warn { margin-top: 12px; color: var(--muted); font-size: 15px; }
+footer { text-align: center; padding: 0 16px 32px; color: var(--muted); font-size: 14px; }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <span class="chip">🗺️ خارطة تفاعلية · السيرة النبوية</span>
+  <h1>رحلة النبي ﷺ إلى الطائف</h1>
+  <p class="lead">من مكة إلى الطائف يلتمس النصرة من ثقيف، ثم العودة عبر قرن الثعالب ونخلة إلى مكة. اضغط على أي محطة لتقرأ خبرها ويتحرك إليها الموضع على الخارطة.</p>
+  <div class="facts">
+    <div class="fact" style="--c:var(--coral)">الزمن: <b>بعد وفاة أبي طالب</b></div>
+    <div class="fact" style="--c:var(--teal)">المقصد: <b>ثقيف في الطائف</b></div>
+    <div class="fact" style="--c:var(--violet)">الغاية: <b>النصرة والمنعة وقبول الدعوة</b></div>
+  </div>
+</header>
+
+<main>
+  <div class="card map-wrap">
+    <div id="map" role="region" aria-label="خارطة رحلة الطائف"></div>
+    <div class="map-bar">
+      <div class="btns">
+        <button class="btn" id="prev" aria-label="المحطة السابقة">→ السابقة</button>
+        <button class="btn primary" id="play">▶ تتبّع الرحلة</button>
+        <button class="btn" id="next" aria-label="المحطة التالية">التالية ←</button>
+      </div>
+      <div class="legend">
+        <span class="go"><i></i>الذهاب (لم تحدّد المصادر مسلكه)</span>
+        <span class="back"><i></i>العودة بحسب محطات الروايات</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="stops" id="stops"></div>
+</main>
+
+<section class="sources">
+  <div class="card">
+    <h2>📚 المصادر ومنهج الصفحة</h2>
+    <ul>
+      <li><b>السيرة النبوية لابن هشام</b> (عن ابن إسحاق): فصل «سعي الرسول ﷺ إلى ثقيف يطلب النصرة»، وخبر عدّاس، وخبر الجن بنخلة.</li>
+      <li><b>صحيح البخاري</b> (3231) و<b>صحيح مسلم</b> (1795): حديث عائشة رضي الله عنها في قرن الثعالب وملك الجبال.</li>
+      <li><b>الطبقات الكبرى لابن سعد</b>: زمن الخروج، وصحبة زيد بن حارثة، وجوار المطعم بن عدي عند العودة (أُشير إليها في مواضعها لأنها ليست عند ابن هشام).</li>
+      <li><b>الأطلس التاريخي للسيرة النبوية</b> — إصدار دارة الملك عبدالعزيز: مرجع لتوثيق مواضع أحداث السيرة جغرافيًا (العهد المكي ومنه رحلة الطائف).</li>
+    </ul>
+    <p class="warn">⚠️ النصوص المقتبسة منقولة بألفاظ الروايات. أمّا مواضع العلامات على الخارطة فتقريبية للتوضيح: فمسلك الذهاب لم تحدّده الروايات، وموضع حائط ابني ربيعة داخل الطائف لا يُجزم بتعيينه اليوم، و«قرن الثعالب» هو قرن المنازل (السيل الكبير) عند جمهور أهل العلم، و«نخلة» وادٍ بين الطائف ومكة.</p>
+  </div>
+</section>
+
+<footer>صلى الله على نبينا محمد وعلى آله وصحبه وسلم</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+const IH = '<span class="src ih">📖 سيرة ابن هشام</span>';
+const SH = '<span class="src sh">✅ صحيح البخاري ومسلم</span>';
+const IS = '<span class="src">📘 طبقات ابن سعد</span>';
+
+const STOPS = [
+  {
+    id: 'makkah-out', title: 'الخروج من مكة', place: 'مكة المكرمة', color: '#2F9BFF',
+    ll: [21.4225, 39.8262],
+    html: `
+      <p>لمّا توفي أبو طالب اشتدّ أذى قريش على النبي ﷺ، فخرج إلى الطائف وحده، يلتمس النصرة من ثقيف والمنعة بهم من قومه.</p>
+      <blockquote>«ولما هلك أبو طالب نالت قريش من رسول الله ﷺ من الأذى ما لم تكن تنال منه في حياة عمه أبي طالب، فخرج رسول الله ﷺ إلى الطائف يلتمس النصرة من ثقيف، والمنعة بهم من قومه، ورجاء أن يقبلوا منه ما جاءهم به من الله عز وجل، فخرج إليهم وحده.»</blockquote>
+      ${IH}
+      <div class="note">عند ابن سعد: كان خروجه لليالٍ بقين من شوال سنة عشر من النبوة، ومعه زيد بن حارثة رضي الله عنه.</div>
+      ${IS}`
+  },
+  {
+    id: 'taif-sadah', title: 'لقاء سادة ثقيف الإخوة الثلاثة', place: 'الطائف', color: '#12B5A6',
+    ll: [21.2703, 40.4158],
+    html: `
+      <p>قصد النبي ﷺ سادة ثقيف وأشرافها، وهم إخوة ثلاثة: <b>عبد ياليل</b> و<b>مسعود</b> و<b>حبيب</b> أبناء عمرو بن عمير، وكانت عند أحدهم امرأة من قريش من بني جُمَح. فدعاهم إلى الله، فردّوا عليه ردًّا قبيحًا:</p>
+      <blockquote>قال أحدهم: «هو يَمْرُط ثياب الكعبة إن كان الله أرسلك»، وقال الآخر: «أما وجد الله أحدًا يرسله غيرك!»، وقال الثالث: «والله لا أكلمك أبدًا؛ لئن كنت رسولًا من الله كما تقول لأنت أعظم خطرًا من أن أرد عليك الكلام، ولئن كنت تكذب على الله ما ينبغي لي أن أكلمك».</blockquote>
+      <p>فقام ﷺ من عندهم وقد يئس من خير ثقيف، وقال لهم: «إذا فعلتم ما فعلتم فاكتموا عني»؛ كراهة أن يبلغ ذلك قومه فيجرّئهم عليه.</p>
+      ${IH}`
+  },
+  {
+    id: 'taif-sufaha', title: 'إغراء السفهاء والدعاء', place: 'الطائف — حائط عتبة وشيبة ابني ربيعة', color: '#F25C8A',
+    ll: [21.2600, 40.3990],
+    html: `
+      <p>لم تكتم ثقيف أمره، بل أغروا به سفهاءهم وعبيدهم يسبّونه ويصيحون به حتى اجتمع عليه الناس، وألجؤوه إلى حائط (بستان) لعتبة وشيبة ابني ربيعة وهما فيه، فجلس في ظلّ حَبَلةٍ من عنب.</p>
+      <p>ولقي ﷺ المرأة الجُمَحية فقال لها: «ماذا لقينا من أحمائك؟». فلما اطمأنّ قال — فيما ذُكر لابن إسحاق —:</p>
+      <blockquote>«اللهم إليك أشكو ضعف قوتي، وقلة حيلتي، وهواني على الناس، يا أرحم الراحمين، أنت رب المستضعفين، وأنت ربي، إلى من تكلني؟ إلى بعيد يتجهّمني؟ أم إلى عدو ملّكته أمري؟ إن لم يكن بك عليّ غضب فلا أبالي، ولكن عافيتك هي أوسع لي، أعوذ بنور وجهك الذي أشرقت له الظلمات، وصلح عليه أمر الدنيا والآخرة، من أن تنزل بي غضبك، أو يحل عليّ سخطك، لك العتبى حتى ترضى، ولا حول ولا قوة إلا بك.»</blockquote>
+      ${IH}
+      <div class="note">أورد ابن إسحاق هذا الدعاء بلاغًا دون إسناد متصل، ولأهل الحديث كلام في ثبوته.</div>`
+  },
+  {
+    id: 'addas', title: 'قصة عدّاس', place: 'الطائف — حائط ابني ربيعة', color: '#FFB020',
+    ll: [21.2560, 40.4300],
+    html: `
+      <p>رقّ ابنا ربيعة لما رأيا، فبعثا غلامًا لهما نصرانيًّا يقال له <b>عدّاس</b> بقِطفٍ من عنب في طبق. فلما وضع النبي ﷺ يده فيه قال: «باسم الله»، ثم أكل.</p>
+      <blockquote>قال عداس: «والله إن هذا الكلام ما يقوله أهل هذه البلاد». فقال ﷺ: «ومن أهل أي البلاد أنت يا عداس، وما دينك؟» قال: «نصراني، وأنا رجل من أهل نِينَوى». فقال ﷺ: «من قرية الرجل الصالح يونس بن متى؟» قال: «وما يدريك ما يونس بن متى؟» قال ﷺ: «ذاك أخي، كان نبيًّا وأنا نبي». فأكبّ عداس على رسول الله ﷺ يقبّل رأسه ويديه وقدميه.</blockquote>
+      <p>فلما رجع إليهما قالا: «ويلك يا عداس! ما لك تقبّل رأس هذا الرجل ويديه وقدميه؟» قال: «يا سيدي، ما في الأرض شيء خير من هذا، لقد أخبرني بأمر ما يعلمه إلا نبي».</p>
+      ${IH}`
+  },
+  {
+    id: 'qarn', title: 'قرن الثعالب وملك الجبال', place: 'قرن الثعالب (قرن المنازل — السيل الكبير)', color: '#7A5CFA',
+    ll: [21.6358, 40.4247],
+    html: `
+      <p>سألت عائشة رضي الله عنها النبيَّ ﷺ: هل أتى عليك يوم كان أشد من يوم أحد؟ فذكر يوم عرض نفسه على ابن عبد ياليل:</p>
+      <blockquote>«فانطلقتُ وأنا مهموم على وجهي، فلم أستفق إلا وأنا بقرن الثعالب، فرفعت رأسي فإذا أنا بسحابة قد أظلّتني، فنظرت فإذا فيها جبريل، فناداني فقال: إن الله قد سمع قول قومك لك وما ردّوا عليك، وقد بعث إليك ملك الجبال لتأمره بما شئت فيهم. فناداني ملك الجبال فسلّم عليّ ثم قال: يا محمد، فقال: ذلك فيما شئت، إن شئت أن أطبق عليهم الأخشبين». فقال النبي ﷺ: «بل أرجو أن يُخرج الله من أصلابهم من يعبد الله وحده لا يشرك به شيئًا».</blockquote>
+      ${SH}
+      <div class="note">الأخشبان: جبلا مكة، أبو قبيس والذي يقابله. وهذا الخبر في الصحيحين وليس في سيرة ابن هشام.</div>`
+  },
+  {
+    id: 'nakhla', title: 'نفر الجن بنخلة', place: 'نخلة — وادٍ بين الطائف ومكة (الموضع تقريبي)', color: '#0FA968',
+    ll: [21.605, 40.125],
+    html: `
+      <p>انصرف النبي ﷺ من الطائف راجعًا إلى مكة حين يئس من خير ثقيف، حتى إذا كان بنخلة قام من جوف الليل يصلي، فمرّ به نفر من الجن — سبعة من جن أهل نصيبين فيما ذُكر لابن إسحاق — فاستمعوا له، فلما فرغ من صلاته ولّوا إلى قومهم منذرين، قد آمنوا وأجابوا إلى ما سمعوا.</p>
+      <blockquote class="quran">﴿وَإِذْ صَرَفْنَا إِلَيْكَ نَفَرًا مِّنَ الْجِنِّ يَسْتَمِعُونَ الْقُرْآنَ فَلَمَّا حَضَرُوهُ قَالُوا أَنصِتُوا ۖ فَلَمَّا قُضِيَ وَلَّوْا إِلَىٰ قَوْمِهِم مُّنذِرِينَ﴾ [الأحقاف: 29]<br>﴿قُلْ أُوحِيَ إِلَيَّ أَنَّهُ اسْتَمَعَ نَفَرٌ مِّنَ الْجِنِّ فَقَالُوا إِنَّا سَمِعْنَا قُرْآنًا عَجَبًا﴾ [الجن: 1]</blockquote>
+      ${IH}`
+  },
+  {
+    id: 'makkah-back', title: 'العودة إلى مكة', place: 'مكة المكرمة', color: '#FF7A45',
+    ll: [21.4225, 39.8262],
+    html: `
+      <p>قدم رسول الله ﷺ مكة، وقومه أشدّ ما كانوا عليه من خلافه وفراق دينه، إلا قليلًا مستضعفين ممن آمن به، فمضى ﷺ يعرض نفسه في المواسم على قبائل العرب.</p>
+      ${IH}
+      <div class="note">عند ابن سعد: أقام بنخلة أيامًا، ثم انتهى إلى حراء، وبعث إلى المطعم بن عدي فأجاره، فدخل مكة في جواره.</div>
+      ${IS}`
+  }
+];
+
+/* ---------- الخارطة ---------- */
+const map = L.map('map', { zoomControl: true, scrollWheelZoom: false, attributionControl: true });
+L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+  maxZoom: 16, subdomains: 'abcd',
+  attribution: '&copy; OpenStreetMap &copy; CARTO'
+}).addTo(map);
+
+const allBounds = L.latLngBounds(STOPS.map(s => s.ll)).pad(0.18);
+map.fitBounds(allBounds);
+
+// الذهاب: خط منقّط لأن الروايات لم تحدّد مسلكه
+L.polyline([STOPS[0].ll, STOPS[1].ll], { color: '#2F9BFF', weight: 4, dashArray: '2 10', lineCap: 'round', opacity: .9 }).addTo(map);
+// العودة بحسب محطات الروايات: الطائف ← قرن الثعالب ← نخلة ← مكة
+L.polyline([STOPS[3].ll, STOPS[4].ll, STOPS[5].ll, STOPS[6].ll], { color: '#FF7A45', weight: 5, opacity: .9, lineCap: 'round' }).addTo(map);
+
+const markers = STOPS.map((s, i) => {
+  // مكة تُعرض مرة واحدة برقمين (١ و٧)
+  const label = s.id === 'makkah-out' ? '1·7' : String(i + 1);
+  if (s.id === 'makkah-back') return null;
+  const icon = L.divIcon({
+    className: '', iconSize: [38, 38], iconAnchor: [19, 38],
+    html: `<div class="pin" style="--c:${s.color}"><span style="font-size:${label.length > 1 ? 12 : 16}px">${label}</span></div>`
+  });
+  const m = L.marker(s.ll, { icon, keyboard: true, title: s.title }).addTo(map);
+  m.bindTooltip(s.place.split(' — ')[0], { className: 'tip', direction: 'top', offset: [0, -36] });
+  m.on('click', () => select(i, true));
+  return m;
+});
+markers[6] = markers[0];
+
+/* ---------- المحطات ---------- */
+const list = document.getElementById('stops');
+STOPS.forEach((s, i) => {
+  const el = document.createElement('article');
+  el.className = 'stop';
+  el.style.setProperty('--c', s.color);
+  el.id = 'stop-' + s.id;
+  el.innerHTML = `
+    <button class="stop-head" style="all:unset;display:flex;align-items:center;gap:12px;cursor:pointer;width:100%" aria-expanded="false">
+      <span class="num">${i + 1}</span>
+      <span><h3>${s.title}</h3><span class="place">📍 ${s.place}</span></span>
+    </button>
+    <div class="body">${s.html}</div>`;
+  el.querySelector('button').addEventListener('click', () => select(i, false));
+  list.appendChild(el);
+});
+
+let current = -1, timer = null;
+function select(i, fromMap) {
+  current = i;
+  document.querySelectorAll('.stop').forEach((el, j) => {
+    el.classList.toggle('on', j === i);
+    el.querySelector('button').setAttribute('aria-expanded', j === i);
+  });
+  document.querySelectorAll('.pin').forEach(p => p.classList.remove('on'));
+  const m = markers[i];
+  if (m && m._icon) m._icon.querySelector('.pin').classList.add('on');
+  const zoom = STOPS[i].id.startsWith('taif') || STOPS[i].id === 'addas' ? 12 : 10;
+  map.flyTo(STOPS[i].ll, zoom, { duration: 1.1 });
+  if (fromMap || window.matchMedia('(max-width: 899px)').matches === false) {
+    document.getElementById('stop-' + STOPS[i].id).scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+}
+
+document.getElementById('next').onclick = () => { stopPlay(); select(Math.min(current + 1, STOPS.length - 1)); };
+document.getElementById('prev').onclick = () => { stopPlay(); select(Math.max(current - 1, 0)); };
+const playBtn = document.getElementById('play');
+function stopPlay() { clearInterval(timer); timer = null; playBtn.textContent = '▶ تتبّع الرحلة'; }
+playBtn.onclick = () => {
+  if (timer) return stopPlay();
+  playBtn.textContent = '⏸ إيقاف';
+  select(0);
+  timer = setInterval(() => {
+    if (current >= STOPS.length - 1) { stopPlay(); map.flyToBounds(allBounds, { duration: 1.2 }); return; }
+    select(current + 1);
+  }, 5000);
+};
+</script>
+</body>
+</html>
