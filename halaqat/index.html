@@ -382,6 +382,16 @@ main{ position:relative; z-index:1; }
 .award-imgs img{ height:360px; width:auto; object-fit:cover; }
 .zoom-hint{ font-size:12.5px; color:var(--ink-soft); text-align:center; margin-top:14px; }
 
+/* ===== Thanks (only in months whose report has it) ===== */
+.thanks{ margin-top:34px; background:var(--white); border:1px solid var(--line); border-radius:22px; box-shadow:var(--shadow); padding:30px 32px; text-align:center; }
+.thanks h3{ font-family:'Noto Naskh Arabic',serif; font-size:clamp(26px,3.4vw,34px); color:var(--navy); font-weight:700; margin-bottom:12px; }
+.thanks p{ font-size:16.5px; line-height:2; color:var(--ink); max-width:760px; margin:0 auto 10px; }
+.thanks .hadith-box{ margin:16px auto 0; max-width:760px; background:var(--sky-soft); border:1px solid var(--line); border-radius:16px; padding:16px 20px; }
+.thanks .hadith-box .lead{ font-size:13.5px; color:var(--ink-soft); font-weight:700; }
+.thanks .hadith-box .txt{ font-family:'Amiri',serif; font-size:clamp(19px,2.4vw,23px); line-height:2; color:var(--navy); }
+.thanks .hadith-box .ref{ font-size:12.5px; color:var(--blue-deep); font-weight:700; }
+@media (max-width:560px){ .thanks{ padding:24px 18px; } }
+
 /* ===== Archive bar ===== */
 .archive-bar{ position:relative; z-index:2; background:#FFF6DD; border-bottom:1px solid #EBD9A6; color:#5C4A12; font-size:14px; font-weight:600; }
 .archive-bar .wrap{ display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:6px 14px; padding-top:10px; padding-bottom:10px; text-align:center; }
@@ -604,6 +614,7 @@ footer{
         </div>
       </div>
     </div>
+    <div id="thanksBox"></div>
   </div>
 </section>
 
@@ -994,6 +1005,16 @@ function renderAchievements(){
   }).join('');
 }
 
+/* ============ الشكر (يظهر فقط إذا ورد في تقرير الشهر) ============ */
+function renderThanks(){
+  var t = M.thanks, box = document.getElementById('thanksBox');
+  if(!t){ box.innerHTML = ''; return; }
+  box.innerHTML = '<div class="thanks reveal"><h3>'+t.title+'</h3>' +
+    (t.paragraphs || []).map(function(x){ return '<p>'+x+'</p>'; }).join('') +
+    (t.hadith ? '<div class="hadith-box"><div class="lead">'+t.hadithLead+'</div><div class="txt">'+t.hadith+'</div><div class="ref">'+t.hadithRef+'</div></div>' : '') +
+    '</div>';
+}
+
 /* ============ صور ومقاطع ============ */
 function youtubeId(url){
   var m = String(url || '').match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/|live\/)|youtu\.be\/)([\w-]{11})/);
@@ -1033,6 +1054,7 @@ function startPage(){
   renderStats();
   renderAchievements();
   renderMedia();
+  renderThanks();
   var archived = M.id !== window.CURRENT_MONTH;
   if(archived){
     document.getElementById('archiveText').textContent = 'تعرض هذه الصفحة تقرير شهر ' + M.label + ' من الأرشيف.';
