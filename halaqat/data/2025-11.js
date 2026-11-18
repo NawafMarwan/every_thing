@@ -15,7 +15,7 @@ window.MONTH_DATA = {
     { ord:4, name:'عثمان بن عفان', teacher:'محمد فضل', sup:'أ. نواف مروان', level:4, students:9, hifz:36, mur:234, hifzPlan:'من سورة الطلاق إلى سورة التغابن', murPlan:'من سورة الناس إلى سورة التغابن' },
     { ord:5, name:'عمر بن الخطاب', teacher:'عماد محمد', sup:'أ. عمر خالد', level:5, students:10, hifz:35, mur:630, hifzPlan:'سورة المجادلة', murPlan:'من سورة الناس إلى سورة المجادلة' },
     { ord:6, name:'سعيد بن زيد', teacher:'إبراهيم عمر', sup:'أ. عمر خالد', level:6, students:8, hifz:40, mur:576, hifzPlan:'من سورة النجم إلى سورة الطور', murPlan:'من سورة الناس إلى سورة الطور' },
-    { ord:6, name:'سعيد بن زيد', teacher:'إبراهيم عمر', sup:'أ. نواف مروان', level:8, students:5, hifz:55, mur:710, hifzPlan:'من سورة فصلت إلى سورة غافر، الآية 37', murPlan:'من سورة الناس إلى سورة غافر، الآية 37' },
+    { ord:6, name:'سعيد بن زيد', teacher:'إبراهيم عمر', sup:'أ. عمر خالد', level:8, students:5, hifz:55, mur:710, hifzPlan:'من سورة فصلت إلى سورة غافر، الآية 37', murPlan:'من سورة الناس إلى سورة غافر، الآية 37' },
     { ord:7, name:'طلحة بن عبيد الله', teacher:'أحمد مخيمر', sup:'أ. نواف مروان', level:7, students:10, hifz:80, mur:1050, hifzPlan:'من سورة الأحقاف إلى سورة الجاثية', murPlan:'من سورة الناس إلى سورة الجاثية' },
     { ord:8, name:'أبي بكر الصديق', teacher:'عبدالله عيسى', sup:'أ. عمر خالد', level:9, students:4, hifz:28, mur:632, hifzPlan:'سورة الصافات', murPlan:'من سورة الناس إلى سورة الصافات' },
     { ord:8, name:'أبي بكر الصديق', teacher:'عبدالله عيسى', sup:'أ. عمر خالد', level:10, students:6, hifz:42, mur:1158, hifzPlan:'من سورة السجدة إلى سورة لقمان', murPlan:'من سورة الناس إلى سورة لقمان' }

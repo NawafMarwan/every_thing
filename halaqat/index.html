@@ -753,6 +753,14 @@ var HALAQAT = [];
 var ORD_NAMES = ['','الأولى','الثانية','الثالثة','الرابعة','الخامسة','السادسة','السابعة','الثامنة','التاسعة'];
 var LEVEL_NAMES = ['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر'];
 
+/* الإجماليات: تُجمع من الحلقات، إلا إذا ذكر ملف الشهر الإجماليات المطبوعة في التقرير (totals) فتُعتمد */
+function monthTotals(){
+  var sum = function(k){ return HALAQAT.reduce(function(s,h){ return s + h[k]; }, 0); };
+  var t = (M && M.totals) || {};
+  return { students: t.students != null ? t.students : sum('students'),
+           hifz: t.hifz != null ? t.hifz : sum('hifz'),
+           mur: t.mur != null ? t.mur : sum('mur') };
+}
 function fmt(n){ return Number(n).toLocaleString('en-US', { maximumFractionDigits:1 }); }
 function countWord(n, one, two, few, many){
   var r = n % 100;
@@ -763,6 +771,7 @@ function countWord(n, one, two, few, many){
   return one;            // 100، 200 ... : «مئة طالب»
 }
 function studentsWord(n){ return countWord(n, 'طالب', 'طالبان', 'طلاب', 'طالبًا'); }
+function facesWord(n){ return n % 1 ? 'وجهًا' : countWord(n, 'وجه', 'وجهان', 'أوجه', 'وجهًا'); }
 function teachersWord(n){ return countWord(n, 'معلم', 'معلمان', 'معلمين', 'معلمًا'); }
 var HALAQAT_COUNT_WORDS = {3:'الثلاث',4:'الأربع',5:'الخمس',6:'الست',7:'السبع',8:'الثماني',9:'التسع',10:'العشر'};
 function escAttr(t){ return String(t).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
@@ -876,13 +885,11 @@ function renderStats(){
 
   var topH = HALAQAT.slice().sort(function(a,b){ return b.hifz - a.hifz; })[0];
   var topM = HALAQAT.slice().sort(function(a,b){ return b.mur - a.mur; })[0];
-  var totalS = HALAQAT.reduce(function(s,h){ return s + h.students; }, 0);
-  var totalH = HALAQAT.reduce(function(s,h){ return s + h.hifz; }, 0);
-  var totalM = HALAQAT.reduce(function(s,h){ return s + h.mur; }, 0);
+  var T = monthTotals(), totalS = T.students, totalH = T.hifz, totalM = T.mur;
   document.getElementById('insights').innerHTML =
-    '<div class="insight reveal"><span>الأعلى في أوجه الحفظ</span><b>'+halaqaTitle(topH)+'</b><p>الحلقة '+ORD_NAMES[topH.ord]+'، المستوى '+LEVEL_NAMES[topH.level]+': <strong>'+fmt(topH.hifz)+'</strong> وجهًا.</p></div>' +
-    '<div class="insight reveal"><span>الأعلى في أوجه المراجعة</span><b>'+halaqaTitle(topM)+'</b><p>الحلقة '+ORD_NAMES[topM.ord]+'، المستوى '+LEVEL_NAMES[topM.level]+': <strong>'+fmt(topM.mur)+'</strong> وجهًا.</p></div>' +
-    '<div class="insight reveal"><span>متوسط الطالب الواحد</span><b>نحو '+Math.round(totalH/totalS)+' وجهًا حفظًا</b><p>ونحو <strong>'+Math.round(totalM/totalS)+'</strong> وجهًا مراجعةً، على مستوى الحلقات كلها.</p></div>';
+    '<div class="insight reveal"><span>الأعلى في أوجه الحفظ</span><b>'+halaqaTitle(topH)+'</b><p>الحلقة '+ORD_NAMES[topH.ord]+'، المستوى '+LEVEL_NAMES[topH.level]+': <strong>'+fmt(topH.hifz)+'</strong> '+facesWord(topH.hifz)+'.</p></div>' +
+    '<div class="insight reveal"><span>الأعلى في أوجه المراجعة</span><b>'+halaqaTitle(topM)+'</b><p>الحلقة '+ORD_NAMES[topM.ord]+'، المستوى '+LEVEL_NAMES[topM.level]+': <strong>'+fmt(topM.mur)+'</strong> '+facesWord(topM.mur)+'.</p></div>' +
+    '<div class="insight reveal"><span>متوسط الطالب الواحد</span><b>نحو '+Math.round(totalH/totalS)+' '+facesWord(Math.round(totalH/totalS))+' حفظًا</b><p>ونحو <strong>'+Math.round(totalM/totalS)+'</strong> '+facesWord(Math.round(totalM/totalS))+' مراجعةً، على مستوى الحلقات كلها.</p></div>';
 }
 function animateBars(container){
   requestAnimationFrame(function(){
@@ -963,9 +970,7 @@ lb.addEventListener('click', function(e){ if(e.target === lb) lb.close(); });
 function monthImg(file){ return 'images/' + (file.indexOf('/') > -1 ? file : M.id + '/' + file); }
 function setCount(id, n){ var el = document.getElementById(id); el.dataset.count = n; el.textContent = fmt(n); }
 function renderMonth(){
-  var totalS = HALAQAT.reduce(function(s,h){ return s + h.students; }, 0);
-  var totalH = HALAQAT.reduce(function(s,h){ return s + h.hifz; }, 0);
-  var totalM = HALAQAT.reduce(function(s,h){ return s + h.mur; }, 0);
+  var T = monthTotals(), totalS = T.students, totalH = T.hifz, totalM = T.mur;
   var teachers = {}; HALAQAT.forEach(function(h){ teachers[h.teacher] = 1; });
   var nTeachers = Object.keys(teachers).length;
   var levels = HALAQAT.map(function(h){ return h.level; });
