@@ -391,6 +391,7 @@ main{ position:relative; z-index:1; }
 /* ===== Media ===== */
 .media-block + .media-block{ margin-top:34px; }
 .video-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr)); gap:18px; }
+.video-grid:has(> :only-child){ max-width:880px; margin-inline:auto; }
 .video-card{ background:var(--white); border:1px solid var(--line); border-radius:18px; overflow:hidden; box-shadow:var(--shadow); }
 .video-card iframe{ width:100%; aspect-ratio:16/9; border:0; background:#000; }
 .video-card p{ padding:12px 16px; font-weight:700; font-size:15px; }
@@ -947,7 +948,8 @@ document.getElementById('lbClose').addEventListener('click', function(){ lb.clos
 lb.addEventListener('click', function(e){ if(e.target === lb) lb.close(); });
 
 /* ============ نصوص الشهر وأرقامه ============ */
-function monthImg(file){ return 'images/' + M.id + '/' + file; }
+/* صورة الشهر من مجلده، ويمكن استعمال صورة من شهر آخر بكتابة مجلده: '2025-12/album-01.jpg' */
+function monthImg(file){ return 'images/' + (file.indexOf('/') > -1 ? file : M.id + '/' + file); }
 function setCount(id, n){ var el = document.getElementById(id); el.dataset.count = n; el.textContent = fmt(n); }
 function renderMonth(){
   var totalS = HALAQAT.reduce(function(s,h){ return s + h.students; }, 0);
