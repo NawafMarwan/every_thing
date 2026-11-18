@@ -230,7 +230,7 @@ main{ position:relative; z-index:1; }
 .ladder-title{ display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
 .ladder-title h3{ font-size:18px; font-weight:800; }
 .ladder-title span{ font-size:13px; color:var(--ink-soft); }
-.ladder{ display:grid; grid-template-columns:repeat(9,1fr); gap:8px; align-items:end; min-height:250px; }
+.ladder{ display:grid; grid-template-columns:repeat(var(--steps,9),minmax(0,1fr)); gap:8px; align-items:end; min-height:250px; }
 .step{
   position:relative; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; text-align:center;
   border-radius:12px 12px 6px 6px; padding:8px 4px 10px; color:#fff; border:none; font-family:inherit;
@@ -264,6 +264,8 @@ main{ position:relative; z-index:1; }
   aspect-ratio:16/11; border-radius:999px 999px 14px 14px / 70% 70% 14px 14px; overflow:hidden;
 }
 .hc-photo img{ width:100%; height:100%; object-fit:cover; transition:transform .5s; }
+.hc-photo.no-img{ padding:0; height:58px; }
+.hc-photo.no-img .hc-ord{ top:18px; }
 .halaqa-card:hover .hc-photo img{ transform:scale(1.04); }
 .hc-ord{
   position:absolute; top:26px; right:50%; transform:translateX(50%);
@@ -326,7 +328,7 @@ main{ position:relative; z-index:1; }
 .bars{ display:flex; flex-direction:column; gap:12px; }
 .bar-row{ display:grid; grid-template-columns:170px 1fr 54px; align-items:center; gap:12px; }
 .bar-name{ font-size:13.5px; font-weight:700; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.bar-name small{ color:var(--ink-soft); font-weight:600; }
+.bar-name small{ display:block; font-size:11.5px; line-height:1.3; color:var(--ink-soft); font-weight:600; }
 .bar-track{ height:14px; background:var(--paper-deep); border-radius:8px; overflow:hidden; }
 .bar-fill{ height:100%; width:0; border-radius:8px; background:linear-gradient(90deg, var(--sky), var(--blue)); transition:width 1.1s cubic-bezier(.22,1,.36,1); }
 .bar-val{ font-size:14px; font-weight:800; color:var(--blue-deep); direction:ltr; text-align:left; font-variant-numeric:tabular-nums; }
@@ -737,7 +739,7 @@ footer{
 var M = null;        // بيانات الشهر المعروض
 var HALAQAT = [];
 var ORD_NAMES = ['','الأولى','الثانية','الثالثة','الرابعة','الخامسة','السادسة','السابعة','الثامنة','التاسعة'];
-var LEVEL_NAMES = ['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع'];
+var LEVEL_NAMES = ['','الأول','الثاني','الثالث','الرابع','الخامس','السادس','السابع','الثامن','التاسع','العاشر','الحادي عشر','الثاني عشر'];
 
 function fmt(n){ return Number(n).toLocaleString('en-US', { maximumFractionDigits:1 }); }
 function countWord(n, one, two, few, many){
@@ -753,8 +755,16 @@ function teachersWord(n){ return countWord(n, 'معلم', 'معلمان', 'مع�
 var HALAQAT_COUNT_WORDS = {3:'الثلاث',4:'الأربع',5:'الخمس',6:'الست',7:'السبع',8:'الثماني',9:'التسع',10:'العشر'};
 function escAttr(t){ return String(t).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
 function halaqaTitle(h){ return 'حلقة ' + h.name; }
-function isDuplicateName(h){ return HALAQAT.filter(function(x){ return x.name === h.name; }).length > 1; }
-function barLabel(h){ return h.name + (isDuplicateName(h) ? ' <small>('+ORD_NAMES[h.ord]+')</small>' : ''); }
+function distinctCount(list, key){ var seen = {}; list.forEach(function(x){ seen[x[key]] = 1; }); return Object.keys(seen).length; }
+function halaqatCount(list){ return distinctCount(list, 'ord'); }
+function halaqatWord(n){ return countWord(n, 'حلقة', 'حلقتان', 'حلقات', 'حلقة'); }
+/* اسم مختصر للرسوم: يميّز الحلقتين المتشابهتين في الاسم برقم الحلقة، والحلقة ذات المستويين بالمستوى */
+function barLabel(h){
+  var same = HALAQAT.filter(function(x){ return x.name === h.name; });
+  if(same.length < 2) return h.name;
+  var sameOrd = same.every(function(x){ return x.ord === h.ord; });
+  return h.name + ' <small>(' + (sameOrd ? 'المستوى ' + LEVEL_NAMES[h.level] : ORD_NAMES[h.ord]) + ')</small>';
+}
 
 var ICON_HIFZ = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"/></svg>';
 var ICON_MUR = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>';
@@ -762,9 +772,10 @@ var ICON_MUR = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strok
 /* ============ سُلّم المستويات ============ */
 function renderLadder(){
   var byLevel = HALAQAT.slice().sort(function(a,b){ return a.level - b.level; });
+  document.getElementById('ladder').style.setProperty('--steps', byLevel.length);
   document.getElementById('ladder').innerHTML = byLevel.map(function(h){
     var height = 122 + (h.level - 1) * 16;
-    return '<button class="step" style="height:'+height+'px" data-jump="'+h.ord+'" aria-label="المستوى '+LEVEL_NAMES[h.level]+': '+halaqaTitle(h)+'">' +
+    return '<button class="step" style="height:'+height+'px" data-jump="'+h._i+'" aria-label="المستوى '+LEVEL_NAMES[h.level]+': '+halaqaTitle(h)+'">' +
       '<span class="lv">المستوى</span><span class="lvn">'+h.level+'</span>' +
       '<span class="nm">'+h.name+'</span><span class="st">'+h.students+' '+studentsWord(h.students)+'</span></button>';
   }).join('');
@@ -772,9 +783,11 @@ function renderLadder(){
 
 /* ============ بطاقات الحلقات ============ */
 function cardHtml(h){
-  return '<article class="halaqa-card reveal" id="halaqa-'+h.ord+'">' +
-    '<div class="hc-photo"><button data-lightbox="'+monthImg(h.photo)+'" data-caption="الحلقة '+ORD_NAMES[h.ord]+': '+halaqaTitle(h)+'" aria-label="عرض صورة الحلقة '+ORD_NAMES[h.ord]+'">' +
-      '<img src="'+monthImg(h.photo)+'" alt="طلاب '+halaqaTitle(h)+'" loading="lazy" width="1000" height="667"'+(h.photoPos ? ' style="object-position:'+h.photoPos+'"' : '')+'></button>' +
+  return '<article class="halaqa-card reveal" id="halaqa-'+h._i+'">' +
+    (h.photo
+      ? '<div class="hc-photo"><button data-lightbox="'+monthImg(h.photo)+'" data-caption="الحلقة '+ORD_NAMES[h.ord]+': '+halaqaTitle(h)+'" aria-label="عرض صورة الحلقة '+ORD_NAMES[h.ord]+'">' +
+        '<img src="'+monthImg(h.photo)+'" alt="طلاب '+halaqaTitle(h)+'" loading="lazy" width="1000" height="667"'+(h.photoPos ? ' style="object-position:'+h.photoPos+'"' : '')+'></button>'
+      : '<div class="hc-photo no-img">') +
       '<span class="hc-ord">الحلقة '+ORD_NAMES[h.ord]+'</span></div>' +
     '<div class="hc-body">' +
       '<div class="hc-top"><h3>'+halaqaTitle(h)+'<small>رضي الله عنه</small></h3><span class="hc-level">المستوى '+LEVEL_NAMES[h.level]+'</span></div>' +
@@ -792,7 +805,7 @@ function cardHtml(h){
 }
 var currentSort = 'ord';
 function renderCards(){
-  var list = HALAQAT.slice().sort(function(a,b){ return currentSort === 'level' ? a.level - b.level : a.ord - b.ord; });
+  var list = HALAQAT.slice().sort(function(a,b){ return currentSort === 'level' ? a.level - b.level : (a.ord - b.ord || a.level - b.level); });
   var grid = document.getElementById('halaqaGrid');
   grid.innerHTML = list.map(cardHtml).join('');
   reveal(grid);
@@ -833,19 +846,19 @@ function renderStats(){
 
   var sups = {};
   HALAQAT.forEach(function(h){
-    sups[h.sup] = sups[h.sup] || { halaqat:0, students:0 };
-    sups[h.sup].halaqat++; sups[h.sup].students += h.students;
+    sups[h.sup] = sups[h.sup] || { ords:{}, students:0 };
+    sups[h.sup].ords[h.ord] = 1; sups[h.sup].students += h.students;
   });
   document.getElementById('supGrid').innerHTML = Object.keys(sups).map(function(name){
-    var s = sups[name]; var initial = name.replace('أ. ','').charAt(0);
+    var s = sups[name]; s.halaqat = Object.keys(s.ords).length; var initial = name.replace('أ. ','').charAt(0);
     return '<div class="sup-card"><div class="who"><div class="av">'+initial+'</div><div><b>'+name+'</b><span>مشرف تربوي</span></div></div>' +
-      '<div class="nums"><div><b>'+s.halaqat+'</b><span>حلقات</span></div><div><b>'+s.students+'</b><span>'+studentsWord(s.students)+'</span></div></div></div>';
+      '<div class="nums"><div><b>'+s.halaqat+'</b><span>'+halaqatWord(s.halaqat)+'</span></div><div><b>'+s.students+'</b><span>'+studentsWord(s.students)+'</span></div></div></div>';
   }).join('');
 
   var teachers = {};
-  HALAQAT.forEach(function(h){ teachers[h.teacher] = (teachers[h.teacher] || 0) + 1; });
+  HALAQAT.forEach(function(h){ teachers[h.teacher] = teachers[h.teacher] || {}; teachers[h.teacher][h.ord] = 1; });
   document.getElementById('teacherChips').innerHTML = Object.keys(teachers).map(function(t){
-    var n = teachers[t];
+    var n = Object.keys(teachers[t]).length;
     return '<span>'+t+'<em>'+(n === 1 ? 'حلقة' : n === 2 ? 'حلقتان' : n+' حلقات')+'</em></span>';
   }).join('');
 
@@ -949,13 +962,14 @@ function renderMonth(){
   document.getElementById('heroPeriod').textContent = 'تقرير شهر ' + M.label;
   document.querySelectorAll('.month-label').forEach(function(el){ el.textContent = M.label; });
   document.getElementById('levelsCount').textContent = nLevels;
-  setCount('bsHalaqat', HALAQAT.length);
+  var nHalaqat = halaqatCount(HALAQAT);
+  setCount('bsHalaqat', nHalaqat);
   setCount('bsStudents', totalS); document.getElementById('bsStudentsLbl').textContent = studentsWord(totalS);
   setCount('bsTeachers', nTeachers); document.getElementById('bsTeachersLbl').textContent = teachersWord(nTeachers);
   setCount('kpiStudents', totalS); setCount('kpiHifz', totalH); setCount('kpiMur', totalM);
-  setCount('kpiHalaqat', HALAQAT.length); setCount('kpiTeachers', nTeachers);
+  setCount('kpiHalaqat', nHalaqat); setCount('kpiTeachers', nTeachers);
 
-  var title = HALAQAT_COUNT_WORDS[HALAQAT.length] ? 'الحلقات ' + HALAQAT_COUNT_WORDS[HALAQAT.length] : 'الحلقات';
+  var title = HALAQAT_COUNT_WORDS[nHalaqat] ? 'الحلقات ' + HALAQAT_COUNT_WORDS[nHalaqat] : 'الحلقات';
   document.getElementById('halaqatTitle').textContent = title;
   document.getElementById('navHalaqat').textContent = title;
   document.getElementById('levelsRange').textContent = minL === maxL
@@ -1010,7 +1024,7 @@ function renderMedia(){
    يُعرض الشهر المحدد في data/current.js. ويمكن فتح شهر مؤرشف بالرابط ?m=YYYY-MM
    (لا يظهر في الصفحة رابط للأرشيف). */
 function startPage(){
-  HALAQAT = M.halaqat || [];
+  HALAQAT = (M.halaqat || []).map(function(h, i){ h._i = i + 1; return h; });
   renderMonth();
   renderLadder();
   renderCards();
