@@ -15,11 +15,14 @@ window.MONTH_DATA = {
     { ord:4, name:'عثمان بن عفان', teacher:'محمد فضل', sup:'أ. نواف مروان', level:4, students:9, hifz:36, mur:234, hifzPlan:'من سورة المنافقون إلى سورة الصف', murPlan:'من سورة الناس إلى سورة الصف', photo:'halaqa-4.jpg' },
     { ord:5, name:'عمر بن الخطاب', teacher:'عماد محمد', sup:'أ. عمر خالد', level:5, students:10, hifz:40, mur:670, hifzPlan:'سورة الحديد', murPlan:'من سورة الناس إلى سورة الحديد', photo:'halaqa-5.jpg' },
     { ord:6, name:'سعيد بن زيد', teacher:'إبراهيم عمر', sup:'أ. عمر خالد', level:6, students:8, hifz:44, mur:688, hifzPlan:'من سورة الذاريات إلى سورة ق', murPlan:'من سورة الناس إلى سورة ق', photo:'halaqa-6.jpg' },
-    { ord:6, name:'سعيد بن زيد', teacher:'إبراهيم عمر', sup:'أ. نواف مروان', level:8, students:5, hifz:50, mur:685, hifzPlan:'سورة غافر', murPlan:'من سورة الناس إلى سورة غافر', photo:'halaqa-6.jpg' },
+    { ord:6, name:'سعيد بن زيد', teacher:'إبراهيم عمر', sup:'أ. عمر خالد', level:8, students:5, hifz:50, mur:685, hifzPlan:'سورة غافر', murPlan:'من سورة الناس إلى سورة غافر', photo:'halaqa-6.jpg' },
     { ord:7, name:'طلحة بن عبيد الله', teacher:'أحمد مخيمر', sup:'أ. نواف مروان', level:7, students:9, hifz:90, mur:1035, hifzPlan:'من سورة الدخان إلى سورة الزخرف', murPlan:'من سورة الناس إلى سورة الزخرف', photo:'halaqa-7.jpg' },
     { ord:8, name:'أبي بكر الصديق', teacher:'عبدالله عيسى', sup:'أ. عمر خالد', level:9, students:4, hifz:24, mur:656, hifzPlan:'سورة يس', murPlan:'من سورة الناس إلى سورة يس', photo:'halaqa-8.jpg' },
     { ord:8, name:'أبي بكر الصديق', teacher:'عبدالله عيسى', sup:'أ. عمر خالد', level:10, students:6, hifz:36, mur:1194, hifzPlan:'سورة الروم', murPlan:'من سورة الناس إلى سورة الروم', photo:'halaqa-8.jpg' }
   ],
+
+  /* الإجماليات كما طُبعت في التقرير (صفحة «إحصائيات»)، وهي تختلف قليلًا عن مجموع أرقام الحلقات */
+  totals: { students:102, hifz:460.5, mur:6975 },
 
   achievements: [],
 
