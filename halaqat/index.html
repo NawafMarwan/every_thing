@@ -983,14 +983,22 @@ function youtubeId(url){
   var m = String(url || '').match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/|live\/)|youtu\.be\/)([\w-]{11})/);
   return m ? m[1] : null;
 }
+/* يقبل روابط يوتيوب، وروابط ملفات قوقل درايف المشاركة لـ«أي شخص لديه الرابط» */
+function videoEmbedUrl(url){
+  var y = youtubeId(url);
+  if(y) return 'https://www.youtube-nocookie.com/embed/' + y;
+  var d = String(url || '').match(/drive\.google\.com\/(?:file\/d\/|open\?id=)([\w-]{20,})/);
+  if(d) return 'https://drive.google.com/file/d/' + d[1] + '/preview';
+  return null;
+}
 function renderMedia(){
-  var videos = (M.videos || []).filter(function(v){ return youtubeId(v.url); });
+  var videos = (M.videos || []).filter(function(v){ return videoEmbedUrl(v.url); });
   var photos = M.photos || [];
   document.getElementById('videoBlock').hidden = !videos.length;
   document.getElementById('photoBlock').hidden = !photos.length;
   document.getElementById('navMedia').parentNode.hidden = !videos.length && !photos.length;
   document.getElementById('videoGrid').innerHTML = videos.map(function(v){
-    return '<div class="video-card reveal"><iframe src="https://www.youtube-nocookie.com/embed/'+youtubeId(v.url)+'" title="'+escAttr(v.title || 'مقطع من الحلقات')+'" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>' +
+    return '<div class="video-card reveal"><iframe src="'+videoEmbedUrl(v.url)+'" title="'+escAttr(v.title || 'مقطع من الحلقات')+'" allow="autoplay; accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>' +
       (v.title ? '<p>'+v.title+'</p>' : '') + '</div>';
   }).join('');
   document.getElementById('photoGrid').innerHTML = photos.map(function(ph){
