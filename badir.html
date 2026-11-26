@@ -9,14 +9,18 @@
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#0b1120;
-    --panel:#141d36;
-    --panel-2:#1b2a4d;
-    --line:#2a3a5c;
-    --text:#eef2ff;
-    --muted:#93a3c2;
-    --neutral-cell:#233252;
-    --gray-cell:#5b6478;
+    --bg:#071a1a;
+    --panel:#0e2b2b;
+    --panel-2:#123636;
+    --line:#1f4f4c;
+    --text:#eafff9;
+    --muted:#86b8ae;
+    --neutral-cell:#153c3a;
+    --gray-cell:#4f6b63;
+    /* برند "بادر": تركواز وذهبي، مستقل عن ألوان الفرق */
+    --brand:#17b6a7;    --brand-dark:#0c6e65;
+    --accent:#f0b740;   --accent-dark:#b4800f;
+    /* ألوان الفرق (وظيفية، لا علاقة لها بهوية التطبيق) */
     --blue:#2f7bff;    --blue-dark:#1a4fb0;
     --red:#ff4757;     --red-dark:#b3222f;
     --yellow:#ffd23f;  --yellow-dark:#c99a00;
@@ -56,10 +60,10 @@
     opacity:.65;
     animation:float 18s ease-in-out infinite;
   }
-  .blob.b1{width:38vw;height:38vw;background:var(--blue);top:-5%;left:0%;animation-duration:20s;}
-  .blob.b2{width:34vw;height:34vw;background:var(--red);top:20%;right:-5%;animation-duration:24s;animation-delay:-4s;}
-  .blob.b3{width:30vw;height:30vw;background:var(--yellow);bottom:-8%;left:15%;animation-duration:22s;animation-delay:-9s;}
-  .blob.b4{width:32vw;height:32vw;background:var(--green);bottom:0%;right:15%;animation-duration:26s;animation-delay:-14s;}
+  .blob.b1{width:40vw;height:40vw;background:var(--brand);top:-8%;left:-2%;animation-duration:26s;}
+  .blob.b2{width:32vw;height:32vw;background:var(--accent);top:25%;right:-6%;animation-duration:30s;animation-delay:-6s;}
+  .blob.b3{width:34vw;height:34vw;background:var(--brand-dark);bottom:-10%;left:20%;animation-duration:28s;animation-delay:-12s;}
+  .blob.b4{display:none;}
   @keyframes float{
     0%{transform:translate(0,0) scale(1);}
     33%{transform:translate(4%,6%) scale(1.08);}
@@ -84,21 +88,31 @@
     font-size:clamp(20px, min(6vw, 5.5vh), 52px);
     letter-spacing:2px;
     display:flex;
-    gap:.15em;
+    gap:.1em;
     justify-content:center;
     flex-wrap:wrap;
     flex:0 0 auto;
     animation:pop-in .6s cubic-bezier(.2,1.4,.4,1) both;
   }
   .logo span{
-    -webkit-text-stroke:1.5px rgba(0,0,0,.35);
-    text-shadow:0 4px 0 rgba(0,0,0,.35), 0 10px 18px rgba(0,0,0,.4);
-    transform:rotate(var(--r,0deg));
+    background:linear-gradient(135deg, var(--brand), var(--accent));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    filter:drop-shadow(0 3px 0 rgba(0,0,0,.35)) drop-shadow(0 8px 14px rgba(0,0,0,.35));
     display:inline-block;
   }
   @keyframes pop-in{
     0%{transform:translateY(-14px) scale(.85);opacity:0;}
     100%{transform:translateY(0) scale(1);opacity:1;}
+  }
+  .logo-underline{
+    width:min(70%, 220px);
+    height:4px;
+    margin:-2px auto 0;
+    border-radius:4px;
+    background:linear-gradient(90deg, transparent, var(--brand), var(--accent), transparent);
+    flex:0 0 auto;
   }
   .subtitle{
     color:var(--muted);
@@ -149,8 +163,8 @@
   button:hover{filter:brightness(1.12);}
   button:active{transform:scale(.96);}
   .btn-main{
-    background:linear-gradient(135deg,var(--yellow),#ffb700);
-    color:#1a1a1a;
+    background:linear-gradient(135deg,var(--accent),var(--brand));
+    color:#07211f;
     font-weight:800;
     font-size:16px;
     padding:12px 22px;
@@ -262,7 +276,7 @@
   .cell.win-path{z-index:3;animation:hexPulse 1s ease-in-out infinite;}
   @keyframes hexPulse{
     0%,100%{filter:drop-shadow(0 0 5px #fff) drop-shadow(0 1px 0 rgba(0,0,0,.28));}
-    50%{filter:drop-shadow(0 0 12px #ffd23f) drop-shadow(0 1px 0 rgba(0,0,0,.28));}
+    50%{filter:drop-shadow(0 0 12px #f0b740) drop-shadow(0 1px 0 rgba(0,0,0,.28));}
   }
 
   /* ---------- overlay ---------- */
@@ -322,7 +336,8 @@
 
 <div class="app">
   <h1 class="logo" id="logoTitle"></h1>
-  <div class="subtitle">لعبة الحروف الجماعية — اربط لونك بخط كامل وافوز!</div>
+  <div class="logo-underline"></div>
+  <div class="subtitle">نسخة بادر من لعبة الحروف الجماعية — اربط لونك بخط كامل وافوز!</div>
 
   <!-- ================= SETUP SCREEN ================= -->
   <div class="panel" id="setupScreen">
@@ -413,15 +428,12 @@ const COLORS = {
   green:  {bg:'var(--green)',  dark:'var(--green-dark)',  text:'#fff',    label:'الأخضر'},
 };
 
-/* ---------------- title logo render ---------------- */
+/* ---------------- title logo render (برند بادر: تدرج تركواز-ذهبي موحّد) ---------------- */
 const titleText = 'حروف مع بادر';
-const paletteCycle = ['var(--blue)','var(--yellow)','var(--red)','var(--green)'];
 const logoEl = document.getElementById('logoTitle');
-[...titleText].forEach((ch, i) => {
+[...titleText].forEach((ch) => {
   const span = document.createElement('span');
   span.textContent = ch === ' ' ? ' ' : ch;
-  span.style.color = paletteCycle[i % paletteCycle.length];
-  span.style.setProperty('--r', (i % 2 === 0 ? '-3deg' : '3deg'));
   logoEl.appendChild(span);
 });
 
@@ -760,7 +772,7 @@ window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
 
 function fireConfetti(){
-  const colors = ['#2f7bff','#ff4757','#ffd23f','#2ecc71'];
+  const colors = ['#17b6a7','#f0b740','#0c6e65','#eafff9'];
   confettiParticles = [];
   const count = 140;
   for(let i=0;i<count;i++){
